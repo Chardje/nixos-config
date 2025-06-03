@@ -35,8 +35,10 @@
   # };
 
   # Enable the hyprland windowing system.
-  programs.hyprland.enable = true;
-  
+  programs.hyprland ={
+    enable = true;
+  };
+
 
   hardware.graphics.enable = true;
   services.xserver.videoDrivers = [ "nvidia" ] ;
@@ -48,6 +50,13 @@
     open = false;
    
   };
+
+  xdg.portal ={
+    enable = true;
+    extraPortals = [pkgs.xdg-desktop-portal-hyprland];
+
+  };
+  
 
   # Configure keymap in X11
   # services.xserver.xkb.layout = "us";
@@ -96,12 +105,13 @@
      hyprland
      wayland-utils
      wlroots
-     foot
      kitty
      waybar
      networkmanagerapplet
      wofi
      kdePackages.dolphin
+     vscode
+     discord
   ];
 
   services.displayManager.sddm.enable = true;
