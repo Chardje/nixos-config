@@ -9,7 +9,7 @@
     [ # Include the results of the hardware scan.
       ./hardware-configuration.nix
     ];
-
+  nix.settings.experimental-features = [ "nix-command" "flakes" ];
   # Use the systemd-boot EFI boot loader.
   boot.loader.systemd-boot.enable = true;
   boot.loader.efi.canTouchEfiVariables = true;
@@ -21,7 +21,7 @@
 
   # Set your time zone.
   time.timeZone = "Europe/Kyiv";
-
+  services.xserver.xkb.layout = "us,ua";
   # Configure network proxy if necessary
   # networking.proxy.default = "http://user:password@proxy:port/";
   # networking.proxy.noProxy = "127.0.0.1,localhost,internal.domain";
@@ -58,6 +58,8 @@
 
   };
   
+###stylix
+
 
   # Enable CUPS to print documents.
    services.printing.enable = true;
@@ -93,8 +95,8 @@
      wget     
      neofetch     
      hyprland
-     # waybar
-     pkgs.hyprlandPlugins.hyprbars
+     waybar
+     # pkgs.hyprlandPlugins.hyprbars
      wayland-utils
      kitty
      wlroots
@@ -102,7 +104,7 @@
      kdePackages.dolphin
      pkgs.yazi
      networkmanagerapplet     
-
+     discord
      pkgs.betterdiscordctl
      # programming
      vscode
@@ -116,7 +118,6 @@
      wineWowPackages.stable
      winetricks
      #office
-     softmaker-office
      libreoffice-qt
      hunspell
      hunspellDicts.uk_UA
