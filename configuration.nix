@@ -26,30 +26,31 @@
   # networking.proxy.default = "http://user:password@proxy:port/";
   # networking.proxy.noProxy = "127.0.0.1,localhost,internal.domain";
 
-  # Select internationalisation properties.
-  # i18n.defaultLocale = "en_US.UTF-8";
-  # console = {
-  #   font = "Lat2-Terminus16";
-  #   keyMap = "us";
-  #   useXkbConfig = true; # use xkb.options in tty.
-  # };
-
   # Enable the hyprland windowing system.
-  programs.hyprland ={
-    enable = true;
+  programs{
+    hyprland.enable = true;
+    yazi = {
+      enable = true;
+    };
+    java.enable = true;
+    java.package = pkgs.jdk21;
+
+    programs.steam.enable = true;
   };
 
 
   hardware.graphics.enable = true;
+  nixpkgs.config.allowUnfree = true;  
   services.xserver.videoDrivers = [ "nvidia" ] ;
 
-  nixpkgs.config.allowUnfree = true;  
   hardware.nvidia = {
     package = config.boot.kernelPackages.nvidiaPackages.stable;
     modesetting.enable = true;
     open = false;
    
   };
+  virtualisation.docker.enable = true;
+
 
   xdg.portal ={
     enable = true;
@@ -57,10 +58,6 @@
 
   };
   
-
-  # Configure keymap in X11
-  # services.xserver.xkb.layout = "us";
-  # services.xserver.xkb.options = "eurosign:e,caps:escape";
 
   # Enable CUPS to print documents.
    services.printing.enable = true;
@@ -81,9 +78,6 @@
      isNormalUser = true;
      
      extraGroups = [ "wheel" "networkmanager" ]; # Enable ‘sudo’ for the user.
-     #packages = with pkgs; [
-     #  tree
-     #];
    };
   users.users.root = {
 
@@ -92,26 +86,44 @@
   nix.settings.build-users-group = "nixbld";
 
 
-  # programs.firefox.enable = true;
-
   # List packages installed in system profile.
   # You can use https://search.nixos.org/ to find more packages (and options).
    environment.systemPackages = with pkgs; [
      vim
-     wget
-     firefox
-     neofetch
-     git
+     wget     
+     neofetch     
      hyprland
+     # waybar
+     pkgs.hyprlandPlugins.hyprbars
      wayland-utils
-     wlroots
      kitty
-     waybar
-     networkmanagerapplet
+     wlroots
      wofi
      kdePackages.dolphin
+     pkgs.yazi
+     networkmanagerapplet     
+
+     pkgs.betterdiscordctl
+     # programming
      vscode
-     discord
+     git
+     pkgs.rustc
+     pkgs.rustup
+     pkgs.cargo
+     # dotnet     
+     # game
+     steam
+     wineWowPackages.stable
+     winetricks
+     #office
+     softmaker-office
+     libreoffice-qt
+     hunspell
+     hunspellDicts.uk_UA
+     hunspellDicts.th_TH
+     obsidian
+     krita
+     firefox
   ];
 
   services.displayManager.sddm.enable = true;
@@ -133,7 +145,7 @@
   # networking.firewall.allowedTCPPorts = [ ... ];
   # networking.firewall.allowedUDPPorts = [ ... ];
   # Or disable the firewall altogether.
-  # networking.firewall.enable = false;
+  networking.firewall.enable = true;
 
   # Copy the NixOS configuration file and link it from the resulting system
   # (/run/current-system/configuration.nix). This is useful in case you
