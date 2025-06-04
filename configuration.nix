@@ -2,7 +2,7 @@
 # your system. Help is available in the configuration.nix(5) man page, on
 # https://search.nixos.org/options and in the NixOS manual (`nixos-help`).
 
-{ config, lib, pkgs, ... }:
+{ config, lib, pkgs, inputs, ... }:
 
 {
   imports =
@@ -38,7 +38,12 @@
     steam.enable = true;
   };
 
-
+  home-manager = {
+      extraSpecialArgs = {inherit inputs;};
+      users.vlad = import ./home.nix ;
+      useUserPackages = true;
+  };
+  
   hardware.graphics.enable = true;
   nixpkgs.config.allowUnfree = true;  
   services.xserver.videoDrivers = [ "nvidia" ] ;
