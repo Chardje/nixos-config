@@ -29,6 +29,7 @@
     firefox
     vscode
     tree
+    pkgs.unzip
   ];
 
   programs = {
