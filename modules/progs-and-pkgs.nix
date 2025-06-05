@@ -27,9 +27,12 @@
     obsidian
     krita
     firefox
+    vscode
+    tree
   ];
 
   programs = {
+    
     hyprland.enable = true;
     yazi.enable = true;
     java = {
@@ -43,7 +46,6 @@
       enableSSHSupport = true;
     };
     git.enable = true;
-    vscode.enable = true;
   };
    virtualisation.docker.enable = true;
 }

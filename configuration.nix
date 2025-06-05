@@ -12,6 +12,7 @@
       ./modules/audio.nix 
       ./modules/progs-and-pkgs.nix
       ./modules/users.nix 
+      ./modules/style.nix
     ];
   nix.settings.experimental-features = [ "nix-command" "flakes" ];
   
@@ -54,8 +55,6 @@
 
   };
   
-###stylix
-
 
   # Enable CUPS to print documents.
    services.printing.enable = true;

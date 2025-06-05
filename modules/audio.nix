@@ -18,7 +18,7 @@
     };
 
     hardware.alsa.enable = true;
-    hardware.pulseaudio.enable = false; # PipeWire замінює PulseAudio
+    services.pulseaudio.enable = false; # PipeWire замінює PulseAudio
 
     # Додаткові пакети для роботи з аудіо
     environment.systemPackages = with pkgs; [
