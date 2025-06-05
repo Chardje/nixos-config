@@ -11,14 +11,13 @@
   config = {
     # Увімкнути PipeWire (сучасна система аудіо)
     services.pipewire = {
-      enable = true;
+      enable = lib.mkForce true;
       alsa.enable = true;
       pulse.enable = true;
       jack.enable = false; # якщо не потрібен JACK
     };
 
-    # Драйвери для звукових карт (опціонально)
-    sound.enable = true;
+    hardware.alsa.enable = true;
     hardware.pulseaudio.enable = false; # PipeWire замінює PulseAudio
 
     # Додаткові пакети для роботи з аудіо

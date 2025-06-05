@@ -5,12 +5,22 @@
 { config, lib, pkgs, inputs, ... }:
 
 {
+  system.stateVersion = "25.05"; 
   imports =
     [ # Include the results of the hardware scan.
       ./hardware-configuration.nix
       ./modules/audio.nix 
+      ./modules/progs-and-pkgs.nix
+      ./modules/users.nix 
     ];
   nix.settings.experimental-features = [ "nix-command" "flakes" ];
+  
+  home-manager = {
+      extraSpecialArgs = {inherit inputs;};
+      users.vlad = import ./home.nix ;
+      useUserPackages = true;
+  };
+  
   # Use the systemd-boot EFI boot loader.
   boot.loader.systemd-boot.enable = true;
   boot.loader.efi.canTouchEfiVariables = true;
@@ -27,24 +37,6 @@
   # networking.proxy.default = "http://user:password@proxy:port/";
   # networking.proxy.noProxy = "127.0.0.1,localhost,internal.domain";
 
-  # Enable the hyprland windowing system.
-  programs = {
-    hyprland.enable = true;
-    yazi = {
-      enable = true;
-    };
-    java.enable = true;
-    java.package = pkgs.jdk21;
-
-    steam.enable = true;
-  };
-
-  home-manager = {
-      extraSpecialArgs = {inherit inputs;};
-      users.vlad = import ./home.nix ;
-      useUserPackages = true;
-  };
-  
   hardware.graphics.enable = true;
   nixpkgs.config.allowUnfree = true;  
   services.xserver.videoDrivers = [ "nvidia" ] ;
@@ -55,9 +47,7 @@
     open = false;
    
   };
-  virtualisation.docker.enable = true;
-
-
+  
   xdg.portal ={
     enable = true;
     extraPortals = [pkgs.xdg-desktop-portal-hyprland];
@@ -74,67 +64,13 @@
   # Enable touchpad support (enabled default in most desktopManager).
   # services.libinput.enable = true;
 
-  # Define a user account. Don't forget to set a password with ‘passwd’.
-  users.users.vlad = {
-     isNormalUser = true;
-     
-     extraGroups = [ "wheel" "networkmanager" ]; # Enable ‘sudo’ for the user.
-   };
-  users.users.root = {
-
-  };
-  users.groups.nixbld ={};
-  nix.settings.build-users-group = "nixbld";
-
-
-  # List packages installed in system profile.
-  # You can use https://search.nixos.org/ to find more packages (and options).
-   environment.systemPackages = with pkgs; [
-     vim
-     wget     
-     neofetch     
-     hyprland
-     waybar
-     # pkgs.hyprlandPlugins.hyprbars
-     wayland-utils
-     kitty
-     wlroots
-     wofi
-     kdePackages.dolphin
-     pkgs.yazi
-     networkmanagerapplet     
-     discord
-     pkgs.betterdiscordctl
-     # programming
-     vscode
-     git
-     pkgs.rustc
-     pkgs.rustup
-     pkgs.cargo
-     # dotnet     
-     # game
-     steam
-     wineWowPackages.stable
-     winetricks
-     #office
-     libreoffice-qt
-     hunspell
-     hunspellDicts.uk_UA
-     hunspellDicts.th_TH
-     obsidian
-     krita
-     firefox
-  ];
+ 
 
   services.displayManager.sddm.enable = true;
   services.xserver.enable =true;
   # Some programs need SUID wrappers, can be configured further or are
   # started in user sessions.
-   programs.mtr.enable = true;
-   programs.gnupg.agent = {
-     enable = true;
-     enableSSHSupport = true;
-   };
+   
 
   # List services that you want to enable:
 
@@ -169,7 +105,6 @@
   # and migrated your data accordingly.
   #
   # For more information, see `man configuration.nix` or https://nixos.org/manual/nixos/stable/options#opt-system.stateVersion .
-  system.stateVersion = "25.05"; # Did you read the comment?
-
+  
 }
 
