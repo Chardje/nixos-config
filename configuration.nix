@@ -8,6 +8,7 @@
   imports =
     [ # Include the results of the hardware scan.
       ./hardware-configuration.nix
+      ./modules/audio.nix 
     ];
   nix.settings.experimental-features = [ "nix-command" "flakes" ];
   # Use the systemd-boot EFI boot loader.
@@ -69,14 +70,7 @@
   # Enable CUPS to print documents.
    services.printing.enable = true;
 
-  # Enable sound.
-  #services.pulseaudio.enable = true;
-  # OR
-   services.pipewire = {
-     enable = true;
-     pulse.enable = true;
-   };
-
+  
   # Enable touchpad support (enabled default in most desktopManager).
   # services.libinput.enable = true;
 

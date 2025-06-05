@@ -29,6 +29,7 @@
     nix-alien,
     ...
   } @ inputs: {
+    #System Config
     nixosConfigurations = {
       vladLinux = nixpkgs.lib.nixosSystem {
         system = "x86_64-linux";
@@ -45,5 +46,7 @@
         ];
       };
     };
+    #
+
   };
 }
