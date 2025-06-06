@@ -30,8 +30,12 @@
     vscode
     tree
     pkgs.unzip
+    swww
   ];
-
+  services={
+    xserver.enable = true;
+    seatd.enable = true;
+  };
   programs = {
     
     hyprland.enable = true;

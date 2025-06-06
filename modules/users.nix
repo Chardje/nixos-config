@@ -3,7 +3,7 @@
 {
   users.users.vlad = {
     isNormalUser = true;
-    extraGroups = [ "wheel" "networkmanager" ]; # Enable ‘sudo’ for the user.
+    extraGroups = [ "wheel" "networkmanager" "seat"]; # Enable ‘sudo’ for the user.
   };
 
   users.users.root = {};

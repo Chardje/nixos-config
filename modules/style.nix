@@ -1,26 +1,45 @@
-{config,pkgs,lib,...}:
+{ config, pkgs, lib, ... }:
 
 {
-  stylix = {
-  enable = true;
-  # Приклад налаштувань:
-  image = ../walls/a_clouds_in_the_sky.png;
-
-#https://github.com/dharmx/walls/blob/main/nord/a_clouds_in_the_sky.png
-#https://github.com/dharmx/walls/blob/main/nord/a_drawing_of_a_wolf_and_a_lion.png
-#https://github.com/dharmx/walls/blob/main/nord/a_screenshot_of_a_computer.png
-#https://github.com/dharmx/walls/blob/main/nord/a_whale_flying_in_the_sky.png
-#https://github.com/dharmx/walls/blob/main/pixel/a_video_game_screen_with_trees_and_bushes.jpg
-  #base16Scheme = ./result/share/themes/catppuccin-mocha.yaml;
+  # Fonts — окремо від stylix
   fonts = {
-    monospace = {
-      package = pkgs.fira-code;
-      name = "FiraCode Nerd Font";
+    enableDefaultPackages = true;
+    fontconfig = {
+      enable = true;
+      defaultFonts = {
+        emoji = [ "Noto Color Emoji" ];
+        monospace = [ "FiraCode Nerd Font" ];
+        sansSerif = [ "Noto Sans" ];
+        serif = [ "Noto Serif" ];
+      };
     };
-    sansSerif = {
-      package = pkgs.noto-fonts;
-      name = "Noto Sans";
+    packages = with pkgs; [
+      noto-fonts
+      noto-fonts-cjk-sans
+      noto-fonts-emoji
+      fira-code
+      nerd-fonts.fira-code
+      nerd-fonts.hack
+      nerd-fonts.iosevka
+    ] 
+    ;
+
+  };
+
+  stylix = {
+    enable = false;
+    image = ../walls/a_clouds_in_the_sky.png;
+
+    fonts = {
+      monospace.name = "FiraCode Nerd Font";
+      sansSerif.name = "Noto Sans";
+      serif.name = "Noto Serif";
+      emoji.name = "Noto Color Emoji";
+    };
+
+    targets = {
+      gnome.enable = false;
+      qt.enable = false;
     };
   };
-};
 }

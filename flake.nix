@@ -3,8 +3,8 @@
 
   inputs = {
     nixpkgs.url = "github:nixos/nixpkgs/nixos-25.05";
-    home-manager.url = "github:nix-community/home-manager";
-    home-manager.inputs.nixpkgs.follows = "nixpkgs";
+    home-manager.url = "github:nix-community/home-manager/release-25.05";
+    home-manager.inputs.nixpkgs.follows = "nixpkgs";    
     stylix.url = "github:danth/stylix";
     nix-index-database = {
         url = "github:nix-community/nix-index-database";
@@ -36,6 +36,10 @@
         specialArgs = {inherit inputs;};
         modules = [
           ./configuration.nix
+          ./modules/audio.nix 
+          ./modules/progs-and-pkgs.nix
+          ./modules/users.nix 
+          ./modules/style.nix
           home-manager.nixosModules.home-manager
           stylix.nixosModules.stylix
           nix-index-database.nixosModules.nix-index
@@ -45,8 +49,10 @@
           chaotic.nixosModules.nyx-registry
         ];
       };
+      homeManagerModules = {
+        stylix = stylix.homeModules.stylix;
+      };
     };
-    #
-
+    
   };
 }
