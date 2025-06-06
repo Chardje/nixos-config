@@ -1,45 +1,32 @@
-{ config, pkgs, lib, ... }:
-
+{ pkgs, inputs, config, ... }:
 {
-  # Fonts — окремо від stylix
-  fonts = {
-    enableDefaultPackages = true;
-    fontconfig = {
-      enable = true;
-      defaultFonts = {
-        emoji = [ "Noto Color Emoji" ];
-        monospace = [ "FiraCode Nerd Font" ];
-        sansSerif = [ "Noto Sans" ];
-        serif = [ "Noto Serif" ];
-      };
-    };
-    packages = with pkgs; [
-      noto-fonts
-      noto-fonts-cjk-sans
-      noto-fonts-emoji
-      fira-code
-      nerd-fonts.fira-code
-      nerd-fonts.hack
-      nerd-fonts.iosevka
-    ] 
-    ;
 
-  };
+	stylix = {
+	
+		enable = true;
 
-  stylix = {
-    enable = false;
-    image = ../walls/a_clouds_in_the_sky.png;
+		autoEnable = true;
 
-    fonts = {
-      monospace.name = "FiraCode Nerd Font";
-      sansSerif.name = "Noto Sans";
-      serif.name = "Noto Serif";
-      emoji.name = "Noto Color Emoji";
-    };
+		polarity = "dark";
 
-    targets = {
-      gnome.enable = false;
-      qt.enable = false;
-    };
-  };
+		base16Scheme = "${pkgs.base16-schemes}/share/themes/dracula.yaml";
+		
+
+#		cursor = {
+#			name = "graphite-dark-nord";
+#			package = pkgs.graphite-cursors;
+#			size = 24;
+#		};
+
+		fonts = {
+			monospace = {
+				package = pkgs.nerd-fonts.fira-mono;
+				name = "Fira Mono Nerd Font";
+			};
+		    serif = config.stylix.fonts.monospace;
+		    sansSerif = config.stylix.fonts.monospace;
+		    #emoji = config.stylix.fonts.monospace;
+		  };
+		
+	};
 }

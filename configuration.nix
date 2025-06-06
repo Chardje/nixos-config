@@ -17,9 +17,6 @@
       extraSpecialArgs = {inherit inputs;};
       users.vlad = import ./home.nix ;
       useUserPackages = true;
-      sharedModules = [
-        inputs.stylix.homeModules.stylix
-      ];
   };
   nix.settings = {
     max-jobs = 10;
