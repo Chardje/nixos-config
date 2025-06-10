@@ -102,9 +102,9 @@
       min-length = 6;
 
       format-icons = {
-        headphone = "";
-        headset = "";
-        default = [ "" "" "" " " ];
+        headphone = " ";
+        headset = " ";
+        default = [ " " " " " " "  " ];
       };
     };
 

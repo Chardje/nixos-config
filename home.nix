@@ -1,23 +1,36 @@
 {
   lib,
-  inputs,
+  #inputs,
   config,
   pkgs,
   ...
 }:
 
 {
+  programs.home-manager.enable = true;
   imports = [
     ./hyprland.nix
     ./waybar.nix
     ./firefox.nix
-    inputs.moonlight.homeModules.default
+    #inputs.moonlight.homeModules.default
   ];
+  
+home.file={
+  "./.local/share/wayland-sessions/hyprland.desktop".text = ''
+  [Desktop Entry]
+  Name=Hyprland
+  Comment=An intelligent dynamic tiling Wayland compositor
+  Exec=Hyprland
+  Type=Application
+  DesktopNames=Hyprland
+  '';
+  ".zshrc".text = ''echo hello home.nix''
+}; 
 
-  nixpkgs.overlays = [
-    inputs.nur.overlays.default
-    inputs.nix-alien.overlays.default
-  ];
+  #nixpkgs.overlays = [
+  #  inputs.nur.overlays.default
+  #  inputs.nix-alien.overlays.default
+  #];
   
   home.username = "vlad";
   home.homeDirectory = "/home/vlad";
@@ -44,15 +57,10 @@
   xdg.userDirs.music = "${config.home.homeDirectory}/music";
   home.preferXdgDirectories = true;
 
-  programs.git = {
-    enable = true;
-    userName = "yakui";
-    userEmail = "yakui@disroot.org";
-  };
 
-  programs.moonlight-mod.enable = true;
+  #programs.moonlight-mod.enable = true;
 
-  programs.keepassxc.enable = true;
+  #programs.keepassxc.enable = true;
   
   dconf = {
     settings = {
@@ -65,21 +73,20 @@
     };
   };
 
-  home.file = {
-  };
 
   home.packages = with pkgs; [
   nix-alien
   ];
 
   stylix = {
+    
   	iconTheme.enable = true;
   	iconTheme.package = pkgs.dracula-icon-theme;		
   	iconTheme.dark = "Dracula";
   	targets.firefox = {
   			enable = true;
   			#colorTheme.enable = true;
-  			profileNames = [ "profile_0" ];
+  			#profileNames = [ "profile_0" ];
   			};
   	};
 

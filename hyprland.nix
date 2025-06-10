@@ -1,33 +1,36 @@
 { config, inputs, pkgs, ... }:
 
 {
+  
+    programs.hyprland.enable = true;
   wayland.windowManager.hyprland = {
   	enable = true;
 
   	settings = {
-	"exec-once" = [
-	"waypaper --restore"
-	"waybar"
-	"blueman-applet"
-	"copyq --start-server"
-#	"wl-clip-persist --clipboard regular"
-	];
+	    "exec-once" = [
+        "kitty "
+	      "waypaper --restore"
+	      "waybar"
+	      #"blueman-applet"
+	      "copyq --start-server"
+        "wl-clip-persist --clipboard regular"
+
+	    ];
     "$mod" = "SUPER";
-    "$terminal" = "foot";
-    "$fileManager" = "nemo";
+    "$terminal" = "kitty";
+    "$fileManager" = "yazi";
     "$browser" = "firefox";
     "$menu" = "wofi";
-    "monitor" = [ "eDP-1, 1920x1080@60, 0x0, 1"
-    ];
+    
      
-    general = {
-            gaps_in = 5;
-            gaps_out = 0;
-            border_size = 2;
-            resize_on_border = false;
-            allow_tearing = false;
-            layout = "dwindle";
-          };
+#    general = {
+#            gaps_in = 5;
+#            gaps_out = 0;
+#            border_size = 2;
+#            resize_on_border = false;
+#            allow_tearing = false;
+#            layout = "dwindle";
+#          };
     
           decoration = {
             active_opacity = 1;
@@ -51,14 +54,14 @@
       touchpad.natural_scroll = false;
     };
 
-	windowrulev2 = [
-		#"suppressevent maximize, class:.*"
-		#"center, floating:1"
-		"float, class:(foot)"
-		"float, class:(com.github.hluk.copyq)"
-		"float, class:(zenity)"
-		"float, class: com.saivert.pwvucontrol"
-	];
+#	windowrulev2 = [
+#		#"suppressevent maximize, class:.*"
+#		#"center, floating:1"
+#		"float, class:(foot)"
+#		"float, class:(com.github.hluk.copyq)"
+#		"float, class:(zenity)"
+#		"float, class: com.saivert.pwvucontrol"
+#	];
 	
     gestures = {
       workspace_swipe = true;

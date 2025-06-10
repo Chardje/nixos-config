@@ -39,7 +39,7 @@
           ./modules/audio.nix 
           ./modules/progs-and-pkgs.nix
           ./modules/users.nix 
-          ./modules/style.nix
+          #"${inputs.nixpkgs}/nixos/modules/services/x11/display-managers/gdm.nix"
           home-manager.nixosModules.home-manager
           stylix.nixosModules.stylix
           nix-index-database.nixosModules.nix-index
@@ -49,10 +49,25 @@
           chaotic.nixosModules.nyx-registry
         ];
       };
+      homeConfigurations = {
+        vlad = home-manager.lib.homeManagerConfiguration {
+        pkgs = nixpkgs.legacyPackages.x86_64-linux;
+        modules = [ ./home.nix ];
+        configuration = {
+         programs.home-manager.enable =true;
+         programs.zsh.enable = true;
+         home-manager.users.vlad = {
+          home.file.".zshrc".text = ''echo hello home.nix'';
+         };
+        };
+        extraSpecialArgs = { inherit inputs; };
+        };
+      };
       homeManagerModules = {
         stylix = stylix.homeModules.stylix;
       };
     };
-    
-  };
+    packages.x86_64-linux.home-manager = nixpkgs.legacyPackages.x86_64-linux.home-manager;
+
+    };
 }

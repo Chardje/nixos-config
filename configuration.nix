@@ -9,15 +9,24 @@
   imports =
     [ # Include the results of the hardware scan.
       ./hardware-configuration.nix
-      
+      ./modules/style.nix
     ];
   nix.settings.experimental-features = [ "nix-command" "flakes" ];
   
-  home-manager = {
-      extraSpecialArgs = {inherit inputs;};
-      users.vlad = import ./home.nix ;
-      useUserPackages = true;
-  };
+  #services.displayManager.gdm.enable = true;
+  #services.displayManager.gdm.wayland = true;
+  services.displayManager.sddm.enable = true;
+  services.displayManager.defaultSession = "hyprland";
+  
+  
+# Увімкни Hyprland system-wide
+programs.hyprland.enable = true;
+
+# Nvidia підтримка (якщо вона є)
+environment.sessionVariables = {
+  WLR_NO_HARDWARE_CURSORS = "1";
+};
+
   nix.settings = {
     max-jobs = 10;
     auto-optimise-store = true;
@@ -55,6 +64,7 @@
   
   xdg.portal ={
     enable = true;
+    wlr.enable = true;
     extraPortals = [pkgs.xdg-desktop-portal-hyprland];
 
   };
@@ -67,7 +77,9 @@
   services.openssh.enable = true;
 
   
-  networking.firewall.enable = true;
+  #services.desktopManager.gnome.enable = false;
+  #services.displayManager.gdm.enable = false;
+  services.xserver.enable = true;
 
 }
 

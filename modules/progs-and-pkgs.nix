@@ -6,11 +6,17 @@
     wget     
     neofetch     
     waybar
-    # pkgs.hyprlandPlugins.hyprbars
+    # Rice
+    plymouth-blahaj-theme
+    waypaper
+    pkgs.hyprlandPlugins.hyprbars
+    xdg-desktop-portal-hyprland
     wayland-utils
     kitty
     wlroots
     wofi
+    #blueman-applet
+    wl-clip-persist
     kdePackages.dolphin
     networkmanagerapplet     
     discord
@@ -23,7 +29,6 @@
     libreoffice-qt
     hunspell
     hunspellDicts.uk_UA
-    hunspellDicts.th_TH
     obsidian
     krita
     firefox
@@ -31,14 +36,24 @@
     tree
     pkgs.unzip
     swww
+    foot
+    hypridle
+    grim
+    slurp
+    satty
+    wlogout
+    brightnessctl
+    pamixer
+    pwvucontrol
   ];
   services={
     xserver.enable = true;
+    #xserver.displayManager.lightdm.enable = true;
+    
     seatd.enable = true;
   };
   programs = {
-    
-    hyprland.enable = true;
+    hyprland.enable = true;    
     yazi.enable = true;
     java = {
       enable = true;
