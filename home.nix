@@ -1,21 +1,20 @@
 {
   lib,
-  #inputs,
+  inputs,
   config,
   pkgs,
   ...
 }:
 
 {
-  programs.home-manager.enable = true;
   imports = [
     ./hyprland.nix
     ./waybar.nix
     ./firefox.nix
     #inputs.moonlight.homeModules.default
+    
   ];
-  
-home.file={
+  home.file={
   "./.local/share/wayland-sessions/hyprland.desktop".text = ''
   [Desktop Entry]
   Name=Hyprland
@@ -24,13 +23,13 @@ home.file={
   Type=Application
   DesktopNames=Hyprland
   '';
-  ".zshrc".text = ''echo hello home.nix''
-}; 
+  ".zshrc".text = ''echo hello home.nix'';
+  }; 
 
-  #nixpkgs.overlays = [
-  #  inputs.nur.overlays.default
-  #  inputs.nix-alien.overlays.default
-  #];
+  nixpkgs.overlays = [
+    inputs.nur.overlays.default
+    inputs.nix-alien.overlays.default
+  ];
   
   home.username = "vlad";
   home.homeDirectory = "/home/vlad";
@@ -47,8 +46,8 @@ home.file={
   xdg.enable = true;
   xdg.userDirs.enable = true;
   xdg.userDirs.createDirectories = true;
-  xdg.userDirs.templates = null;
-  xdg.userDirs.publicShare = null;
+  xdg.userDirs.templates = "${config.home.homeDirectory}/Templates";
+  xdg.userDirs.publicShare = "${config.home.homeDirectory}/Public";
   xdg.userDirs.desktop = "${config.home.homeDirectory}";
   xdg.userDirs.download = "${config.home.homeDirectory}/download";
   xdg.userDirs.documents = "${config.home.homeDirectory}/documents";
@@ -76,20 +75,20 @@ home.file={
 
   home.packages = with pkgs; [
   nix-alien
+  dracula-icon-theme
   ];
+  home.sessionVariables = {
+  XDG_DATA_DIRS = "${pkgs.dracula-icon-theme}/share/icons:${pkgs.glib}/share/icons";
+  };
 
-  stylix = {
-    
-  	iconTheme.enable = true;
-  	iconTheme.package = pkgs.dracula-icon-theme;		
-  	iconTheme.dark = "Dracula";
-  	targets.firefox = {
-  			enable = true;
-  			#colorTheme.enable = true;
-  			#profileNames = [ "profile_0" ];
-  			};
-  	};
-
+  # stylix = {
+  #   targets.firefox.enable = false;
+  #   enable = true;
+  #   iconTheme.enable = true;
+  #   iconTheme.package = pkgs.dracula-icon-theme;
+  #   iconTheme.dark = "Dracula";
+  #   # решта опцій...
+  # };
   #services.syncthing.enable = true;
   #services.syncthing.settings.relaysEnabled = true;
 

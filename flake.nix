@@ -48,26 +48,27 @@
           chaotic.nixosModules.nyx-overlay
           chaotic.nixosModules.nyx-registry
         ];
-      };
-      homeConfigurations = {
+      };      
+    };
+    homeConfigurations = {
         vlad = home-manager.lib.homeManagerConfiguration {
-        pkgs = nixpkgs.legacyPackages.x86_64-linux;
-        modules = [ ./home.nix ];
-        configuration = {
-         programs.home-manager.enable =true;
-         programs.zsh.enable = true;
-         home-manager.users.vlad = {
-          home.file.".zshrc".text = ''echo hello home.nix'';
-         };
+        pkgs = nixpkgs.legacyPackages.x86_64-linux //
+        {
+          nix-alien = nix-alien.packages.x86_64-linux.default; 
+          dracula-icon-theme = nixpkgs.legacyPackages.x86_64-linux.dracula-icon-theme; 
         };
+        modules = [ 
+          ./home.nix 
+          inputs.stylix.homeModules.stylix 
+        ];
+        
         extraSpecialArgs = { inherit inputs; };
         };
       };
       homeManagerModules = {
         stylix = stylix.homeModules.stylix;
       };
-    };
-    packages.x86_64-linux.home-manager = nixpkgs.legacyPackages.x86_64-linux.home-manager;
+    #packages.x86_64-linux.home-manager = nixpkgs.legacyPackages.x86_64-linux.home-manager;
 
     };
 }

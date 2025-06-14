@@ -6,6 +6,7 @@
     wget     
     neofetch     
     waybar
+    nemo
     # Rice
     plymouth-blahaj-theme
     waypaper
@@ -45,6 +46,7 @@
     brightnessctl
     pamixer
     pwvucontrol
+    home-manager
   ];
   services={
     xserver.enable = true;

@@ -15,6 +15,7 @@
       "network"
       "memory"
       "cpu"
+      "hyprland/window"
     ];
     
     modules-center = [
@@ -24,7 +25,7 @@
     modules-right = [
       "tray"
       "hyprland/language"
-      "battery"
+      #"battery"
       "backlight"
       "pulseaudio"
       "pulseaudio#microphone"
@@ -40,8 +41,8 @@
 
     # Language module settings
     "hyprland/language" = {
-      format-en = "🇺🇸";
-      format-uk = "🇺🇦";
+      format-en = "en";
+      format-uk = "uk";
       on-click = "hyprctl switchxkblayout at-translated-set-2-keyboard next";
       keyboard-name = "at-translated-set-2-keyboard";
     };
@@ -73,27 +74,27 @@
     };
 
     "backlight" = {
-      format = "{icon} {percent}%";
-      format-icons = ["🌑" "🌗" "🌕"];
+      format = "backlight {percent}%";
+      #format-icons = ["🌑" "🌗" "🌕"];
       on-scroll-up = "brightnessctl set 1%+";
       on-scroll-down = "brightnessctl set 1%-";
       min-length = 6;
     };
 
     # Battery settings
-    battery = {
-      format = "{icon} {capacity}%";
-      format-charging = "🔌 {capacity}%";
-      format-plugged = "🔌 {capacity}%";
-      format-icons = ["🔋"];
-      min-length = 6;
+    # battery = {
+    #   format = "{icon} {capacity}%";
+    #   format-charging = "🔌 {capacity}%";
+    #   format-plugged = "🔌 {capacity}%";
+    #   format-icons = ["🔋"];
+    #   min-length = 6;
 
-    };
+    # };
     # Pulseaudio settings
     "pulseaudio" = {
       format = "{icon} {volume}%";
       tooltip = false;
-      format-muted = " ";
+      format-muted = "mut-vol ";
       on-click = "pamixer -t";
       on-scroll-up = "pamixer -i 1";
       on-scroll-down = "pamixer -d 1";
@@ -102,17 +103,19 @@
       min-length = 6;
 
       format-icons = {
-        headphone = " ";
-        headset = " ";
-        default = [ " " " " " " "  " ];
+        #headphone = " ";
+        #headset = " ";
+        #default = [ " " " " " " "  " ];
+        default = "vol";
+
       };
     };
 
     # Microphone settings
     "pulseaudio#microphone" = {
       format = "{format_source}";
-      format-source = " {volume}%";
-      format-source-muted = " ";
+      format-source = "micro {volume}%";
+      format-source-muted = "mut-micro";
       on-click = "pamixer --default-source -t";
       on-scroll-up = "pamixer --default-source -i 5";
       on-scroll-down = "pamixer --default-source -d 5";
@@ -125,26 +128,26 @@
     # Memory settings
     memory = {
       interval = 10;
-      format = "  {used}GB";
-      format-alt = "  {percentage}%";
+      format = "mem {used}GB";
+      format-alt = "mem {percentage}%";
     };
 
     # CPU settings
     cpu = {
       interval = 10;
-      format = "  {usage}%";
+      format = "cpu {usage}%";
       on-click = "btop";
     };
     # Network settings
         network = {
           tooltip = true;
-          format-alt = "  {essid}";
+          format-alt = "net  {essid}";
           format-ethernet = " ";
           tooltip-format = "Network: <big><b>{essid}</b></big>\nSignal strength: <b>{signaldBm}dBm ({signalStrength}%)</b>\nFrequency: <b>{frequency}MHz</b>\nInterface: <b>{ifname}</b>\nIP: <b>{ipaddr}/{cidr}</b>\nGateway: <b>{gwaddr}</b>\nNetmask: <b>{netmask}</b>";
           format-linked = " {ifname} (No IP)";
           format-disconnected = " ";
           tooltip-format-disconnected = "Disconnected";
-          format-wifi = "<span foreground='#99ffdd'> {bandwidthDownBytes}</span> <span foreground='#ffcc66'> {bandwidthUpBytes}</span>";
+          format-wifi = "<span foreground='#99ffdd'>Down {bandwidthDownBytes}</span> <span foreground='#ffcc66'>Up {bandwidthUpBytes}</span>";
           interval = 2;
         };
       }

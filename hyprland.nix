@@ -2,7 +2,7 @@
 
 {
   
-    programs.hyprland.enable = true;
+    #programs.hyprland.enable = true;
   wayland.windowManager.hyprland = {
   	enable = true;
 
@@ -17,8 +17,8 @@
 
 	    ];
     "$mod" = "SUPER";
-    "$terminal" = "kitty";
-    "$fileManager" = "yazi";
+    "$terminal" = "foot";
+    "$fileManager" = "nemo";
     "$browser" = "firefox";
     "$menu" = "wofi";
     
@@ -80,7 +80,7 @@
         "$mod, Q, exec, $terminal"
         "$mod, W, exec, $browser"
         "$mod, E, exec, $fileManager"
-        "$mod, S, exec, $menu"
+        "$mod, R, exec, $menu"
 
         "$mod, C, killactive"
         "$mod, F, togglefloating"
