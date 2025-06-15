@@ -2,60 +2,77 @@
 
 {
   environment.systemPackages = with pkgs; [
+
+    # Редактори та IDE
     vim
-    wget     
-    neofetch     
-    waybar
-    nemo
-    # Rice
-    plymouth-blahaj-theme
-    waypaper
-    pkgs.hyprlandPlugins.hyprbars
-    xdg-desktop-portal-hyprland
-    wayland-utils
     kitty
-    wlroots
-    wofi
-    #blueman-applet
-    wl-clip-persist
-    kdePackages.dolphin
-    networkmanagerapplet     
-    discord
-    pkgs.betterdiscordctl
-    pkgs.rustc
-    pkgs.rustup
-    pkgs.cargo
-    wineWowPackages.stable
-    winetricks
-    libreoffice-qt
-    hunspell
-    hunspellDicts.uk_UA
-    obsidian
-    krita
-    firefox
     vscode
+    obsidian
+    rustc
+    rustup
+    cargo
+
+    # Веб-браузери та месенджери
+    firefox
+    discord
+
+    # Файлові менеджери
+    nemo
+    kdePackages.dolphin
+
+    # Системні утиліти
+    wget
     tree
-    pkgs.unzip
-    swww
-    foot
-    hypridle
-    grim
-    slurp
-    satty
-    wlogout
+    nixfmt
+    home-manager
     brightnessctl
     pamixer
     pwvucontrol
-    home-manager
+    networkmanagerapplet
+    wl-clip-persist
+    wayland-utils
+    wlroots
+    swww
+    wlogout
+    satty
+
+    # Wayland та Hyprland пов’язані пакети
+    waybar
+    waypaper
+    pkgs.hyprlandPlugins.hyprbars
+    xdg-desktop-portal-hyprland
+    hypridle
+    grim
+    slurp
+    wofi
+    foot
+
+    # Темізація / Рис
+    plymouth-blahaj-theme
+
+    # Офісні пакети та словники
+    libreoffice-qt
+    hunspell
+    hunspellDicts.uk_UA
+
+    # Мультимедіа та графіка
+    krita
+
+    # Wine та суміжне
+    wineWowPackages.stable
+    winetricks
+
+    # Інше
+    pkgs.betterdiscordctl
   ];
-  services={
+  services = {
     xserver.enable = true;
     #xserver.displayManager.lightdm.enable = true;
-    
+
     seatd.enable = true;
   };
   programs = {
-    hyprland.enable = true;    
+    hyprland.enable = true;
     yazi.enable = true;
     java = {
       enable = true;
@@ -69,5 +86,5 @@
     };
     git.enable = true;
   };
-   virtualisation.docker.enable = true;
+  virtualisation.docker.enable = true;
 }

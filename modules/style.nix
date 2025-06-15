@@ -1,39 +1,38 @@
-{ pkgs, inputs, config, ... }:
-{
-	
-	stylix = {
-	
-		enable = true;
+{ pkgs, inputs, config, ... }: {
 
-		autoEnable = true;
+  stylix = {
 
-		polarity = "dark";
+    enable = true;
 
-		base16Scheme = "${pkgs.base16-schemes}/share/themes/dracula.yaml";
-		targets = {
-        gnome.enable = false;
-        qt.enable = false;
-      };
+    autoEnable = true;
 
-#		cursor = {
-#			name = "graphite-dark-nord";
-#			package = pkgs.graphite-cursors;
-#			size = 24;
-#		};
+    polarity = "dark";
 
-		fonts = {
-			monospace = {
-      package = pkgs.nerd-fonts.fira-mono;
-      name = "Fira Mono Nerd Font";
+    base16Scheme = "${pkgs.base16-schemes}/share/themes/dracula.yaml";
+    targets = {
+      gnome.enable = false;
+      qt.enable = false;
+    };
+
+    #		cursor = {
+    #			name = "graphite-dark-nord";
+    #			package = pkgs.graphite-cursors;
+    #			size = 24;
+    #		};
+
+    fonts = {
+      monospace = {
+        package = pkgs.nerd-fonts.iosevka;
+        name = "Iosevka Nerd Font";
       };
       serif = {
-        package = pkgs.nerd-fonts.fira-mono;
-         name = "Fira Mono Nerd Font";
+        package = pkgs.nerd-fonts.iosevka;
+        name = "Iosevka Nerd Font";
       };
       sansSerif = {
-        package = pkgs.nerd-fonts.fira-mono;
-        name = "Fira Mono Nerd Font";
+        package = pkgs.nerd-fonts.iosevka;
+        name = "Iosevka Nerd Font";
       };
-		};
-	};
+    };
+  };
 }
