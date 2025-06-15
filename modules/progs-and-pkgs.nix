@@ -37,7 +37,8 @@
     satty
 
     # Wayland та Hyprland пов’язані пакети
-    waybar
+    waybar    
+    pkgs.libappindicator-gtk3
     waypaper
     pkgs.hyprlandPlugins.hyprbars
     xdg-desktop-portal-hyprland

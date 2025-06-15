@@ -24,7 +24,8 @@ tooltip {
 #memory,
 #battery,
 #network,
-#pulseaudio {
+#pulseaudio, 
+#temperature {
     margin: 6px 6px 6px 0px;
     padding: 2px 8px;
 }
@@ -41,6 +42,8 @@ tooltip {
     box-shadow: inset 0 -3px transparent;
     padding: 2px 4px;
     color: #c7ab7a;
+    background-color: #303536;
+
 }
 
 #workspaces button.focused {
@@ -71,14 +74,16 @@ tooltip {
 #cpu,
 #memory,
 #network,
-#pulseaudio {
+#pulseaudio,
+#temperature {
     background-color: #ddc7a1;
     border: 2px solid #c7ab7a;
     color: #1d2021;
 }
 
 #cpu.critical,
-#memory.critical {
+#memory.critical,
+#temperature.critical {
     background-color: #ddc7a1;
     border: 2px solid #c7ab7a;
     color: #c14a4a;

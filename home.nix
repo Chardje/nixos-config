@@ -77,30 +77,65 @@
     };
   };
 
-  home.packages = with pkgs; [ nix-alien dracula-icon-theme ];
+  home.packages = with pkgs; [
+    nix-alien
+    #dracula-icon-theme
+    papirus-icon-theme
+  ];
   home.sessionVariables = {
     XDG_DATA_DIRS =
-      "${pkgs.dracula-icon-theme}/share/icons:${pkgs.glib}/share/icons";
+      #"${pkgs.dracula-icon-theme}/share/icons:${pkgs.glib}/share/icons";
+      "${pkgs.papirus-icon-theme}/share/icons:${pkgs.glib}/share/icons";
   };
 
-  # stylix = {
-  #   targets.firefox.enable = false;
-  #   enable = true;
-  #   iconTheme.enable = true;
-  #   iconTheme.package = pkgs.dracula-icon-theme;
-  #   iconTheme.dark = "Dracula";
-  #   # решта опцій...
-  # };
+  stylix = {
+    #targets.firefox.enable = false;
+    enable = true;
+    base16Scheme = {
+      base00 = "#1d2021"; # background
+      base01 = "#303536"; # alt bg
+      base02 = "#3c3836"; # border
+      base03 = "#434a4c"; # inactive border
+      base04 = "#7c6f64"; # tooltip border
+      base05 = "#c7ab7a"; # text (inactive)
+      base06 = "#ddc7a1"; # text (active)
+      base07 = "#d4be98"; # tray
+      base08 = "#c14a4a"; # red / alerts
+      base09 = "#e78a4e"; # urgent workspace
+      base0A = "#d8a657"; # yellow
+      base0B = "#a9b665"; # green bg
+      base0C = "#89b482"; # cyan
+      base0D = "#6c782e"; # dark green
+      base0E = "#ea6962"; # magenta
+      base0F = "#e78a4e"; # orange
+    };
+    
+    iconTheme = {
+      enable = true;
+      package = pkgs.papirus-icon-theme;
+      dark = "Papirus-Dark";
+    };
+    # iconTheme.enable = true;
+    # iconTheme.package = pkgs.dracula-icon-theme;
+    # iconTheme.dark = "Dracula";
+    # решта опцій...
+  };
   #services.syncthing.enable = true;
   #services.syncthing.settings.relaysEnabled = true;
 
+  # home.pointerCursor = {
+  #   name = "graphite-dark-nord";
+  #   package = pkgs.graphite-cursors;
+  #   size = 24;
+  #   gtk.enable = true;
+  # };
   home.pointerCursor = {
-    name = "graphite-dark-nord";
-    package = pkgs.graphite-cursors;
+    package = pkgs.bibata-cursors;
+    name = "Bibata-Modern-Ice";
     size = 24;
     gtk.enable = true;
-  };
 
+  };
   programs.foot = { enable = true; };
 
   programs.home-manager.enable = true;

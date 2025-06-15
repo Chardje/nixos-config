@@ -1,16 +1,30 @@
 { pkgs, lib, host, config, ... }:
-
+let
+  waybarWithSni = pkgs.waybar.overrideAttrs (old: {
+    nativeBuildInputs = (old.nativeBuildInputs or []) ++ [
+      pkgs.pkg-config
+    ];
+    buildInputs = (old.buildInputs or []) ++ [
+      pkgs.gtk-layer-shell
+      pkgs.libappindicator-gtk3
+    ];
+    cmakeFlags = (old.cmakeFlags or []) ++ [
+      "-DWITH_LIBAPPINDICATOR=ON"
+    ];
+  });
+in
 {
   # Configure & Theme Waybar
   programs.waybar = {
     enable = true;
-    package = pkgs.waybar;
+    package = waybarWithSni;
     settings = [{
       layer = "top";
       position = "top";
       # output = [ "eDP-1" ];
 
-      modules-left = [ "network" "memory" "cpu" "hyprland/window" ];
+      modules-left =
+        [ "network" "memory" "cpu" "temperature" "hyprland/window" ];
 
       modules-center = [ "hyprland/workspaces" ];
 
@@ -64,6 +78,14 @@
             days = "<span color='#555869'><b>{}</b></span>";
           };
         };
+      };
+
+      "temperature" = {
+        "thermal-zone" = 2;
+        "hwmon-path" = "/sys/class/hwmon/hwmon2/temp1_input";
+        "critical-threshold" = 80;
+        "format-critical" = "{temperatureC}°C";
+        "format" = "{temperatureC}°C";
       };
 
       "backlight" = {
