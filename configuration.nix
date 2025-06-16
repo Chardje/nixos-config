@@ -3,7 +3,8 @@
 # https://search.nixos.org/options and in the NixOS manual (`nixos-help`).
 
 { config, lib, pkgs, inputs, ... }:
-let sddm-astronaut = pkgs.callPackage ./themes/sddm-astronaut-theme.nix { };
+let 
+  sddm-astronaut = inputs.self.packages.${pkgs.system}.sddm-astronaut;
 in {
   system.stateVersion = "25.05";
   imports = [ # Include the results of the hardware scan.
@@ -63,11 +64,19 @@ in {
   };
 
   services.displayManager.defaultSession = "hyprland";
+  environment.systemPackages = with pkgs; [
+  sddm-astronaut
+];
   services.displayManager.sddm = {
     enable = true;
     wayland.enable = true;
-    theme = "astronaut";
-    extraPackages = [ sddm-astronaut ];
+    settings = {
+    Theme = {
+      Current = "sddm-astronaut-theme";
+    };
+  };
+    #theme = "sddm-astronaut-theme";
+    #extraPackages = [ sddm-astronaut ];
   };
   # Enable CUPS to print documents.
   services.printing.enable = true;

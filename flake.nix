@@ -55,6 +55,10 @@
       };
       homeManagerModules = { stylix = stylix.homeModules.stylix; };
       #packages.x86_64-linux.home-manager = nixpkgs.legacyPackages.x86_64-linux.home-manager;
-
+      packages.x86_64-linux.sddm-astronaut =
+        import ./themes/sddm-astronaut-theme.nix {
+          inherit (nixpkgs.legacyPackages.x86_64-linux)
+            lib stdenv fetchFromGitHub;
+        };
     };
 }
