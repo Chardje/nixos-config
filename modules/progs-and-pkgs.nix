@@ -35,7 +35,8 @@
     swww
     wlogout
     satty
-
+    git
+    
     # Wayland та Hyprland пов’язані пакети
     waybar    
     pkgs.libappindicator-gtk3
@@ -47,6 +48,8 @@
     slurp
     wofi
     foot
+    sddm-chili-theme
+    libsForQt5.qt5.qtgraphicaleffects
 
     # Темізація / Рис
     plymouth-blahaj-theme
@@ -67,9 +70,7 @@
     pkgs.betterdiscordctl
   ];
   services = {
-    xserver.enable = true;
-    #xserver.displayManager.lightdm.enable = true;
-
+    xserver.enable = true;    
     seatd.enable = true;
   };
   programs = {

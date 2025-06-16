@@ -24,7 +24,8 @@ tooltip {
 #memory,
 #battery,
 #network,
-#pulseaudio, 
+#pulseaudio,
+#hyprland-language, 
 #temperature {
     margin: 6px 6px 6px 0px;
     padding: 2px 8px;
@@ -75,6 +76,7 @@ tooltip {
 #memory,
 #network,
 #pulseaudio,
+#hyprland-language,
 #temperature {
     background-color: #ddc7a1;
     border: 2px solid #c7ab7a;

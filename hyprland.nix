@@ -21,6 +21,7 @@
       "$fileManager" = "dolphin";
       "$browser" = "firefox";
       "$menu" = "wofi";
+      "$screenshot" = "satty";
 
       #    general = {
       #            gaps_in = 5;

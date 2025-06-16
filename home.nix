@@ -32,9 +32,6 @@
   services.copyq.forceXWayland = true;
   services.dunst.enable = true;
   services.hyprpolkitagent.enable = true;
-  #services.gammastep.enable = true;
-  #services.gammastep.tray = true;
-  #services.gammastep.provider = "geoclue2";
   xdg.enable = true;
   xdg.userDirs.enable = true;
   xdg.userDirs.createDirectories = true;
@@ -109,16 +106,11 @@
       base0E = "#ea6962"; # magenta
       base0F = "#e78a4e"; # orange
     };
-    
     iconTheme = {
       enable = true;
       package = pkgs.papirus-icon-theme;
       dark = "Papirus-Dark";
     };
-    # iconTheme.enable = true;
-    # iconTheme.package = pkgs.dracula-icon-theme;
-    # iconTheme.dark = "Dracula";
-    # решта опцій...
   };
   #services.syncthing.enable = true;
   #services.syncthing.settings.relaysEnabled = true;
