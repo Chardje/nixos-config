@@ -6,7 +6,7 @@
     ./waybar.nix
     ./firefox.nix
     #inputs.moonlight.homeModules.default
-
+    ./small-styles.nix
   ];
   # home.file={
   # "./.local/share/wayland-sessions/hyprland.desktop".text = ''
@@ -86,7 +86,7 @@
   };
 
   stylix = {
-    #targets.firefox.enable = false;
+    targets.wlogout.enable = true;
     enable = true;
     base16Scheme = {
       base00 = "#1d2021"; # background

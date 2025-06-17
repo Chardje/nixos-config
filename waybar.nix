@@ -62,7 +62,7 @@ in
 
       # Clock settings
       clock = {
-        format = "| {:%d-%m-%y %a | %H:%M:%S}";
+        format = " {:%d-%m-%y %a | %H:%M:%S}";
         interval = 1;
         rotate = 0;
         tooltip-format = "<tt>{calendar}</tt>";
