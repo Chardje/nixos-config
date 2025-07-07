@@ -65,10 +65,10 @@ in {
   };
 
   services.displayManager.defaultSession = "hyprland";
-  environment.systemPackages = with pkgs; [ pkgs.catppuccin-sddm ];
+  #environment.systemPackages = with pkgs; [ pkgs.catppuccin-sddm ];
   services.displayManager.sddm = {
     enable = true;
-    theme = "catppuccin-mocha";
+    #theme = "catppuccin-mocha";
     package = pkgs.kdePackages.sddm;
     wayland.enable = true;
   };

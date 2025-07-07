@@ -4,13 +4,13 @@
 
     enable = true;
 
-    autoEnable = true;
+    autoEnable = false;
 
     polarity = "dark";
 
     # Основна палітра
     base16Scheme = {
-      base00 = "#1d2021"; # background
+      base00 = "#1d2021"; # backgroundmi
       base01 = "#303536"; # alt bg
       base02 = "#3c3836"; # border
       base03 = "#434a4c"; # inactive border

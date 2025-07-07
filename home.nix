@@ -1,4 +1,4 @@
-{ lib, inputs, config, pkgs, ... }:
+{ lib, inputs, config, pkgs, catppuccin, ... }:
 
 {
   imports = [
@@ -6,19 +6,11 @@
     ./waybar.nix
     ./firefox.nix
     #inputs.moonlight.homeModules.default
-    ./small-styles.nix
+    #./small-styles.nix
+    #catppuccin.homeModules.catppuccin
   ];
-  # home.file={
-  # "./.local/share/wayland-sessions/hyprland.desktop".text = ''
-  # [Desktop Entry]
-  # Name=Hyprland
-  # Comment=An intelligent dynamic tiling Wayland compositor
-  # Exec=Hyprland
-  # Type=Application
-  # DesktopNames=Hyprland
-  # '';
-  # ".zshrc".text = ''echo hello home.nix'';
-  # }; 
+  catppuccin.flavor = "frappe";
+  catppuccin.enable = true;
 
   nixpkgs.overlays =
     [ inputs.nur.overlays.default inputs.nix-alien.overlays.default ];
@@ -74,6 +66,16 @@
     };
   };
 
+  programs.foot = {
+    enable = true;
+    # settings = {
+    #   main = {
+    #     include = lib.mkForce
+    #       "${catppuccin.homeModules.catppuccin._configDir}/catppuccin-frappe.ini";
+    #   };
+    # };
+  };
+
   home.packages = with pkgs; [
     nix-alien
     #dracula-icon-theme
@@ -86,8 +88,8 @@
   };
 
   stylix = {
-    targets.wlogout.enable = true;
     enable = true;
+    autoEnable = false;
     base16Scheme = {
       base00 = "#1d2021"; # background
       base01 = "#303536"; # alt bg
@@ -128,7 +130,6 @@
     gtk.enable = true;
 
   };
-  programs.foot = { enable = true; };
 
   programs.home-manager.enable = true;
   programs.floorp.enable = true;

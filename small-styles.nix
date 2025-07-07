@@ -1,48 +1,47 @@
-{ lib, inputs, config, pkgs, ... }:
-{
+{ lib, inputs, config, pkgs, ... }: {
   home.file.".config/wlogout/style.css".text = ''
-  window {
-    background-color: rgba(29, 32, 33, 0.95); /* base00 */
-  }
+    window {
+      background-color: rgba(29, 32, 33, 0.95); /* base00 */
+    }
 
-  button {
-    background-image: none;
-    background-color: #3c3836; /* base02 */
-    color: #ddc7a1; /* base06 */
-    border-radius: 16px;
-    border: 2px solid #7c6f64; /* base04 */
-    margin: 10px;
-    padding: 20px;
-  }
+    button {
+      background-image: none;
+      background-color: #3c3836; /* base02 */
+      color: #ddc7a1; /* base06 */
+      border-radius: 16px;
+      border: 2px solid #7c6f64; /* base04 */
+      margin: 10px;
+      padding: 20px;
+    }
 
-  button:focus, button:hover {
-    background-color: #434a4c; /* base03 */
-    border: 2px solid #d8a657; /* base0A (yellow accent) */
-    color: #e78a4e; /* base09 */
-  }
+    button:focus, button:hover {
+      background-color: #434a4c; /* base03 */
+      border: 2px solid #d8a657; /* base0A (yellow accent) */
+      color: #e78a4e; /* base09 */
+    }
 
-  #lock {
-    background-color: #6c782e; /* base0D (dark green) */
-  }
+    #lock {
+      background-image: url("/home/<USER>/.config/wlogout/icons/lock.svg");
+    }
 
-  #logout {
-    background-color: #ea6962; /* base0E (magenta) */
-  }
+    #logout {
+      background-image: url("/home/<USER>/.config/wlogout/icons/logout.svg");
+    }
 
-  #suspend {
-    background-color: #89b482; /* base0C (cyan) */
-  }
+    #suspend {
+      background-image: url("/home/<USER>/.config/wlogout/icons/suspend.svg");
+    }
 
-  #hibernate {
-    background-color: #a9b665; /* base0B (green) */
-  }
+    #hibernate {
+      background-image: url("/home/<USER>/.config/wlogout/icons/hibernate.svg");
+    }
 
-  #reboot {
-    background-color: #d8a657; /* base0A (yellow) */
-  }
+    #shutdown {
+      background-image: url("/home/<USER>/.config/wlogout/icons/shutdown.svg");
+    }
 
-  #shutdown {
-    background-color: #c14a4a; /* base08 (red) */
-  }
-'';
+    #reboot {
+      background-image: url("/home/<USER>/.config/wlogout/icons/reboot.svg");
+    }
+  '';
 }

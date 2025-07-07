@@ -16,10 +16,11 @@
     };
     chaotic.url = "github:chaotic-cx/nyx/nyxpkgs-unstable";
     nix-alien.url = "github:thiagokokada/nix-alien";
+    catppuccin.url = "github:catppuccin/nix";
   };
 
   outputs = { self, nixpkgs, home-manager, stylix, nix-index-database, nur
-    , chaotic, nix-alien, ... }@inputs: {
+    , chaotic, nix-alien, catppuccin, ... }@inputs: {
       #System Config
       nixosConfigurations = {
         vladLinux = nixpkgs.lib.nixosSystem {
@@ -30,7 +31,6 @@
             ./modules/audio.nix
             ./modules/progs-and-pkgs.nix
             ./modules/users.nix
-            #"${inputs.nixpkgs}/nixos/modules/services/x11/display-managers/gdm.nix"
             home-manager.nixosModules.home-manager
             stylix.nixosModules.stylix
             nix-index-database.nixosModules.nix-index
@@ -38,6 +38,7 @@
             chaotic.nixosModules.nyx-cache
             chaotic.nixosModules.nyx-overlay
             chaotic.nixosModules.nyx-registry
+            #catppuccin.nixosModules.catppuccin
           ];
         };
       };
@@ -45,12 +46,12 @@
         vlad = home-manager.lib.homeManagerConfiguration {
           pkgs = nixpkgs.legacyPackages.x86_64-linux // {
             nix-alien = nix-alien.packages.x86_64-linux.default;
-            dracula-icon-theme =
-              nixpkgs.legacyPackages.x86_64-linux.dracula-icon-theme;
+            #dracula-icon-theme =
+              #nixpkgs.legacyPackages.x86_64-linux.dracula-icon-theme;
           };
-          modules = [ ./home.nix inputs.stylix.homeModules.stylix ];
+          modules = [ ./home.nix inputs.stylix.homeModules.stylix catppuccin.homeModules.catppuccin];
 
-          extraSpecialArgs = { inherit inputs; };
+          extraSpecialArgs = { inherit inputs; inherit catppuccin;};
         };
       };
       homeManagerModules = { stylix = stylix.homeModules.stylix; };

@@ -124,7 +124,7 @@
         #"$mod, V, exec, cliphist list | fuzzel --dmenu | cliphist decode | wl-copy"
         #"$mod, Z, exec, copyq read $(seq 0 $(( $(copyq count) - 1 ))) 2>/dev/null | wofi --show dmenu | wl-copy"
         "$mod, V, exec, copyq toggle"
-        "$mod, ESCAPE, exec, wlogout || killall wlogout"
+        "$mod, ESCAPE, exec, killall wlogout || wlogout"
 
         '', Print, exec, grim -g "$(slurp)" - | satty -f -''
         "Ctrl, Escape, exec, pkill waybar || waybar"
