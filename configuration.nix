@@ -4,13 +4,14 @@
 
 { config, lib, pkgs, inputs, ... }:
 let
-  #sddm-astronaut = inputs.self.packages.${pkgs.system}.sddm-astronaut;
-  #sddm-astronaut =(callPackage ./themes/sddm-astronaut-theme.nix { }).sddm-astronaut;
+  
 in {
   system.stateVersion = "25.05";
   imports = [ # Include the results of the hardware scan.
     ./hardware-configuration.nix
-    ./modules/style.nix
+    #./modules/style.nix
+    ./modules/progs-and-pkgs.nix
+
   ];
   nix.settings.experimental-features = [ "nix-command" "flakes" ];
 
@@ -37,10 +38,8 @@ in {
   boot.loader.efi.canTouchEfiVariables = true;
 
   networking.hostName = "vladLinux"; # Define your hostname.
-  # Pick only one of the below networking options.
-  # networking.wireless.enable = true;  # Enables wireless support via wpa_supplicant.
-  networking.networkmanager.enable =
-    true; # Easiest to use and most distros use this by default.
+   
+  networking.networkmanager.enable = true;
 
   # Set your time zone.
   time.timeZone = "Europe/Kyiv";
@@ -65,12 +64,10 @@ in {
   };
 
   services.displayManager.defaultSession = "hyprland";
-  #environment.systemPackages = with pkgs; [ pkgs.catppuccin-sddm ];
   services.displayManager.sddm = {
     enable = true;
-    #theme = "catppuccin-mocha";
     package = pkgs.kdePackages.sddm;
-    wayland.enable = true;
+    #wayland.enable = true;
   };
 
   # Enable CUPS to print documents.
@@ -79,8 +76,6 @@ in {
   # Enable the OpenSSH daemon.
   services.openssh.enable = true;
 
-  #services.desktopManager.gnome.enable = false;
-  #services.displayManager.gdm.enable = false;
   services.xserver.enable = true;
 
 }

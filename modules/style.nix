@@ -4,7 +4,7 @@
 
     enable = true;
 
-    autoEnable = false;
+    autoEnable = true;
 
     polarity = "dark";
 
