@@ -50,17 +50,19 @@ in {
   services.xserver.videoDrivers = [ "nvidia" ];
 
   hardware.nvidia = {
-    package = config.boot.kernelPackages.nvidiaPackages.stable;
     modesetting.enable = true;
     open = false;
-
   };
+
+  # Драйвер Realtek r8168, заблокувати r8169
+  boot.extraModulePackages = [ config.boot.kernelPackages.r8168 ];
+  boot.kernelModules = [ "r8168" ];
+  boot.blacklistedKernelModules = [ "r8169" ];
 
   xdg.portal = {
     enable = true;
     wlr.enable = true;
     extraPortals = [ pkgs.xdg-desktop-portal-hyprland ];
-
   };
 
   services.displayManager.defaultSession = "hyprland";
@@ -77,6 +79,8 @@ in {
   services.openssh.enable = true;
 
   services.xserver.enable = true;
+
+
 
 }
 

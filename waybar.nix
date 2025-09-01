@@ -174,6 +174,6 @@ in
         interval = 2;
       };
     }];
-    #style = builtins.readFile ./waybar.css;
+    style = builtins.readFile ./waybar.css;
   };
 }

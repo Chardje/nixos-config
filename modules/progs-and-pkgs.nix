@@ -2,10 +2,10 @@
 
 {
   imports = [
-    ./python.nix
+    #./python.nix
   ];
-  environment.systemPackages = with pkgs; [
 
+  environment.systemPackages = with pkgs; [
     # Редактори та IDE
     vim
     kitty
@@ -14,10 +14,12 @@
     rustc
     rustup
     cargo
+    pgadmin4-desktopmode
 
     # Веб-браузери та месенджери
     firefox
-    discord
+    #discord
+    pkgs.vesktop
     ayugram-desktop
 
     # Файлові менеджери
@@ -25,6 +27,10 @@
     kdePackages.dolphin
 
     # Системні утиліти
+    python313
+    python313Packages.python
+    python313Packages.pip
+    python313Packages.meshtastic
     wget
     tree
     nixfmt
@@ -40,7 +46,43 @@
     wlogout
     satty
     git
-    pip
+
+    atool
+    xarchiver
+    zip
+    unzip
+    unrar
+    p7zip
+    gnutar
+    gzip
+    bzip2
+    xz
+    p7zip
+    zstd
+    mpv
+    feh
+    imv
+    vlc
+
+    dotnetCorePackages.sdk_9_0-bin
+
+    # Fonts for formula symbols
+    liberation_ttf
+    symbola
+    wqy_zenhei
+    source-han-sans
+    source-han-serif
+    font-awesome
+    fontconfig
+    noto-fonts
+    noto-fonts-emoji
+    twemoji-color-font
+    unifont
+
+    # Emoji/symbol picker apps
+    gucharmap
+
+    # Some fonts/apps may need overlays or manual packaging if not in nixpkgs
 
     # Wayland та Hyprland пов’язані пакети
     #waybar
@@ -61,6 +103,7 @@
 
     # Офісні пакети та словники
     libreoffice-qt
+    wpsoffice
     hunspell
     hunspellDicts.uk_UA
 
@@ -72,30 +115,34 @@
     winetricks
 
     # Ігри
-    # (pkgs.modrinth-app.overrideAttrs (oldAttrs: {
-    #   buildCommand = ''
-    #     gappsWrapperArgs+=(
-    #       --set NIXOS_OZONE_WL 1
-    #       --set GDK_BACKEND wayland
-    #       --set MOZ_ENABLE_WAYLAND 1
-    #       --set XDG_SESSION_TYPE wayland
-    #       --set ELECTRON_OZONE_PLATFORM_HINT wayland
-    #       --set QT_QPA_PLATFORM wayland
-    #       --set GTK_THEME Adwaita
-    #     )
-    #   '' + oldAttrs.buildCommand;
-    # }))
+    (modrinth-app.overrideAttrs (oldAttrs: {
+      buildCommand = ''
+        gappsWrapperArgs+=(
+          --set GDK_BACKEND x11
+          --set WEBKIT_DISABLE_DMABUF_RENDERER 1
+          --set WEBKIT_DISABLE_COMPOSITING_MODE 1
+        )
+      '' + oldAttrs.buildCommand;
+    }))
 
     # Інше
     #pkgs.betterdiscordctl
   ];
+  environment.sessionVariables = {
+    "WEBKIT_DISABLE_DMABUF_RENDERER" = "1";
+    "WEBKIT_DISABLE_COMPOSITING_MODE" = "1";
+  };
+  environment.variables = { GTK_THEME = "Catppuccin-Mocha-Dark"; };
+
   services = {
     xserver.enable = true;
     seatd.enable = true;
   };
+
   programs = {
     hyprland.enable = true;
     yazi.enable = true;
+
     java = {
       enable = true;
       package = pkgs.jdk21;
@@ -108,5 +155,6 @@
     };
     git.enable = true;
   };
+
   virtualisation.docker.enable = true;
 }

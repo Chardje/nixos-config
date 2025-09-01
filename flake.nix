@@ -22,7 +22,11 @@
   outputs = { self, nixpkgs, home-manager, 
   #stylix,
    nix-index-database, nur
-    , chaotic, nix-alien, catppuccin, ... }@inputs: {
+    , chaotic, nix-alien, catppuccin, ... }@inputs:
+    let
+      system = "x86_64-linux";
+      pkgs = import nixpkgs { inherit system; };
+    in {
       #System Config
       nixosConfigurations = {
         vladLinux = nixpkgs.lib.nixosSystem {
@@ -38,13 +42,10 @@
             chaotic.nixosModules.nyx-cache
             chaotic.nixosModules.nyx-overlay
             chaotic.nixosModules.nyx-registry
-            catppuccin.nixosModules.catppuccin
+            #catppuccin.nixosModules.default
             home-manager.nixosModules.home-manager
             {
               home-manager.extraSpecialArgs = { inherit inputs catppuccin; };
-              home-manager.users.vlad = {
-                imports = [ ./home.nix catppuccin.homeModules.catppuccin ];
-              };
             }
           ];
         };
@@ -57,7 +58,7 @@
           modules = [
             ./home.nix
             #inputs.stylix.homeModules.stylix
-            catppuccin.homeModules.catppuccin
+            #catppuccin.homeModules.catppuccin
           ];
 
           extraSpecialArgs = { inherit inputs; };

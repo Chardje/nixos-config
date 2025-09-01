@@ -1,5 +1,7 @@
-{ lib, inputs, config, pkgs, ... }:
-
+{ lib, inputs, config, pkgs, catppuccinLib, ... }:
+let
+  
+in
 {
   imports = [
     ./hyprland.nix
@@ -7,12 +9,19 @@
     ./firefox.nix
     #inputs.moonlight.homeModules.default
     #./small-styles.nix
-
+    inputs.catppuccin.homeModules.catppuccin # <-- Uncomment if you want to import Catppuccin module
   ];
 
   catppuccin.enable = true;
   catppuccin.flavor = "frappe";
   catppuccin.accent = "sapphire";
+
+  catppuccin.waybar = {
+    enable = true;
+    flavor = "frappe";
+    mode = "prependImport"; # or "createLink" if you prefer symlink mode
+  };
+  
 
   nixpkgs.overlays =
     [ inputs.nur.overlays.default inputs.nix-alien.overlays.default ];
@@ -38,6 +47,26 @@
   xdg.userDirs.videos = "${config.home.homeDirectory}/videos";
   xdg.userDirs.music = "${config.home.homeDirectory}/music";
   home.preferXdgDirectories = true;
+
+  programs.vscode = {
+    profiles.default.extensions = with pkgs.vscode-extensions; [
+      bbenoist.nix
+      christian-kohler.npm-intellisense
+      github.copilot
+      github.copilot-chat
+      jnoortheen.nix-ide
+      ms-azuretools.vscode-docker
+      ms-dotnettools.csdevkit
+      ms-dotnettools.csharp
+      ms-dotnettools.vscode-dotnet-runtime
+      ms-python.debugpy
+      ms-python.python
+      ms-python.vscode-pylance
+      ms-vscode-remote.remote-ssh
+      ms-vscode-remote.remote-ssh-edit
+      ms-vsliveshare.vsliveshare
+    ];
+  };
 
   services.gammastep = {
     enable = true;
@@ -68,18 +97,8 @@
     };
   };
 
-  programs.foot = {
-    enable = true;
-    # settings = {
-    #   main = {
-    #     include = lib.mkForce
-    #       "${catppuccin.homeModules.catppuccin._configDir}/catppuccin-frappe.ini";
-    #   };
-    # };
-  };
-
   home.packages = with pkgs; [ nix-alien papirus-icon-theme ];
-  home.sessionVariables = {
+  home.sessionVariables = builtins.trace "Waybar style file: ${config.xdg.configHome}/waybar/style.css" {
     XDG_DATA_DIRS =
       "${pkgs.papirus-icon-theme}/share/icons:${pkgs.glib}/share/icons";
   };
@@ -147,4 +166,21 @@
       ignoreDups = true;
     };
   };
+ 
+
+  # Приклад використання стилю для foot (шлях, а не readFile)
+  programs.foot = {
+    enable = true;
+    settings = {
+       main = {
+      font = "monospace:size=11";
+      dpi-aware = "yes";
+      pad = "10x10";
+      bold-text-in-bright = "yes";
+    };
+    };
+  };
+
+
 }
+
