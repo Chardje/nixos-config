@@ -4,7 +4,7 @@
 
 { config, lib, pkgs, inputs, ... }:
 let
-  
+
 in {
   system.stateVersion = "25.05";
   imports = [ # Include the results of the hardware scan.
@@ -19,7 +19,9 @@ in {
   programs.hyprland.enable = true;
 
   # Nvidia підтримка (якщо вона є)
-  environment.sessionVariables = { WLR_NO_HARDWARE_CURSORS = "1"; };
+  environment.sessionVariables = {
+    WLR_NO_HARDWARE_CURSORS = "1";
+  };
 
   nix.settings = {
     max-jobs = 10;
@@ -38,7 +40,7 @@ in {
   boot.loader.efi.canTouchEfiVariables = true;
 
   networking.hostName = "vladLinux"; # Define your hostname.
-   
+
   networking.networkmanager.enable = true;
 
   # Set your time zone.
@@ -54,10 +56,6 @@ in {
     open = false;
   };
 
-  # Драйвер Realtek r8168, заблокувати r8169
-  boot.extraModulePackages = [ config.boot.kernelPackages.r8168 ];
-  boot.kernelModules = [ "r8168" ];
-  boot.blacklistedKernelModules = [ "r8169" ];
 
   xdg.portal = {
     enable = true;
@@ -80,7 +78,20 @@ in {
 
   services.xserver.enable = true;
 
+  boot.extraModprobeConfig = ''
+    options bluetooth disable_ertm=1
+  '';
 
+     
 
+  users.users.vlad = {
+    isNormalUser = true;
+    extraGroups = [ "wheel" "input" "plugdev" "bluetooth" "networkmanager" ];
+  };
+
+  hardware.bluetooth.enable = true;
+  services.blueman.enable = true;
+
+  # Bluetooth працює через USB-адаптер (Cambridge Silicon Radio, Ltd Bluetooth Dongle)
 }
 

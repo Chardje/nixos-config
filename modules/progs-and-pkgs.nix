@@ -21,6 +21,8 @@
     #discord
     pkgs.vesktop
     ayugram-desktop
+    #teams
+    teams-for-linux
 
     # Файлові менеджери
     nemo
@@ -46,6 +48,10 @@
     wlogout
     satty
     git
+    wf-recorder
+    solaar
+    logitech-udev-rules
+    evtest
 
     atool
     xarchiver
@@ -82,6 +88,28 @@
     # Emoji/symbol picker apps
     gucharmap
 
+    # Network tools
+    ethtool
+    iproute2
+    dnsutils
+    inetutils
+    speedtest-cli
+    curl
+    bmon
+    tcpdump
+
+    # Game controller utilities
+    SDL2
+    SDL2_gfx
+    SDL2_mixer
+    SDL2_image
+    jstest-gtk
+
+    # Bluetooth support
+    bluez
+    bluez-tools
+    blueman
+
     # Some fonts/apps may need overlays or manual packaging if not in nixpkgs
 
     # Wayland та Hyprland пов’язані пакети
@@ -102,7 +130,6 @@
     #plymouth-blahaj-theme
 
     # Офісні пакети та словники
-    libreoffice-qt
     wpsoffice
     hunspell
     hunspellDicts.uk_UA
@@ -139,9 +166,12 @@
     seatd.enable = true;
   };
 
+  networking.networkmanager.enable = true;
+
   programs = {
     hyprland.enable = true;
     yazi.enable = true;
+    gpu-screen-recorder.enable = true;
 
     java = {
       enable = true;

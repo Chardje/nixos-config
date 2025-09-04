@@ -128,9 +128,9 @@
         "$mod SHIFT, 8, movetoworkspace, 8"
         "$mod SHIFT, 9, movetoworkspace, 9"
         "$mod SHIFT, 0, movetoworkspace, 10"
-        "$mod, S, togglespecialworkspace, magic"
-        "$mod SHIFT, S, movetoworkspace, special:magic"
-        
+        "$mod, Z, togglespecialworkspace, magic"
+        "$mod SHIFT, Z, movetoworkspace, special:magic"
+
         "$mod, D, workspace, +1"
         "$mod, A, workspace, -1"
         "$mod SHIFT, D, movetoworkspace, +1"
@@ -141,10 +141,9 @@
         "Ctrl, Escape, exec, killall $panel || $panel"
         "$mod, V, exec, copyq toggle"
         "$mod, ESCAPE, exec, killall wlogout || wlogout"
-        '', Print, exec, grim -g "$(slurp)" - | satty -f -''
+        "$mod SHIFT, S, exec, sh -c 'grim -g \"$(slurp)\" - | satty -f -'"
         "Ctrl, Escape, exec, pkill waybar || waybar"
 
-        
         # Multimedia keys
         ",XF86AudioRaiseVolume, exec, wpctl set-volume -l 1 @DEFAULT_AUDIO_SINK@ 5%+"
         ",XF86AudioLowerVolume, exec, wpctl set-volume @DEFAULT_AUDIO_SINK@ 5%-"
