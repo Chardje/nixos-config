@@ -2,9 +2,11 @@
   description = "NixOS configuration";
 
   inputs = {
-    nixpkgs.url = "github:nixos/nixpkgs/nixos-25.05";
-    home-manager.url = "github:nix-community/home-manager/release-25.05";
-    home-manager.inputs.nixpkgs.follows = "nixpkgs";
+    nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
+    home-manager = {
+      url = "github:nix-community/home-manager";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
     #stylix.url = "github:danth/stylix";
     nix-index-database = {
       url = "github:nix-community/nix-index-database";
@@ -12,6 +14,10 @@
     };
     nur = {
       url = "github:nix-community/NUR";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+    caelestia-shell = {
+      url = "github:caelestia-dots/shell";
       inputs.nixpkgs.follows = "nixpkgs";
     };
     chaotic.url = "github:chaotic-cx/nyx/nyxpkgs-unstable";
@@ -22,7 +28,7 @@
   outputs = { self, nixpkgs, home-manager, 
   #stylix,
    nix-index-database, nur
-    , chaotic, nix-alien, catppuccin, ... }@inputs:
+    , chaotic, nix-alien, catppuccin, caelestia-shell, ... }@inputs:
     let
       system = "x86_64-linux";
       pkgs = import nixpkgs { inherit system; };
@@ -52,23 +58,16 @@
       };
       homeConfigurations = {
         vlad = home-manager.lib.homeManagerConfiguration {
-          pkgs = nixpkgs.legacyPackages.x86_64-linux // {
-            nix-alien = nix-alien.packages.x86_64-linux.default;
+          pkgs = nixpkgs.legacyPackages.x86_64-linux;
+          extraSpecialArgs = {
+            inherit inputs;
+            "xkeyboard-config" = nixpkgs.legacyPackages.x86_64-linux.xkeyboard_config;
           };
           modules = [
             ./home.nix
-            #inputs.stylix.homeModules.stylix
-            #catppuccin.homeModules.catppuccin
           ];
-
-          extraSpecialArgs = { inherit inputs; };
         };
       };
-      #homeManagerModules = { stylix = stylix.homeModules.stylix; };
-      #packages.x86_64-linux.sddm-astronaut =
-      #  import ./themes/sddm-astronaut-theme.nix {
-      #    inherit (nixpkgs.legacyPackages.x86_64-linux)
-      #      lib stdenv fetchFromGitHub;
-      #  };
+      
     };
 }

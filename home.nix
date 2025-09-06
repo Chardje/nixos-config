@@ -1,18 +1,19 @@
 { lib, inputs, config, pkgs, catppuccinLib, ... }:
 let
-  
-in
-{
+
+in {
   imports = [
     ./hyprland.nix
-    ./waybar.nix
+    #./waybar.nix
     ./firefox.nix
     #inputs.moonlight.homeModules.default
     #./small-styles.nix
-    inputs.catppuccin.homeModules.catppuccin # <-- Uncomment if you want to import Catppuccin module
+    inputs.catppuccin.homeModules.catppuccin
+    inputs.caelestia-shell.homeManagerModules.default
   ];
 
-  catppuccin.enable = true;
+
+  catppuccin.enable = false;
   catppuccin.flavor = "frappe";
   catppuccin.accent = "sapphire";
 
@@ -21,7 +22,6 @@ in
     flavor = "frappe";
     mode = "prependImport"; # or "createLink" if you prefer symlink mode
   };
-  
 
   nixpkgs.overlays =
     [ inputs.nur.overlays.default inputs.nix-alien.overlays.default ];
@@ -97,39 +97,16 @@ in
     };
   };
 
-  home.packages = with pkgs; [ nix-alien papirus-icon-theme ];
-  home.sessionVariables = builtins.trace "Waybar style file: ${config.xdg.configHome}/waybar/style.css" {
-    XDG_DATA_DIRS =
-      "${pkgs.papirus-icon-theme}/share/icons:${pkgs.glib}/share/icons";
-  };
-
-  # stylix = {
-  #   enable = false;
-  #   autoEnable = false;
-  #   base16Scheme = {
-  #     base00 = "#1d2021"; # background
-  #     base01 = "#303536"; # alt bg
-  #     base02 = "#3c3836"; # border
-  #     base03 = "#434a4c"; # inactive border
-  #     base04 = "#7c6f64"; # tooltip border
-  #     base05 = "#c7ab7a"; # text (inactive)
-  #     base06 = "#ddc7a1"; # text (active)
-  #     base07 = "#d4be98"; # tray
-  #     base08 = "#c14a4a"; # red / alerts
-  #     base09 = "#e78a4e"; # urgent workspace
-  #     base0A = "#d8a657"; # yellow
-  #     base0B = "#a9b665"; # green bg
-  #     base0C = "#89b482"; # cyan
-  #     base0D = "#6c782e"; # dark green
-  #     base0E = "#ea6962"; # magenta
-  #     base0F = "#e78a4e"; # orange
-  #   };
-  #   iconTheme = {
-  #     enable = true;
-  #     package = pkgs.papirus-icon-theme;
-  #     dark = "Papirus-Dark";
-  #   };
-  # };
+  home.packages = with pkgs; [
+    nix-alien
+    papirus-icon-theme
+    
+  ];
+  home.sessionVariables = builtins.trace
+    "Waybar style file: ${config.xdg.configHome}/waybar/style.css" {
+      XDG_DATA_DIRS =
+        "${pkgs.papirus-icon-theme}/share/icons:${pkgs.glib}/share/icons";
+    };
 
   home.pointerCursor = {
     package = pkgs.bibata-cursors;
@@ -166,21 +143,36 @@ in
       ignoreDups = true;
     };
   };
- 
 
   # Приклад використання стилю для foot (шлях, а не readFile)
   programs.foot = {
     enable = true;
     settings = {
-       main = {
-      font = "monospace:size=11";
-      dpi-aware = "yes";
-      pad = "10x10";
-      bold-text-in-bright = "yes";
-    };
+      main = {
+        font = "monospace:size=13";
+        dpi-aware = "yes";
+        pad = "10x10";
+        bold-text-in-bright = "yes";
+      };
     };
   };
 
+  programs.caelestia = {
+    enable = true;
+    systemd = {
+      enable = true; # if you prefer starting from your compositor
+      target = "graphical-session.target";
+      environment = [ ];
+    };
+    settings = {
+      bar.status = { showBattery = false; };
+      paths.wallpaperDir = "~/Images";
+    };
+    cli = {
+      enable = true; # Also add caelestia-cli to path
+      settings = { theme.enableGtk = false; };
+    };
+  };
 
 }
 

@@ -29,10 +29,9 @@
     kdePackages.dolphin
 
     # Системні утиліти
-    python313
     python313Packages.python
     python313Packages.pip
-    python313Packages.meshtastic
+    python313Packages.psutil
     wget
     tree
     nixfmt
@@ -40,6 +39,7 @@
     brightnessctl
     pamixer
     pwvucontrol
+    pkgs.pulseaudio.out
     networkmanagerapplet
     wl-clip-persist
     wayland-utils

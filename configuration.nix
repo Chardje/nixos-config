@@ -15,6 +15,16 @@ in {
   ];
   nix.settings.experimental-features = [ "nix-command" "flakes" ];
 
+  hardware.pulseaudio.enable = false;
+
+  services.pipewire = {
+    enable = true;
+    alsa.enable = true;
+    alsa.support32Bit = true;
+    pulse.enable = true;
+    jack.enable = lib.mkForce true;
+  };
+
   # Увімкни Hyprland system-wide
   programs.hyprland.enable = true;
 
@@ -93,5 +103,10 @@ in {
   services.blueman.enable = true;
 
   # Bluetooth працює через USB-адаптер (Cambridge Silicon Radio, Ltd Bluetooth Dongle)
+
+  environment.systemPackages = with pkgs; [
+    # ...existing code...
+    helvum
+  ];
 }
 

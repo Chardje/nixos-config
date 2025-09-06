@@ -100,6 +100,7 @@
         "$mod, R, exec, $menu"
         "$mod, C, killactive"
         "$mod, F, togglefloating"
+        "$mod SHIFT, F, fullscreen"
         "$mod, X, pseudo"
         "$mod, M, exit"
         "$mod, P, pseudo"
