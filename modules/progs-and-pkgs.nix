@@ -164,6 +164,10 @@
   services = {
     xserver.enable = true;
     seatd.enable = true;
+    xdg-desktop-portal = {
+      enable = true;
+      extraPortals = [ "hyprland" ];
+    };
   };
 
   networking.networkmanager.enable = true;

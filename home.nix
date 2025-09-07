@@ -159,20 +159,50 @@ in {
 
   programs.caelestia = {
     enable = true;
-    systemd = {
-      enable = true; # if you prefer starting from your compositor
-      target = "graphical-session.target";
-      environment = [ ];
-    };
+    systemd.enable = true;
+    systemd.target = "graphical-session.target";
     settings = {
-      bar.status = { showBattery = false; };
-      paths.wallpaperDir = "~/Images";
+      bar.status = { showBattery = false; 
+      temperatureUnit = "C"; # Додайте цей рядок для використання градусів Цельсія
+      showCpu = true;
+      showMemory = true;
+      showNetwork = true;
+      showClock = true;
     };
-    cli = {
-      enable = true; # Also add caelestia-cli to path
-      settings = { theme.enableGtk = false; };
+    dashboard = {
+      showWeather = true;
+      weatherLocation = "Kyiv,UA";
+      weather = {
+        temperatureUnit = "C";
+      };
+      
+    };
+    perfomance = {
+      enableAnimations = true;
+      smoothScrolling = true;
+      temperatureUnit = "C";
+    };
+    paths.wallpaperDir = "~/Images";
+  };
+  cli = {
+    enable = true;
+    settings = { theme.enableGtk = false; };
+    };
+  };
+
+  systemd.user.services = {
+    "hyprland" = {
+      serviceConfig = {
+        Description = "Hyprland Session (after Caelestia)";
+        ExecStart = "${pkgs.hyprland}/bin/Hyprland";
+        Restart = "on-failure";
+        After = "caelestia-shell.service";
+        Wants = "caelestia-shell.service";
+      };
+      install = {
+        WantedBy = [ "graphical-session.target" ];
+      };
     };
   };
 
 }
-

@@ -1,7 +1,14 @@
-{ config, inputs, pkgs, ... }:
+{
+  config,
+  inputs,
+  pkgs,
+  ...
+}:
 
 {
-
+  imports = [
+    ./binds.nix
+  ];
   #programs.hyprland.enable = true;
   wayland.windowManager.hyprland = {
     enable = true;
@@ -68,12 +75,7 @@
         "suppressevent maximize, class:.*"
         "nofocus,class:^$,title:^$,xwayland:1,floating:1,fullscreen:0,pinned:0"
       ];
-      "$mod" = "SUPER";
-      "$terminal" = "foot";
-      "$fileManager" = "dolphin";
-      "$browser" = "firefox";
-      "$menu" = "wofi";
-      "$screenshot" = "satty";
+      
       misc = {
         vfr = false;
         disable_hyprland_logo = true;
@@ -92,8 +94,7 @@
         workspace_swipe = true;
         workspace_swipe_fingers = 2;
       };
-      bindm = [ "$mod, mouse:272, movewindow" "$mod, mouse:273, resizeactive" ];
-      bind = import ./binds.nix;
+
     };
   };
   wayland.windowManager.hyprland.plugins = [

@@ -15,7 +15,7 @@ in {
   ];
   nix.settings.experimental-features = [ "nix-command" "flakes" ];
 
-  hardware.pulseaudio.enable = false;
+  services.pulseaudio.enable = false;
 
   services.pipewire = {
     enable = true;
@@ -27,6 +27,12 @@ in {
 
   # Увімкни Hyprland system-wide
   programs.hyprland.enable = true;
+
+  # Додаємо Caelestia shell до системних пакетів
+  environment.systemPackages = with pkgs; [
+    helvum
+    # pkgs.caelestia-shellda
+  ];
 
   # Nvidia підтримка (якщо вона є)
   environment.sessionVariables = {
@@ -73,6 +79,7 @@ in {
     extraPortals = [ pkgs.xdg-desktop-portal-hyprland ];
   };
 
+  # Використовуємо Hyprland як сесію для входу (Caelestia shell стартує через Home Manager/systemd user)
   services.displayManager.defaultSession = "hyprland";
   services.displayManager.sddm = {
     enable = true;
@@ -103,10 +110,5 @@ in {
   services.blueman.enable = true;
 
   # Bluetooth працює через USB-адаптер (Cambridge Silicon Radio, Ltd Bluetooth Dongle)
-
-  environment.systemPackages = with pkgs; [
-    # ...existing code...
-    helvum
-  ];
 }
 
