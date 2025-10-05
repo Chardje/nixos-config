@@ -21,8 +21,13 @@
         "waypaper --restore"
         "waybar"
         #"blueman-applet"
-        "copyq --start-server"
+        #"copyq --start-server"
+
         "wl-clip-persist --clipboard regular"
+        "swayidle -w "
+        "timeout 300 'swaylock -f -c 000000'"
+        "timeout 600 'hyprctl dispatch dpms off'"
+        "resume 'hyprctl dispatch dpms on'"
       ];
       # Monitor configuration
       "monitor" = ",preferred,auto,auto";
@@ -75,7 +80,7 @@
         "suppressevent maximize, class:.*"
         "nofocus,class:^$,title:^$,xwayland:1,floating:1,fullscreen:0,pinned:0"
       ];
-      
+
       misc = {
         vfr = false;
         disable_hyprland_logo = true;
@@ -89,10 +94,6 @@
         follow_mouse = 1;
         sensitivity = 0;
         touchpad.natural_scroll = false;
-      };
-      gestures = {
-        workspace_swipe = true;
-        workspace_swipe_fingers = 2;
       };
 
     };

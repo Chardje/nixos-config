@@ -10,7 +10,7 @@
     settings = {
       "$mod" = "SUPER";
       "$terminal" = "foot";
-      "$fileManager" = "dolphin";
+      "$fileManager" = "nemo";
       "$browser" = "firefox";
       "$menu" = "wofi";
       "$screenshot" = "satty";
@@ -122,7 +122,8 @@
         # Move window to/from special workspace
         "Ctrl Super Shift, up, movetoworkspace, special:special"
         "Ctrl Super Shift, down, movetoworkspace, e+0"
-        "Super Alt, S, movetoworkspace, special:special"
+        "Super Alt, S, workspace, special:special"
+        "Super Shift Alt, S, movetoworkspace, special:special"
 
         # Window groups
         # ...залишити тільки якщо dispatcher існує...
@@ -148,7 +149,12 @@
         # "$kbWindowFullscreen, exec, caelestia shell fullscreen 0"
         # "$kbWindowBorderedFullscreen, exec, caelestia shell fullscreen 1"
         # "$kbToggleWindowFloating, exec, caelestia shell togglefloating"
-        # "$kbCloseWindow, exec, caelestia shell killactive"
+        "Super, C, killactive"
+        "Super, F, fullscreen"        
+        "Super, X, togglefloating"
+        "Super, P, pin"
+        "Super, T, pseudo"
+        "Super, J, togglesplit, orientation"
 
         # Special workspace toggles
         # ...закоментовано, якщо dispatcher не існує...
@@ -159,7 +165,6 @@
         "Super, E, exec, $fileManager"
         "Ctrl Alt, V, exec, $audioControl"
 
-        "Super, C, exec, hyprctl dispatch killactive"
 
         # Clipboard and emoji picker
         "Super, V, exec, sh -c 'pkill fuzzel || cliphist list | fuzzel | xargs wl-copy'"
@@ -169,7 +174,6 @@
         # Utilities
         ", Print, exec, sh -c 'grim - | wl-copy'"
         "Super Shift, S, exec, sh -c 'grim -g \"$(slurp)\" - | wl-copy'"
-        "Super Shift Alt, S, exec, sh -c 'grim -g \"$(slurp)\" - | wl-copy'"
         #"Super Alt, R, exec, sh -c 'wf-recorder -a'"
         "Ctrl Alt, R, exec, sh -c 'pkill wf-recorder'" # kill recording
         "Super Alt, R, exec, sh -c 'wf-recorder -g \"$(slurp)\" -f ~/videos/recording-$(date +%F-%T).mp4'"
@@ -185,12 +189,12 @@
 
         # Clipboard and emoji picker
         "Super, V, exec, sh -c 'pkill fuzzel || cliphist list | fuzzel | xargs wl-copy'"
-        "Super Alt, V, exec, sh -c 'pkill fuzzel || cliphist list | fuzzel | xargs wl-copy'"
         "Super, Period, exec, sh -c 'pkill fuzzel || wofi-emoji'"
         "Ctrl Shift Alt, V, exec, sh -c 'sleep 0.5s && ydotool type -d 1 \"$(cliphist list | head -1 | cliphist decode)\"'"
 
         # Testing
         # "Super Alt, f12, exec, notify-send -u low -i dialog-information-symbolic 'Test notification' \"Here's a really long message to test truncation and wrapping\nYou can middle click or flick this notification to dismiss it!\" -a 'Shell' -A \"Test1=I got it!\" -A \"Test2=Another action\""
+        
       ];
     };
   };

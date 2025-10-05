@@ -1,7 +1,15 @@
-{ lib, inputs, config, pkgs, catppuccinLib, ... }:
+{
+  lib,
+  inputs,
+  config,
+  pkgs,
+  catppuccinLib,
+  ...
+}:
 let
 
-in {
+in
+{
   imports = [
     ./hyprland.nix
     #./waybar.nix
@@ -12,8 +20,7 @@ in {
     inputs.caelestia-shell.homeManagerModules.default
   ];
 
-
-  catppuccin.enable = false;
+  catppuccin.enable = true;
   catppuccin.flavor = "frappe";
   catppuccin.accent = "sapphire";
 
@@ -23,8 +30,10 @@ in {
     mode = "prependImport"; # or "createLink" if you prefer symlink mode
   };
 
-  nixpkgs.overlays =
-    [ inputs.nur.overlays.default inputs.nix-alien.overlays.default ];
+  nixpkgs.overlays = [
+    inputs.nur.overlays.default
+    inputs.nix-alien.overlays.default
+  ];
 
   home.username = "vlad";
   home.homeDirectory = "/home/vlad";
@@ -92,21 +101,36 @@ in {
 
   dconf = {
     settings = {
-      "org/cinnamon/desktop/applications/terminal" = { exec = "foot"; };
-      "org/nemo/desktop" = { show-desktop-icons = false; };
+      "org/cinnamon/desktop/applications/terminal" = {
+        exec = "foot";
+      };
+      "org/nemo/desktop" = {
+        show-desktop-icons = false;
+      };
     };
   };
 
   home.packages = with pkgs; [
     nix-alien
-    papirus-icon-theme
-    
+    #papirus-icon-theme
+    adwaita-icon-theme
+    hicolor-icon-theme
+    gnome-icon-theme
+    noto-fonts
+    noto-fonts-emoji
+    liberation_ttf
+    source-han-sans
+    source-han-serif
+    font-awesome
   ];
-  home.sessionVariables = builtins.trace
-    "Waybar style file: ${config.xdg.configHome}/waybar/style.css" {
-      XDG_DATA_DIRS =
-        "${pkgs.papirus-icon-theme}/share/icons:${pkgs.glib}/share/icons";
-    };
+
+  fonts.fontconfig.enable = true;
+
+  home.sessionVariables =
+    builtins.trace "Waybar style file: ${config.xdg.configHome}/waybar/style.css"
+      {
+        XDG_DATA_DIRS = "${pkgs.papirus-icon-theme}/share/icons:${pkgs.glib}/share/icons";
+      };
 
   home.pointerCursor = {
     package = pkgs.bibata-cursors;
@@ -124,8 +148,7 @@ in {
   programs.wofi.settings = {
     show = "drun";
     allow_images = true; # Display application icons
-    term =
-      "${pkgs.foot}/bin/foot"; # Terminal to run commands (adjust as needed)
+    term = "${pkgs.foot}/bin/foot"; # Terminal to run commands (adjust as needed)
     width = 600;
     height = 400;
     allow_markup = true;
@@ -137,7 +160,9 @@ in {
   programs.zsh = {
     enable = true;
     autosuggestion.enable = true;
-    syntaxHighlighting = { enable = true; };
+    syntaxHighlighting = {
+      enable = true;
+    };
     history = {
       share = true;
       ignoreDups = true;
@@ -161,32 +186,60 @@ in {
     enable = true;
     systemd.enable = true;
     systemd.target = "graphical-session.target";
+
     settings = {
-      bar.status = { showBattery = false; 
-      temperatureUnit = "C"; # Додайте цей рядок для використання градусів Цельсія
-      showCpu = true;
-      showMemory = true;
-      showNetwork = true;
-      showClock = true;
-    };
-    dashboard = {
-      showWeather = true;
-      weatherLocation = "Kyiv,UA";
-      weather = {
-        temperatureUnit = "C";
+      bar.status = {
+        showBattery = false;
       };
-      
+
+      paths.wallpaperDir = "~/Images";
+
+      services = {
+        weatherLocation = "Kyiv,UA";
+        useFahrenheit = false;
+        useTwelveHourClock = false;
+        audioIncrement = 0.05;
+        smartScheme = true;
+        visualiserBars = 60;
+        lockScreen = true;
+
+        idleInhibitor = true;
+        sleep = false;
+        suspend = false;
+        idle = false;
+      };
+
+      session = {
+        dragThreshold = 30;
+        vimKeybinds = true;
+        commands = {
+          logout = [
+            "loginctl"
+            "terminate-user"
+            config.home.username
+          ];
+          shutdown = [
+            "systemctl"
+            "poweroff"
+          ];
+          reboot = [
+            "systemctl"
+            "reboot"
+          ];
+          hibernate = [
+            "systemctl"
+            "hibernate"
+          ];
+        };
+      };
+
     };
-    perfomance = {
-      enableAnimations = true;
-      smoothScrolling = true;
-      temperatureUnit = "C";
-    };
-    paths.wallpaperDir = "~/Images";
-  };
-  cli = {
-    enable = true;
-    settings = { theme.enableGtk = false; };
+
+    cli = {
+      enable = true;
+      settings = {
+        theme.enableGtk = false;
+      };
     };
   };
 

@@ -1,4 +1,9 @@
-{ config, lib, pkgs, ... }:
+{
+  config,
+  lib,
+  pkgs,
+  ...
+}:
 
 {
   options = {
@@ -18,13 +23,31 @@
     };
 
     hardware.alsa.enable = true;
-    services.pulseaudio.enable = false; # PipeWire замінює PulseAudio
 
     # Додаткові пакети для роботи з аудіо
     environment.systemPackages = with pkgs; [
-      pavucontrol   # GUI для керування гучністю
-      alsa-utils    # ALSA утиліти
-      pamixer       # CLI для PulseAudio/PipeWire
+      pwvucontrol # GUI для керування гучністю
+      alsa-utils # ALSA утиліти
+      pamixer # CLI для PulseAudio/PipeWire
+      easyeffects
+      calf
     ];
+
+    # Loopback мікрофона
+    # щоб звук з мікрофона відтворювався на динаміках
+    systemd.user.services.mic-loopback = {
+      description = "PipeWire Microphone → Speakers loopback";
+      after = [
+        "pipewire.service"
+        "pipewire-pulse.service"
+      ];
+      wantedBy = [ "default.target" ];
+      serviceConfig.ExecStart = ''
+        ${pkgs.pipewire}/bin/pw-loopback \
+          --capture-props="node.name=MicLoopIn" \
+          --playback-props="node.name=MicLoopOut"
+      '';
+      serviceConfig.Restart = "always";
+    };
   };
 }

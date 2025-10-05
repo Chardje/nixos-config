@@ -1,8 +1,24 @@
-{ pkgs, ... }:
+{ pkgs,inputs,... }:
 
 {
   imports = [
     #./python.nix
+  ];
+
+  fonts.packages = with pkgs; [
+    liberation_ttf
+    symbola
+    wqy_zenhei
+    corefonts
+    source-han-sans
+    source-han-serif
+    font-awesome
+    fontconfig
+    noto-fonts
+    noto-fonts-emoji
+    twemoji-color-font
+    unifont    
+    #material-symbols-font
   ];
 
   environment.systemPackages = with pkgs; [
@@ -10,36 +26,40 @@
     vim
     kitty
     vscode
-    obsidian
-    rustc
-    rustup
-    cargo
+    obsidian    
     pgadmin4-desktopmode
-
+    pkg-config
+    wireplumber
     # Веб-браузери та месенджери
     firefox
     #discord
-    pkgs.vesktop
+    vesktop
     ayugram-desktop
+    zapzap
+
     #teams
     teams-for-linux
 
     # Файлові менеджери
     nemo
-    kdePackages.dolphin
+    #kdePackages.dolphin
 
     # Системні утиліти
-    python313Packages.python
-    python313Packages.pip
-    python313Packages.psutil
+    ddcutil
+    #canon-capt
+    canon-cups-ufr2 
+    simple-scan
+    xsane
+    sane-airscan
+    #python313Packages.python
+    #python313Packages.pip
+    #python313Packages.psutil
+    talloc
     wget
     tree
     nixfmt
     home-manager
-    brightnessctl
-    pamixer
-    pwvucontrol
-    pkgs.pulseaudio.out
+    brightnessctl    
     networkmanagerapplet
     wl-clip-persist
     wayland-utils
@@ -71,22 +91,27 @@
     vlc
 
     dotnetCorePackages.sdk_9_0-bin
+    unityhub
+    dotnet-sdk
+    mono
+    msbuild
+    omnisharp-roslyn
+    netcoredbg
+    unity-test
 
-    # Fonts for formula symbols
-    liberation_ttf
-    symbola
-    wqy_zenhei
-    source-han-sans
-    source-han-serif
-    font-awesome
-    fontconfig
-    noto-fonts
-    noto-fonts-emoji
-    twemoji-color-font
-    unifont
+
+    # Icon themes
+    hicolor-icon-theme
+    adwaita-icon-theme
+
 
     # Emoji/symbol picker apps
     gucharmap
+    fuzzel
+    cliphist
+    ydotool
+    wl-clipboard
+    pavucontrol
 
     # Network tools
     ethtool
@@ -115,10 +140,10 @@
     # Wayland та Hyprland пов’язані пакети
     #waybar
     pkgs.libappindicator-gtk3
-    waypaper
+    #waypaper
     pkgs.hyprlandPlugins.hyprbars
-    xdg-desktop-portal-hyprland
     hypridle
+    xdg-utils
     grim
     slurp
     wofi
@@ -126,8 +151,10 @@
     sddm-chili-theme
     libsForQt5.qt5.qtgraphicaleffects
 
-    # Темізація / Рис
-    #plymouth-blahaj-theme
+   
+    #syncthing
+    syncthingtray
+    syncthing
 
     # Офісні пакети та словники
     wpsoffice
@@ -136,6 +163,7 @@
 
     # Мультимедіа та графіка
     krita
+    
     spotify
     # Wine та суміжне
     wineWowPackages.stable
@@ -149,34 +177,33 @@
           --set WEBKIT_DISABLE_DMABUF_RENDERER 1
           --set WEBKIT_DISABLE_COMPOSITING_MODE 1
         )
-      '' + oldAttrs.buildCommand;
+      ''
+      + oldAttrs.buildCommand;
     }))
 
-    # Інше
-    #pkgs.betterdiscordctl
+    wakeonlan
+    rpi-imager
+    samba
+
   ];
   environment.sessionVariables = {
     "WEBKIT_DISABLE_DMABUF_RENDERER" = "1";
     "WEBKIT_DISABLE_COMPOSITING_MODE" = "1";
   };
-  environment.variables = { GTK_THEME = "Catppuccin-Mocha-Dark"; };
-
-  services = {
-    xserver.enable = true;
-    seatd.enable = true;
-    xdg-desktop-portal = {
-      enable = true;
-      extraPortals = [ "hyprland" ];
-    };
+  environment.variables = {
+    GTK_THEME = "Catppuccin-Mocha-Dark";
   };
 
   networking.networkmanager.enable = true;
 
   programs = {
-    hyprland.enable = true;
+    hyprland = {
+      enable = true;
+      portalPackage = pkgs.xdg-desktop-portal-hyprland;
+   };
     yazi.enable = true;
     gpu-screen-recorder.enable = true;
-
+    
     java = {
       enable = true;
       package = pkgs.jdk21;
