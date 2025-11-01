@@ -23,32 +23,47 @@
     chaotic.url = "github:chaotic-cx/nyx/nyxpkgs-unstable";
     nix-alien.url = "github:thiagokokada/nix-alien";
     catppuccin.url = "github:catppuccin/nix/release-25.05";
+    
+    zenbrowser.url = "path:./zenbrowser";
   };
 
-  outputs = { self, nixpkgs, home-manager, 
-  #stylix,
-   nix-index-database, nur
-    , chaotic, nix-alien, catppuccin, caelestia-shell, ... }@inputs:
+  outputs =
+    {
+      self,
+      nixpkgs,
+      home-manager,
+      nix-index-database,
+      nur,
+      chaotic,
+      nix-alien,
+      catppuccin,
+      caelestia-shell,
+      ...
+    }@inputs:
     let
       system = "x86_64-linux";
-      pkgs = import nixpkgs { inherit system; };
-    in {
+      lib = nixpkgs.lib;
+      pkgs = import nixpkgs {
+        inherit system;
+        overlays = [ nur.overlay ];
+        config.allowUnfree = true;
+      };
+    in
+    {
       #System Config
       nixosConfigurations = {
         vladLinux = nixpkgs.lib.nixosSystem {
           system = "x86_64-linux";
-          specialArgs = { inherit inputs; };
+          specialArgs = { inherit inputs pkgs; };
           modules = [
             ./configuration.nix
             ./modules/audio.nix
             ./modules/users.nix
-            #stylix.nixosModules.stylix
             nix-index-database.nixosModules.nix-index
-            nur.modules.nixos.default
+            #nur.modules.nixos.default
             chaotic.nixosModules.nyx-cache
             chaotic.nixosModules.nyx-overlay
             chaotic.nixosModules.nyx-registry
-            #catppuccin.nixosModules.default
             home-manager.nixosModules.home-manager
             {
               home-manager.extraSpecialArgs = { inherit inputs catppuccin; };
@@ -68,6 +83,6 @@
           ];
         };
       };
-      
+
     };
 }

@@ -18,11 +18,14 @@
     services.pipewire = {
       enable = lib.mkForce true;
       alsa.enable = true;
+      alsa.support32Bit = true;
       pulse.enable = true;
-      jack.enable = false; # якщо не потрібен JACK
+      jack.enable =  true;
     };
 
     hardware.alsa.enable = true;
+    services.pulseaudio.enable = false;    
+
 
     # Додаткові пакети для роботи з аудіо
     environment.systemPackages = with pkgs; [

@@ -1,9 +1,13 @@
-{ pkgs,inputs,... }:
-
 {
-  imports = [
-    #./python.nix
-  ];
+  pkgs,
+  inputs,
+  lib,
+  ...
+}:
+let
+  nur = inputs.nur ;
+in
+{
 
   fonts.packages = with pkgs; [
     liberation_ttf
@@ -17,17 +21,22 @@
     noto-fonts
     noto-fonts-emoji
     twemoji-color-font
-    unifont    
+    unifont
     #material-symbols-font
   ];
+ 
 
   environment.systemPackages = with pkgs; [
     # Редактори та IDE
     vim
     kitty
     vscode
-    obsidian    
-    pgadmin4-desktopmode
+    obsidian
+    plantuml
+
+    #nur.repos.AusCyber.zen-browser
+
+    #pgadmin4-desktopmode
     pkg-config
     wireplumber
     # Веб-браузери та месенджери
@@ -35,8 +44,7 @@
     #discord
     vesktop
     ayugram-desktop
-    zapzap
-
+    #beeper-bridge-manager
     #teams
     teams-for-linux
 
@@ -47,7 +55,7 @@
     # Системні утиліти
     ddcutil
     #canon-capt
-    canon-cups-ufr2 
+    canon-cups-ufr2
     simple-scan
     xsane
     sane-airscan
@@ -59,10 +67,29 @@
     tree
     nixfmt
     home-manager
-    brightnessctl    
+    brightnessctl
     networkmanagerapplet
     wl-clip-persist
     wayland-utils
+    parted
+    tparted
+    gparted
+
+    xdg-desktop-portal
+    #xdg-desktop-portal-wlr
+    pipewire
+    helvum
+    wireplumber
+    (pkgs.writeShellApplication {
+      name = "ns";
+      checkPhase = "";
+      runtimeInputs = with pkgs; [
+        fzf
+        nix-search-tv
+      ];
+      text = builtins.readFile "${pkgs.nix-search-tv.src}/nixpkgs.sh";
+    })
+
     wlroots
     swww
     wlogout
@@ -72,6 +99,7 @@
     solaar
     logitech-udev-rules
     evtest
+    htop
 
     atool
     xarchiver
@@ -93,17 +121,16 @@
     dotnetCorePackages.sdk_9_0-bin
     unityhub
     dotnet-sdk
+    pkgs.omnisharp-roslyn
     mono
     msbuild
     omnisharp-roslyn
     netcoredbg
     unity-test
 
-
     # Icon themes
     hicolor-icon-theme
     adwaita-icon-theme
-
 
     # Emoji/symbol picker apps
     gucharmap
@@ -122,6 +149,8 @@
     curl
     bmon
     tcpdump
+    winbox4
+    wireguard-ui
 
     # Game controller utilities
     SDL2
@@ -151,7 +180,6 @@
     sddm-chili-theme
     libsForQt5.qt5.qtgraphicaleffects
 
-   
     #syncthing
     syncthingtray
     syncthing
@@ -163,11 +191,25 @@
 
     # Мультимедіа та графіка
     krita
-    
+
     spotify
     # Wine та суміжне
-    wineWowPackages.stable
+    wineWowPackages.waylandFull
     winetricks
+
+    (writeScriptBin "wine32" ''
+      export WINEARCH=win32
+      export WINEPREFIX=$HOME/.wine32
+      export WINEDLLOVERRIDES="mscoree,mshtml="
+      export MOZ_ENABLE_WAYLAND=1
+      wine "$@"
+    '')
+    (writeScriptBin "winetricks32" ''
+      export WINEARCH=win32
+      export WINEPREFIX=$HOME/.wine32
+      export MOZ_ENABLE_WAYLAND=1
+      winetricks "$@"
+    '')
 
     # Ігри
     (modrinth-app.overrideAttrs (oldAttrs: {
@@ -184,11 +226,12 @@
     wakeonlan
     rpi-imager
     samba
-
+    cifs-utils
   ];
   environment.sessionVariables = {
     "WEBKIT_DISABLE_DMABUF_RENDERER" = "1";
     "WEBKIT_DISABLE_COMPOSITING_MODE" = "1";
+    "MOZ_ENABLE_WAYLAND" = "1";
   };
   environment.variables = {
     GTK_THEME = "Catppuccin-Mocha-Dark";
@@ -196,14 +239,28 @@
 
   networking.networkmanager.enable = true;
 
+  services.matrix-synapse = {
+
+    enable = false;
+    settings = {
+      server_name = "localhost";
+      registration_shared_secret = "mysecret111";
+
+      app_service_config_files = [
+        "/home/vlad/.config/bbctl/telegram-registration.yaml"
+        "/home/vlad/.config/bbctl/whatsapp-registration.yaml"
+        "/home/vlad/.config/bbctl/discord-registration.yaml"
+      ];
+    };
+  };
   programs = {
     hyprland = {
       enable = true;
       portalPackage = pkgs.xdg-desktop-portal-hyprland;
-   };
+    };
     yazi.enable = true;
     gpu-screen-recorder.enable = true;
-    
+
     java = {
       enable = true;
       package = pkgs.jdk21;
@@ -215,6 +272,7 @@
       enableSSHSupport = true;
     };
     git.enable = true;
+
   };
 
   virtualisation.docker.enable = true;

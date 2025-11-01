@@ -12,6 +12,10 @@
   boot.initrd.kernelModules = [ ];
   boot.kernelModules = [ "kvm-intel" ];
   boot.extraModulePackages = [ ];
+  
+  environment.sessionVariables = {
+    WLR_NO_HARDWARE_CURSORS = "1";
+  };
 
   fileSystems."/" =
     { device = "/dev/disk/by-uuid/d2ce6149-068c-4534-9d1c-e142d3d187ef";

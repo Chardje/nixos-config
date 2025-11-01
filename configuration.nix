@@ -25,42 +25,24 @@ in
     "nix-command"
     "flakes"
   ];
-
-  services.pulseaudio.enable = false;
-
-  services.pipewire = {
-    enable = true;
-    alsa.enable = true;
-    alsa.support32Bit = true;
-    pulse.enable = true;
-    jack.enable = lib.mkForce true;
-  };
+ 
 
   fileSystems."/home/vlad/smb/Shared" = {
-    device = "//192.168.88.2/Shared";
+    device = "//pi.lan/Shared";
     fsType = "cifs";
     options = [
       "username=pi"
-      "password=qwerty"
+      "password=n97ziP6qLr"
       "rw"
-      "uid=1000"
-      "gid=1000"
+      "uid=vlad"
+      "gid=users"
+      "file_mode=0777"
+      "dir_mode=0777"
+      "x-systemd.automount"
+      "x-systemd.device-timeout=5s"
     ];
   };
 
-  # Увімкни Hyprland system-wide
-  programs.hyprland.enable = true;
-
-  # Додаємо Caelestia shell до системних пакетів
-  environment.systemPackages = with pkgs; [
-    helvum
-    # pkgs.caelestia-shellda
-  ];
-
-  # Nvidia підтримка (якщо вона є)
-  environment.sessionVariables = {
-    WLR_NO_HARDWARE_CURSORS = "1";
-  };
 
   nix.settings = {
     max-jobs = 10;
@@ -84,17 +66,25 @@ in
     "i2c-core"
     "i2c-i801"
   ];
+  boot.extraModprobeConfig = ''
+    options bluetooth disable_ertm=1
+  '';
 
-  networking.hostName = "vladLinux"; # Define your hostname.
-
-  networking.networkmanager.enable = true;
+  networking = {
+    hostName = "vladLinux";
+    nameservers = [
+      "192.168.88.1"
+      "1.1.1.1"
+    ];
+    networkmanager.enable = true;
+  };
 
   # Set your time zone.
   time.timeZone = "Europe/Kyiv";
   services.xserver.xkb.layout = "us,ua";
 
   hardware.graphics.enable = true;
-  nixpkgs.config.allowUnfree = true;
+  
   services.xserver.videoDrivers = [ "nvidia" ];
 
   hardware.nvidia = {
@@ -102,9 +92,10 @@ in
     open = false;
   };
 
+
   xdg.portal = {
     enable = true;
-    wlr.enable = true;
+    #wlr.enable = true;
     extraPortals = [ pkgs.xdg-desktop-portal-hyprland ];
   };
 
@@ -113,14 +104,13 @@ in
   services.displayManager.sddm = {
     enable = true;
     package = pkgs.kdePackages.sddm;
-    #wayland.enable = true;
   };
 
   # Enable CUPS to print documents.
   services.printing.enable = true;
   services.printing.drivers = with pkgs; [
     gutenprint
-    canon-cups-ufr2 
+    canon-cups-ufr2
     #canon-capt
   ];
 
@@ -144,9 +134,7 @@ in
 
   services.xserver.enable = true;
 
-  boot.extraModprobeConfig = ''
-    options bluetooth disable_ertm=1
-  '';
+  
 
   # Дає користувачу vlad доступ до пристроїв яскравості
   services.udev.extraRules = ''
@@ -185,6 +173,8 @@ in
       "text/x-go" = "code.desktop";
       "text/x-rust" = "code.desktop";
       "text/x-markdown" = "code.desktop";
+      "text/x-csharp" = "code.desktop";
+      "text/x-csharp-source" = "code.desktop";
       # PDF
       "application/pdf" = "wpspdf.desktop";
       # Офісні документи
@@ -210,18 +200,4 @@ in
     };
   };
 
-  # Bluetooth працює через USB-адаптер (Cambridge Silicon Radio, Ltd Bluetooth Dongle)
-
-  services.samba = {
-    enable = true;
-    settings = {
-      shared = {
-        path = "~/smb/Shared";
-        writable = true;
-        browseable = true;
-        guestOk = false;
-        validUsers = [ "pi" ];
-      };
-    };
-  };
 }

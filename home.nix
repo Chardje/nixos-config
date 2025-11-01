@@ -12,20 +12,19 @@ in
 {
   imports = [
     ./hyprland.nix
-    #./waybar.nix
     ./firefox.nix
-    #inputs.moonlight.homeModules.default
-    #./small-styles.nix
     inputs.catppuccin.homeModules.catppuccin
     inputs.caelestia-shell.homeManagerModules.default
   ];
+
+  
 
   catppuccin.enable = true;
   catppuccin.flavor = "frappe";
   catppuccin.accent = "sapphire";
 
   catppuccin.waybar = {
-    enable = true;
+    enable = false;
     flavor = "frappe";
     mode = "prependImport"; # or "createLink" if you prefer symlink mode
   };
@@ -95,9 +94,6 @@ in
       };
     };
   };
-  #programs.moonlight-mod.enable = true;
-
-  #programs.keepassxc.enable = true;
 
   dconf = {
     settings = {
@@ -105,7 +101,7 @@ in
         exec = "foot";
       };
       "org/nemo/desktop" = {
-        show-desktop-icons = false;
+        show-desktop-icons = true;
       };
     };
   };
@@ -139,121 +135,135 @@ in
     gtk.enable = true;
 
   };
+  programs = {
+    home-manager.enable = true;
+    floorp.enable = true;
 
-  programs.home-manager.enable = true;
-  programs.floorp.enable = true;
-  programs.mangohud.enable = true;
-
-  programs.wofi.enable = true;
-  programs.wofi.settings = {
-    show = "drun";
-    allow_images = true; # Display application icons
-    term = "${pkgs.foot}/bin/foot"; # Terminal to run commands (adjust as needed)
-    width = 600;
-    height = 400;
-    allow_markup = true;
-    exec_search = true;
-    insensitive = true;
-    sort_order = "alphabrtical";
-  };
-
-  programs.zsh = {
-    enable = true;
-    autosuggestion.enable = true;
-    syntaxHighlighting = {
-      enable = true;
-    };
-    history = {
-      share = true;
-      ignoreDups = true;
-    };
-  };
-
-  # Приклад використання стилю для foot (шлях, а не readFile)
-  programs.foot = {
-    enable = true;
-    settings = {
-      main = {
-        font = "monospace:size=13";
-        dpi-aware = "yes";
-        pad = "10x10";
-        bold-text-in-bright = "yes";
+    wofi = {
+      enable = false;
+      settings = {
+        show = "drun";
+        allow_images = true; # Display application icons
+        term = "${pkgs.foot}/bin/foot"; # Terminal to run commands (adjust as needed)
+        width = 600;
+        height = 400;
+        allow_markup = true;
+        exec_search = true;
+        insensitive = true;
+        sort_order = "alphabrtical";
       };
     };
-  };
 
-  programs.caelestia = {
-    enable = true;
-    systemd.enable = true;
-    systemd.target = "graphical-session.target";
-
-    settings = {
-      bar.status = {
-        showBattery = false;
-      };
-
-      paths.wallpaperDir = "~/Images";
-
-      services = {
-        weatherLocation = "Kyiv,UA";
-        useFahrenheit = false;
-        useTwelveHourClock = false;
-        audioIncrement = 0.05;
-        smartScheme = true;
-        visualiserBars = 60;
-        lockScreen = true;
-
-        idleInhibitor = true;
-        sleep = false;
-        suspend = false;
-        idle = false;
-      };
-
-      session = {
-        dragThreshold = 30;
-        vimKeybinds = true;
-        commands = {
-          logout = [
-            "loginctl"
-            "terminate-user"
-            config.home.username
-          ];
-          shutdown = [
-            "systemctl"
-            "poweroff"
-          ];
-          reboot = [
-            "systemctl"
-            "reboot"
-          ];
-          hibernate = [
-            "systemctl"
-            "hibernate"
-          ];
-        };
-      };
-
-    };
-
-    cli = {
+    # Приклад використання стилю для foot (шлях, а не readFile)
+    foot = {
       enable = true;
       settings = {
-        theme.enableGtk = false;
+        main = {
+          font = "monospace:size=13";
+          dpi-aware = "yes";
+          pad = "10x10";
+          bold-text-in-bright = "yes";
+        };
+      };
+    };
+    caelestia = {
+      enable = true;
+      systemd.enable = true;
+      systemd.target = "graphical-session.target";
+
+      settings = {
+        bar.status = {
+          showBattery = false;
+        };
+
+        paths.wallpaperDir = "~/Images";
+
+        services = {
+          weatherLocation = "Kyiv,UA";
+          useFahrenheit = false;
+          useTwelveHourClock = false;
+          audioIncrement = 0.05;
+          smartScheme = true;
+          visualiserBars = 60;
+          lockScreen = true;
+
+          idleInhibitor = true;
+          sleep = false;
+          suspend = false;
+          idle = false;
+        };
+
+        session = {
+          dragThreshold = 30;
+          vimKeybinds = true;
+          commands = {
+            logout = [
+              "loginctl"
+              "terminate-user"
+              config.home.username
+            ];
+            shutdown = [
+              "systemctl"
+              "poweroff"
+            ];
+            reboot = [
+              "systemctl"
+              "reboot"
+            ];
+            hibernate = [
+              "systemctl"
+              "hibernate"
+            ];
+          };
+        };
+
+      };
+
+      cli = {
+        enable = true;
+        settings = {
+          theme.enableGtk = false;
+        };
       };
     };
   };
-
+  
+  
   systemd.user.services = {
-    "hyprland" = {
-      serviceConfig = {
+    "hyprland1" = {
+      unitConfig = {
+        # Unit-атрибути
         Description = "Hyprland Session (after Caelestia)";
-        ExecStart = "${pkgs.hyprland}/bin/Hyprland";
-        Restart = "on-failure";
         After = "caelestia-shell.service";
         Wants = "caelestia-shell.service";
       };
+      serviceConfig = {
+        # Service-атрибути
+        ExecStart = "${pkgs.hyprland}/bin/Hyprland";
+        Restart = "on-failure";
+      };
       install = {
+        # Install-атрибути
         WantedBy = [ "graphical-session.target" ];
+      };
+    };
+    "plantuml" = {
+      # Атрибути для секції [Unit]
+      Unit = {
+        Description = "PlantUML Local Server";
+        After = [ "network.target" ];
+      };
+
+      # Атрибути для секції [Service]
+      Service = {
+        ExecStart = "${pkgs.plantuml}/bin/plantuml -picoweb -port 8888";
+        Restart = "always";
+        RestartSec = 5;
+      };
+
+      # Атрибути для секції [Install]
+      Install = {
+        WantedBy = [ "default.target" ];
       };
     };
   };
