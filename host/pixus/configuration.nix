@@ -1,25 +1,69 @@
-{inputs,pkgs,...}:
 {
+  inputs,
+  pkgs,
+  lib,
+  ...
+}:
+let
+  nixpkgs = inputs.nixpkgs;
+in
+{
+  nixpkgs.config = {
+    allowBroken = false;
+    allowUnfree = true;
+  };
+
   imports = [
-    "${nixpkgs}/nixos/modules/installer/cd-dvd/installation-cd-minimal.nix"
+    "${nixpkgs}/nixos/modules/installer/cd-dvd/installation-cd-minimal-new-kernel-no-zfs.nix"
   ];
 
+  # ISO image configuration
+  isoImage = {
+    edition = lib.mkForce "pixus-nixos";
+    isoBaseName = lib.mkForce "pixus-nixos";
+    volumeID = lib.mkForce "PIXUS_NIXOS";
+    contents = [
+      {
+        source = pkgs.writeText "install.sh" ''
+          #!/usr/bin/env bash
+          set -euo pipefail
+
+          # Mount target system
+          mount /dev/disk/by-label/nixos /mnt
+          mkdir -p /mnt/boot
+          mount /dev/disk/by-label/boot /mnt/boot
+
+          # Generate and install
+          nixos-generate-config --root /mnt
+          nixos-install --no-root-passwd --flake "path:/etc/nixos#pixus"
+        '';
+        target = "install.sh";
+      }
+    ];
+  };
+
   boot = {
-    kernelPackages = pkgs.linuxPackages_latest;
+    kernelPackages = lib.mkForce pkgs.linuxPackages_6_6;
+
     loader = {
-      systemd-boot.enable = false; # не працює з 32-bit UEFI
+      systemd-boot.enable = false;
       grub = {
         enable = true;
         efiSupport = true;
         efiInstallAsRemovable = true;
         devices = [ "nodev" ];
         useOSProber = false;
-        target = "i386-efi"; # критично для планшета
-        extraConfig = ''
-          insmod all_video
+        extraConfig = "insmod all_video";
+        extraInstallCommands = ''
+          grub-install --target=i386-efi --efi-directory=/boot --bootloader-id=NixOS --recheck
         '';
       };
     };
+    supportedFilesystems = [
+      "vfat"
+      "ext4"
+      "ntfs"
+    ];
 
     kernelParams = [
       "intel_idle.max_cstate=1"
@@ -27,14 +71,17 @@
     ];
 
     initrd.availableKernelModules = [
-      "r8723bs" # Wi-Fi
-      "i915" # графіка Intel
-      "goodix" # сенсор Goodix
-      "silead_ts" # сенсор Silead (якщо інший чип)
-      "snd_soc_sst_bytcr_rt5640" # звук
+      "rtl8723bs" # Wi-Fi (using official kernel driver)
+      "i915" # Intel graphics
+      "goodix" # Goodix touchscreen
+      "silead_ts" # Silead touchscreen
+      "snd_soc_sst_bytcr_rt5640" # Sound
+      "usbhid" # USB HID devices
+      "usb_storage" # USB storage
+      "cdc_acm" # 3G modem
     ];
 
-    extraModulePackages = with pkgs.linuxPackages_latest; [ r8723bs ];
+    extraModulePackages = [ ];
   };
 
   networking = {
@@ -58,17 +105,24 @@
   };
 
   hardware = {
-    opengl.enable = true;
+    opengl = {
+      enable = true;
+      extraPackages = with pkgs; [
+        intel-media-driver
+        intel-vaapi-driver
+
+      ];
+    };
+    firmware = with pkgs; [
+      linux-firmware
+      #rtl8723bs-firmware
+    ];
     bluetooth.enable = true;
     enableAllFirmware = true;
 
     # PipeWire замість PulseAudio
     pulseaudio.enable = false;
-    pipewire = {
-      enable = true;
-      alsa.enable = true;
-      pulse.enable = true;
-    };
+
   };
 
   services = {
@@ -78,30 +132,44 @@
       displayManager.sddm.enable = true;
       desktopManager.plasma6.enable = true;
 
-      libinput = {
-        enable = true;
-        touchpad.enable = true;
-        touchscreen.enable = true;
-      };
+      libinput.enable = true;
 
-      layout = "us,ua";
-      xkbOptions = "grp:alt_shift_toggle";
+      xkb.layout = "us,ua";
+      xkb.options = "grp:alt_shift_toggle";
     };
 
-    modemmanager.enable = true;
-    # Екранна клавіатура
-    onboard.enable = true;
+    pipewire = {
+      enable = true;
+      alsa.enable = true;
+      pulse.enable = true;
+      jack.enable = true;
+    };
   };
 
   environment.systemPackages = with pkgs; [
     firefox
-    kdeconnect
-    networkmanagerapplet
-    plasma-workspace
-    plasma-disks
-    plasma-nm
-    xdg-desktop-portal-kde
-    onboard
+
+    kdePackages.kdeconnect-kde
+    kdePackages.plasma-welcome
+    kdePackages.plasma-workspace
+    kdePackages.plasma-disks
+    kdePackages.plasma-nm
+    kdePackages.plasma-browser-integration
+    kdePackages.plasma-integration
+    kdePackages.konsole
+    kdePackages.dolphin
+    kdePackages.ark
+    kdePackages.gwenview
+    kdePackages.okular
+    kdePackages.kate
+    kdePackages.kcalc
+    kdePackages.spectacle
+    kdePackages.discover
+    kdePackages.plasma-systemmonitor
+
+    maliit-keyboard # заміна plasma-virtual-keyboard
+    modemmanager
+    usbutils
   ];
 
   time.timeZone = "Europe/Kyiv";
