@@ -7,7 +7,6 @@
       url = "github:nix-community/home-manager";
       inputs.nixpkgs.follows = "nixpkgs";
     };
-    #stylix.url = "github:danth/stylix";
     nix-index-database = {
       url = "github:nix-community/nix-index-database";
       inputs.nixpkgs.follows = "nixpkgs";
@@ -20,11 +19,12 @@
       url = "github:caelestia-dots/shell";
       inputs.nixpkgs.follows = "nixpkgs";
     };
+    hyprland-contrib.url = "github:hyprwm/contrib";
     chaotic.url = "github:chaotic-cx/nyx/nyxpkgs-unstable";
     nix-alien.url = "github:thiagokokada/nix-alien";
     catppuccin.url = "github:catppuccin/nix/release-25.05";
-    
-    zenbrowser.url = "path:./zenbrowser";
+    hyprland.url = "git+https://github.com/hyprwm/Hyprland?submodules=1";
+    zen-browser.url = "github:0xc000022070/zen-browser-flake";
   };
 
   outputs =
@@ -38,6 +38,7 @@
       nix-alien,
       catppuccin,
       caelestia-shell,
+      zen-browser,
       ...
     }@inputs:
     let
@@ -45,7 +46,9 @@
       lib = nixpkgs.lib;
       pkgs = import nixpkgs {
         inherit system;
-        overlays = [ nur.overlay ];
+        overlays = [
+          nur.overlays.default
+        ];
         config.allowUnfree = true;
       };
     in
@@ -67,9 +70,18 @@
             home-manager.nixosModules.home-manager
             {
               home-manager.extraSpecialArgs = { inherit inputs catppuccin; };
+              nix.settings = {
+                cores = 4;
+                max-jobs = 8;
+              };
             }
           ];
         };
+        pixus = nixpkgs.lib.nixosSystem {
+      inherit system;
+
+      
+      };
       };
       homeConfigurations = {
         vlad = home-manager.lib.homeManagerConfiguration {
@@ -83,6 +95,5 @@
           ];
         };
       };
-
     };
 }

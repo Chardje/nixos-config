@@ -9,14 +9,23 @@
   imports = [
     ./binds.nix
   ];
-  #programs.hyprland.enable = true;
+  home.packages = [
+    pkgs.ranger
+    pkgs.pcmanfm
+    pkgs.wayshot
+    pkgs.sway-contrib.grimshot
+    pkgs.pavucontrol
+    pkgs.pulsemixer
+
+    inputs.hyprland-contrib.packages.${pkgs.system}.grimblast
+  ];
   wayland.windowManager.hyprland = {
     enable = true;
 
     settings = {
       "exec-once" = [
         "code"
-        "firefox"
+        "zen"
         "wl-clip-persist --clipboard regular"
       ];
       # Monitor configuration

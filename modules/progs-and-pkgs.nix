@@ -5,7 +5,7 @@
   ...
 }:
 let
-  nur = inputs.nur ;
+  nur = inputs.nur;
 in
 {
 
@@ -19,12 +19,11 @@ in
     font-awesome
     fontconfig
     noto-fonts
-    noto-fonts-emoji
+    noto-fonts-color-emoji
     twemoji-color-font
     unifont
     #material-symbols-font
   ];
- 
 
   environment.systemPackages = with pkgs; [
     # Редактори та IDE
@@ -33,7 +32,8 @@ in
     vscode
     obsidian
     plantuml
-
+    
+    speechd
     #nur.repos.AusCyber.zen-browser
 
     #pgadmin4-desktopmode
@@ -232,9 +232,16 @@ in
     "WEBKIT_DISABLE_DMABUF_RENDERER" = "1";
     "WEBKIT_DISABLE_COMPOSITING_MODE" = "1";
     "MOZ_ENABLE_WAYLAND" = "1";
+    NIXOS_OZONE_WL = "1";
+    T_QPA_PLATFORM = "wayland";
+    GDK_BACKEND = "wayland";
+    WLR_NO_HARDWARE_CURSORS = "1";
   };
   environment.variables = {
     GTK_THEME = "Catppuccin-Mocha-Dark";
+    XDG_CURRENT_DESKTOP = "Hyprland";
+      XDG_SESSION_TYPE = "wayland";
+      XDG_SESSION_DESKTOP = "Hyprland";
   };
 
   networking.networkmanager.enable = true;
@@ -256,8 +263,10 @@ in
   programs = {
     hyprland = {
       enable = true;
-      portalPackage = pkgs.xdg-desktop-portal-hyprland;
+      package = inputs.hyprland.packages.${pkgs.system}.hyprland;
+      xwayland.enable = true;
     };
+    xwayland.enable = true;
     yazi.enable = true;
     gpu-screen-recorder.enable = true;
 

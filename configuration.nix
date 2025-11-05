@@ -45,7 +45,6 @@ in
 
 
   nix.settings = {
-    max-jobs = 10;
     auto-optimise-store = true;
     substituters = [
       "https://cache.nixos.org/"
@@ -95,8 +94,16 @@ in
 
   xdg.portal = {
     enable = true;
-    #wlr.enable = true;
-    extraPortals = [ pkgs.xdg-desktop-portal-hyprland ];
+    xdgOpenUsePortal = true;
+    config = {
+      common.default = ["gtk"];
+      hyprland.default = ["gtk" "hyprland"];
+    };
+    extraPortals = [
+      pkgs.xdg-desktop-portal-gtk
+      #pkgs.xdg-desktop-portal-wlr
+      #pkgs.xdg-desktop-portal-hyprland
+    ];
   };
 
   # Використовуємо Hyprland як сесію для входу (Caelestia shell стартує через Home Manager/systemd user)
@@ -157,6 +164,7 @@ in
 
   hardware.bluetooth.enable = true;
   services.blueman.enable = true;
+  services.speechd.enable = true;
 
   xdg.mime = {
     enable = true;

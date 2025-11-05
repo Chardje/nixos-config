@@ -119,11 +119,10 @@
         "Ctrl Super Shift, right, movetoworkspace, +1"
         "Ctrl Super Shift, left, movetoworkspace, -1"
 
-        # Move window to/from special workspace
-        "Ctrl Super Shift, up, movetoworkspace, special:special"
-        "Ctrl Super Shift, down, movetoworkspace, e+0"
-        "Super Alt, S, workspace, special:special"
-        "Super Shift Alt, S, movetoworkspace, special:special"
+# Move window to/from special workspace
+"Ctrl+Super+Shift, up, movetoworkspace, special:special"
+"Ctrl+Super+Shift, down, movetoworkspace, e+0"
+"Super+Alt, S, workspace, special:special"
 
         # Window groups
         # ...залишити тільки якщо dispatcher існує...
@@ -144,11 +143,7 @@
         "Ctrl Super, Backslash, centerwindow, 1"
         "Ctrl Super Alt, Backslash, resizeactive, exact 55% 70%"
         "Ctrl Super Alt, Backslash, centerwindow, 1"
-        # "$kbWindowPip, exec, caelestia shell resizer pip"
-        # "$kbPinWindow, exec, caelestia shell pin"
-        # "$kbWindowFullscreen, exec, caelestia shell fullscreen 0"
-        # "$kbWindowBorderedFullscreen, exec, caelestia shell fullscreen 1"
-        # "$kbToggleWindowFloating, exec, caelestia shell togglefloating"
+
         "Super, C, killactive"
         "Super, F, fullscreen"        
         "Super, X, togglefloating"
@@ -157,7 +152,6 @@
         "Super, J, togglesplit, orientation"
 
         # Special workspace toggles
-        # ...закоментовано, якщо dispatcher не існує...
 
         # Apps
         "Super, Q, exec, $terminal"

@@ -17,8 +17,6 @@ in
     inputs.caelestia-shell.homeManagerModules.default
   ];
 
-  
-
   catppuccin.enable = true;
   catppuccin.flavor = "frappe";
   catppuccin.accent = "sapphire";
@@ -113,11 +111,12 @@ in
     hicolor-icon-theme
     gnome-icon-theme
     noto-fonts
-    noto-fonts-emoji
+    noto-fonts-color-emoji
     liberation_ttf
     source-han-sans
     source-han-serif
     font-awesome
+    inputs.zen-browser.packages."${system}".default
   ];
 
   fonts.fontconfig.enable = true;
@@ -175,7 +174,14 @@ in
         bar.status = {
           showBattery = false;
         };
-
+        general = {
+          idle = {
+            # I manage idle and lock without caelestia
+            lockBeforeSleep = false;
+            inhibitWhenAudio = false;
+            timeouts = [ ];
+          };
+        };
         paths.wallpaperDir = "~/Images";
 
         services = {
@@ -185,12 +191,9 @@ in
           audioIncrement = 0.05;
           smartScheme = true;
           visualiserBars = 60;
-          lockScreen = true;
-
-          idleInhibitor = true;
-          sleep = false;
-          suspend = false;
-          idle = false;
+        };
+        lock = {
+          enabled = false;
         };
 
         session = {
@@ -227,26 +230,25 @@ in
       };
     };
   };
-  
-  
+
   systemd.user.services = {
-    "hyprland1" = {
-      unitConfig = {
-        # Unit-атрибути
-        Description = "Hyprland Session (after Caelestia)";
-        After = "caelestia-shell.service";
-        Wants = "caelestia-shell.service";
-      };
-      serviceConfig = {
-        # Service-атрибути
-        ExecStart = "${pkgs.hyprland}/bin/Hyprland";
-        Restart = "on-failure";
-      };
-      install = {
-        # Install-атрибути
-        WantedBy = [ "graphical-session.target" ];
-      };
-    };
+    # "hyprland1" = {
+    #   unitConfig = {
+    #     # Unit-атрибути
+    #     Description = "Hyprland Session (after Caelestia)";
+    #     After = "caelestia-shell.service";
+    #     Wants = "caelestia-shell.service";
+    #   };
+    #   serviceConfig = {
+    #     # Service-атрибути
+    #     ExecStart = "${pkgs.hyprland}/bin/Hyprland";
+    #     Restart = "on-failure";
+    #   };
+    #   install = {
+    #     # Install-атрибути
+    #     WantedBy = [ "graphical-session.target" ];
+    #   };
+    # };
     "plantuml" = {
       # Атрибути для секції [Unit]
       Unit = {
