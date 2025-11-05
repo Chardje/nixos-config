@@ -224,7 +224,7 @@ in
     }))
 
     wakeonlan
-    rpi-imager
+    #rpi-imager
     samba
     cifs-utils
   ];

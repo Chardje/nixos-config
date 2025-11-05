@@ -53,17 +53,18 @@
       };
     in
     {
-      #System Config
+      # ---------------------- NixOS Configurations ----------------------
       nixosConfigurations = {
-        vladLinux = nixpkgs.lib.nixosSystem {
-          system = "x86_64-linux";
+
+        # --- Основна система ---
+        vladLinux = lib.nixosSystem {
+          inherit system;
           specialArgs = { inherit inputs pkgs; };
           modules = [
             ./configuration.nix
             ./modules/audio.nix
             ./modules/users.nix
             nix-index-database.nixosModules.nix-index
-            #nur.modules.nixos.default
             chaotic.nixosModules.nyx-cache
             chaotic.nixosModules.nyx-overlay
             chaotic.nixosModules.nyx-registry
@@ -77,12 +78,19 @@
             }
           ];
         };
-        pixus = nixpkgs.lib.nixosSystem {
-      inherit system;
 
-      
+        # --- Планшет Pixus taskTab 10.1 3G ---
+        pixus = lib.nixosSystem {
+          inherit system;
+          specialArgs = { inherit inputs pkgs; };
+          modules = [
+            ./host/pixus/configuration.nix
+          ];
+        };
+
       };
-      };
+
+      # ---------------------- Home Manager Configs ----------------------
       homeConfigurations = {
         vlad = home-manager.lib.homeManagerConfiguration {
           pkgs = nixpkgs.legacyPackages.x86_64-linux;
@@ -90,9 +98,7 @@
             inherit inputs;
             "xkeyboard-config" = nixpkgs.legacyPackages.x86_64-linux.xkeyboard_config;
           };
-          modules = [
-            ./home.nix
-          ];
+          modules = [ ./home.nix ];
         };
       };
     };
