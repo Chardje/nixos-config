@@ -119,10 +119,10 @@
         "Ctrl Super Shift, right, movetoworkspace, +1"
         "Ctrl Super Shift, left, movetoworkspace, -1"
 
-# Move window to/from special workspace
-"Ctrl+Super+Shift, up, movetoworkspace, special:special"
-"Ctrl+Super+Shift, down, movetoworkspace, e+0"
-"Super+Alt, S, workspace, special:special"
+        # Move window to/from special workspace
+        "Ctrl+Super+Shift, up, movetoworkspace, special:special"
+        "Ctrl+Super+Shift, down, movetoworkspace, e+0"
+        "Super+Alt, S, workspace, special:special"
 
         # Window groups
         # ...залишити тільки якщо dispatcher існує...
@@ -145,7 +145,7 @@
         "Ctrl Super Alt, Backslash, centerwindow, 1"
 
         "Super, C, killactive"
-        "Super, F, fullscreen"        
+        "Super, F, fullscreen"
         "Super, X, togglefloating"
         "Super, P, pin"
         "Super, T, pseudo"
@@ -158,7 +158,6 @@
         "Super, W, exec, $browser"
         "Super, E, exec, $fileManager"
         "Ctrl Alt, V, exec, $audioControl"
-
 
         # Clipboard and emoji picker
         "Super, V, exec, sh -c 'pkill fuzzel || cliphist list | fuzzel | xargs wl-copy'"
@@ -188,7 +187,7 @@
 
         # Testing
         # "Super Alt, f12, exec, notify-send -u low -i dialog-information-symbolic 'Test notification' \"Here's a really long message to test truncation and wrapping\nYou can middle click or flick this notification to dismiss it!\" -a 'Shell' -A \"Test1=I got it!\" -A \"Test2=Another action\""
-        
+
       ];
     };
   };

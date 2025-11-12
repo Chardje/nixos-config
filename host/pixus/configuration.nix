@@ -1,197 +1,79 @@
-{
-  inputs,
-  pkgs,
-  lib,
-  ...
-}:
-let
-  nixpkgs = inputs.nixpkgs;
-in
-{
-  nixpkgs.config = {
-    allowBroken = false;
-    allowUnfree = true;
-  };
+{ config, pkgs25, lib, ... }:
 
-  imports = [
-    "${nixpkgs}/nixos/modules/installer/cd-dvd/installation-cd-minimal.nix"
-    "${nixpkgs}/nixos/modules/installer/cd-dvd/iso-image.nix"
-    "${nixpkgs}/nixos/modules/installer/cd-dvd/channel.nix"
-  ];
+{
+  nixpkgs.config.allowUnfree = true;
 
-  # ISO image configuration
+  # === ISO ===
   isoImage = {
-    isoName = "pixus-nixos.iso";
-    volumeID = "PIXUS_NIXOS";
+    isoBaseName = lib.mkForce "pixus-nixos";
+    isoName = lib.mkForce "pixus-nixos.iso";
+    volumeID = lib.mkForce "PIXUS";
     makeEfiBootable = true;
-    makeBiosBootable = true;
     makeUsbBootable = true;
-    contents = [
-      {
-        source = pkgs.writeText "install.sh" ''
-          #!/usr/bin/env bash
-          set -euo pipefail
-
-          # Mount target system
-          mount /dev/disk/by-label/nixos /mnt
-          mkdir -p /mnt/boot
-          mount /dev/disk/by-label/boot /mnt/boot
-
-          # Generate and install
-          nixos-generate-config --root /mnt
-          nixos-install --no-root-passwd --flake "path:/etc/nixos#pixus"
-        '';
-        target = "install.sh";
-      }
-    ];
+    appendToMenuLabel = lib.mkForce " Pixus";
   };
 
-  boot = {
-    kernelPackages = lib.mkForce pkgs.linuxPackages_6_6;
+  # === Файлові системи ===
+  boot.supportedFilesystems = lib.mkForce [ "vfat" "ext4" "ntfs" "exfat" ];
 
-    loader = {
-      systemd-boot.enable = false;
-      grub = {
-        enable = true;
-        efiSupport = true;
-        efiInstallAsRemovable = true;
-        devices = [ ];
-        useOSProber = false;
-        extraConfig = "insmod all_video";
-        extraInstallCommands = ''
-          grub-install --target=i386-efi --efi-directory=/boot --bootloader-id=NixOS --recheck
-        '';
-      };
-    };
-    supportedFilesystems = [
-      "vfat"
-      "ext4"
-      "ntfs"
-    ];
+  # === Ядро ===
+  boot.kernelPackages = lib.mkForce pkgs25.linuxPackages_6_6;
+  boot.kernelParams = lib.mkAfter [ "intel_idle.max_cstate=1" "i915.force_probe=*" ];
+  boot.initrd.availableKernelModules = lib.mkAfter [ "i915" "cdc_acm" "rtsx_pci_sdmmc" ];
 
-    kernelParams = [
-      "intel_idle.max_cstate=1"
-      "i915.force_probe=*"
-    ];
+  # === Мережа ===
+  networking.hostName = lib.mkForce "pixus-live";
 
-    initrd.availableKernelModules = [
-      "i915" # Intel graphics
-      "usbhid" # USB HID devices
-      "usb_storage" # USB storage
-      "cdc_acm" # 3G modem
-    ];
+  # === Графіка ===
+  hardware.graphics = {
+    enable = true;
+    extraPackages = with pkgs25; [ intel-media-driver intel-vaapi-driver ];
+  };
+  hardware.firmware = with pkgs25; [ linux-firmware ];
+  hardware.bluetooth.enable = true;
+  hardware.enableAllFirmware = true;
 
-    extraModulePackages = [ ];
+  # === Plasma 6 (БЕЗ plasma5) ===
+  services.desktopManager.plasma6.enable = true;
+  # ВИДАЛЕНО: services.xserver.desktopManager.plasma5.enable = lib.mkForce false;
+
+  # === Вимкнути Wayland ===
+  services.displayManager.sddm.wayland.enable = lib.mkForce false;
+
+  # === Українська ===
+  services.xserver.xkb.layout = lib.mkForce "us,ua";
+  services.xserver.xkb.options = lib.mkForce "grp:alt_shift_toggle";
+  time.timeZone = lib.mkForce "Europe/Kyiv";
+  i18n.defaultLocale = lib.mkForce "uk_UA.UTF-8";
+  console.keyMap = lib.mkForce "ua";
+
+  # === PipeWire ===
+  hardware.pulseaudio.enable = lib.mkForce false;
+  services.pulseaudio.enable = lib.mkForce false;  # залиш, бо базовий модуль його використовує
+
+  services.pipewire = {
+    enable = true;
+    alsa.enable = true;
+    pulse.enable = true;
   };
 
-  networking = {
-    hostName = "pixus";
-    networkmanager.enable = true;
-    networkmanager.ensureProfiles = {
-      environmentFiles = [ "/etc/nixos/wifi.env" ];
-      profiles = {
-        home = {
-          connection.id = "home";
-          connection.type = "wifi";
-          wifi.ssid = "@SSID@";
-          wifi.mode = "infrastructure";
-          wifi-security.key-mgmt = "wpa-psk";
-          wifi-security.psk = "@WIFI_PASSWORD@";
-          ipv4.method = "auto";
-          ipv6.method = "auto";
-        };
-      };
-    };
-  };
-
-  hardware = {
-    opengl = {
-      enable = true;
-      extraPackages = with pkgs; [
-        intel-media-driver
-        intel-vaapi-driver
-
-      ];
-    };
-    firmware = with pkgs; [
-      linux-firmware
-      #rtl8723bs-firmware
-    ];
-    bluetooth.enable = true;
-    enableAllFirmware = true;
-
-    # PipeWire замість PulseAudio
-    pulseaudio.enable = false;
-
-  };
-
-  services = {
-    xserver = {
-      enable = true;
-      videoDrivers = [ "intel" ];
-      displayManager.sddm.enable = true;
-      desktopManager.plasma6.enable = true;
-
-      libinput.enable = true;
-
-      xkb.layout = "us,ua";
-      xkb.options = "grp:alt_shift_toggle";
-    };
-
-    pipewire = {
-      enable = true;
-      alsa.enable = true;
-      pulse.enable = true;
-      jack.enable = true;
-    };
-  };
-
-  environment.systemPackages = with pkgs; [
-    firefox
-
-    kdePackages.plasma-workspace
-    kdePackages.konsole
-    kdePackages.dolphin
-    kdePackages.ark
-    kdePackages.gwenview
-    kdePackages.kate
-    kdePackages.plasma-systemmonitor
-
-    maliit-keyboard # заміна plasma-virtual-keyboard
-    modemmanager
-    usbutils
+  # === Пакети ===
+  environment.systemPackages = with pkgs25; [
+    vim git wget curl htop
+    modemmanager usbutils
+    maliit-keyboard
+    kdePackages.partitionmanager
+    gparted
   ];
 
-  time.timeZone = "Europe/Kyiv";
-  i18n.defaultLocale = "uk_UA.UTF-8";
-  console.keyMap = "ua";
-
-  users.users.vlad = {
-    isNormalUser = true;
-    password = "1234";
-    extraGroups = [
-      "wheel"
-      "networkmanager"
-      "video"
-      "audio"
-    ];
+  # === Автологін ===
+  services.displayManager.autoLogin = {
+    enable = true;
+    user = "nixos";
   };
 
-  # Налаштування для економії місця на диску 32GB
-  nix.settings = {
-    auto-optimise-store = true; # Автоматична дедуплікація
-    max-free = lib.mkDefault (3 * 1024 * 1024 * 1024); # 3GB вільного місця
-    min-free = lib.mkDefault (1 * 1024 * 1024 * 1024); # 1GB мінімум
-  };
+  # === Оптимізація ===
+  nix.settings.auto-optimise-store = true;
 
-  nix.gc = {
-    automatic = true;
-    dates = "weekly";
-    options = "--delete-older-than 14d"; # Видаляти старі версії після 14 днів
-  };
-
-  # Обмеження кількості генерацій завантаження
-  boot.loader.grub.configurationLimit = 5;
-
-    system.stateVersion = "25.05";
+  system.stateVersion = "25.05";
 }

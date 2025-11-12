@@ -33,7 +33,7 @@ in
     obsidian
     plantuml
     
-    speechd
+    #speechd
     #nur.repos.AusCyber.zen-browser
 
     #pgadmin4-desktopmode

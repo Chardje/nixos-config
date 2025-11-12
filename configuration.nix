@@ -138,7 +138,9 @@ in
 
   # Enable the OpenSSH daemon.
   services.openssh.enable = true;
-
+  services.undervolt ={
+    enable = false;
+  };
   services.xserver.enable = true;
 
   

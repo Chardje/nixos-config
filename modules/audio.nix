@@ -20,12 +20,11 @@
       alsa.enable = true;
       alsa.support32Bit = true;
       pulse.enable = true;
-      jack.enable =  true;
+      jack.enable = true;
     };
 
     hardware.alsa.enable = true;
-    services.pulseaudio.enable = false;    
-
+    services.pulseaudio.enable = false;
 
     # Додаткові пакети для роботи з аудіо
     environment.systemPackages = with pkgs; [

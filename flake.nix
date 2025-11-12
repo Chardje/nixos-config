@@ -3,6 +3,7 @@
 
   inputs = {
     nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
+    nix25.url = "github:NixOS/nixpkgs/nixos-25.05";
     home-manager = {
       url = "github:nix-community/home-manager";
       inputs.nixpkgs.follows = "nixpkgs";
@@ -19,7 +20,7 @@
       url = "github:caelestia-dots/shell";
       inputs.nixpkgs.follows = "nixpkgs";
     };
-    
+
     hyprland-contrib.url = "github:hyprwm/contrib";
     chaotic.url = "github:chaotic-cx/nyx/nyxpkgs-unstable";
     nix-alien.url = "github:thiagokokada/nix-alien";
@@ -32,6 +33,7 @@
     {
       self,
       nixpkgs,
+      nix25,
       home-manager,
       nix-index-database,
       nur,
@@ -52,8 +54,16 @@
         ];
         config.allowUnfree = true;
       };
+      # Стабільні пакети для ISO
+      pkgs25 = import nix25 {
+        inherit system;
+        config.allowUnfree = true;
+      };
     in
     {
+      packages.${system} = {
+        pixus = self.nixosConfigurations.pixus.config.system.build.isoImage;
+      };
       # ---------------------- NixOS Configurations ----------------------
       nixosConfigurations = {
 
@@ -83,8 +93,10 @@
         # --- Планшет Pixus taskTab 10.1 3G ---
         pixus = lib.nixosSystem {
           inherit system;
-          specialArgs = { inherit inputs pkgs; };
+          specialArgs = { inherit inputs pkgs25; };
           modules = [
+            "${pkgs25.path}/nixos/modules/installer/cd-dvd/installation-cd-graphical-base.nix"
+            # Твій кастомний конфіг
             ./host/pixus/configuration.nix
           ];
         };
