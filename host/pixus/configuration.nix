@@ -14,14 +14,18 @@ in
   };
 
   imports = [
-    "${nixpkgs}/nixos/modules/installer/cd-dvd/installation-cd-minimal-new-kernel-no-zfs.nix"
+    "${nixpkgs}/nixos/modules/installer/cd-dvd/installation-cd-minimal.nix"
+    "${nixpkgs}/nixos/modules/installer/cd-dvd/iso-image.nix"
+    "${nixpkgs}/nixos/modules/installer/cd-dvd/channel.nix"
   ];
 
   # ISO image configuration
   isoImage = {
-    edition = lib.mkForce "pixus-nixos";
-    isoBaseName = lib.mkForce "pixus-nixos";
-    volumeID = lib.mkForce "PIXUS_NIXOS";
+    isoName = "pixus-nixos.iso";
+    volumeID = "PIXUS_NIXOS";
+    makeEfiBootable = true;
+    makeBiosBootable = true;
+    makeUsbBootable = true;
     contents = [
       {
         source = pkgs.writeText "install.sh" ''
@@ -51,7 +55,7 @@ in
         enable = true;
         efiSupport = true;
         efiInstallAsRemovable = true;
-        devices = [ "nodev" ];
+        devices = [ ];
         useOSProber = false;
         extraConfig = "insmod all_video";
         extraInstallCommands = ''
@@ -71,11 +75,7 @@ in
     ];
 
     initrd.availableKernelModules = [
-      "rtl8723bs" # Wi-Fi (using official kernel driver)
       "i915" # Intel graphics
-      "goodix" # Goodix touchscreen
-      "silead_ts" # Silead touchscreen
-      "snd_soc_sst_bytcr_rt5640" # Sound
       "usbhid" # USB HID devices
       "usb_storage" # USB storage
       "cdc_acm" # 3G modem
@@ -149,22 +149,12 @@ in
   environment.systemPackages = with pkgs; [
     firefox
 
-    kdePackages.kdeconnect-kde
-    kdePackages.plasma-welcome
     kdePackages.plasma-workspace
-    kdePackages.plasma-disks
-    kdePackages.plasma-nm
-    kdePackages.plasma-browser-integration
-    kdePackages.plasma-integration
     kdePackages.konsole
     kdePackages.dolphin
     kdePackages.ark
     kdePackages.gwenview
-    kdePackages.okular
     kdePackages.kate
-    kdePackages.kcalc
-    kdePackages.spectacle
-    kdePackages.discover
     kdePackages.plasma-systemmonitor
 
     maliit-keyboard # заміна plasma-virtual-keyboard
@@ -187,5 +177,21 @@ in
     ];
   };
 
-  system.stateVersion = "25.05";
+  # Налаштування для економії місця на диску 32GB
+  nix.settings = {
+    auto-optimise-store = true; # Автоматична дедуплікація
+    max-free = lib.mkDefault (3 * 1024 * 1024 * 1024); # 3GB вільного місця
+    min-free = lib.mkDefault (1 * 1024 * 1024 * 1024); # 1GB мінімум
+  };
+
+  nix.gc = {
+    automatic = true;
+    dates = "weekly";
+    options = "--delete-older-than 14d"; # Видаляти старі версії після 14 днів
+  };
+
+  # Обмеження кількості генерацій завантаження
+  boot.loader.grub.configurationLimit = 5;
+
+    system.stateVersion = "25.05";
 }
