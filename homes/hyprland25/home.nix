@@ -12,7 +12,6 @@ in
 {
   imports = [
     ./hyprland.nix
-    ./firefox.nix
     inputs.catppuccin.homeModules.catppuccin
     inputs.caelestia-shell.homeManagerModules.default
   ];

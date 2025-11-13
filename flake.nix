@@ -70,9 +70,9 @@
         # --- Основна система ---
         vladLinux = lib.nixosSystem {
           inherit system;
-          specialArgs = { inherit inputs pkgs; };
+          specialArgs = { inherit inputs pkgs pkgs25; };
           modules = [
-            ./configuration.nix
+            ./host/vladLinux/configuration.nix
             ./modules/audio.nix
             ./modules/users.nix
             nix-index-database.nixosModules.nix-index
@@ -111,7 +111,7 @@
             inherit inputs;
             "xkeyboard-config" = nixpkgs.legacyPackages.x86_64-linux.xkeyboard_config;
           };
-          modules = [ ./home.nix ];
+          modules = [ ./homes/hyprland25/home.nix ];
         };
       };
     };

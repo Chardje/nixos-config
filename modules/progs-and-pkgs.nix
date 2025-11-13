@@ -2,6 +2,7 @@
   pkgs,
   inputs,
   lib,
+  pkgs25,
   ...
 }:
 let
@@ -212,16 +213,13 @@ in
     '')
 
     # Ігри
-    (modrinth-app.overrideAttrs (oldAttrs: {
-      buildCommand = ''
-        gappsWrapperArgs+=(
-          --set GDK_BACKEND x11
-          --set WEBKIT_DISABLE_DMABUF_RENDERER 1
-          --set WEBKIT_DISABLE_COMPOSITING_MODE 1
-        )
-      ''
-      + oldAttrs.buildCommand;
-    }))
+    (pkgs25.modrinth-app.overrideAttrs (old: {
+  makeWrapperArgs = (old.makeWrapperArgs or []) ++ [
+    "--set" "GDK_BACKEND" "x11"
+    "--set" "WEBKIT_DISABLE_DMABUF_RENDERER" "1"
+    "--set" "WEBKIT_DISABLE_COMPOSITING_MODE" "1"
+  ];
+}))
 
     wakeonlan
     #rpi-imager

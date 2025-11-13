@@ -18,8 +18,8 @@ in
     # Include the results of the hardware scan.
     ./hardware-configuration.nix
     #./modules/style.nix
-    ./modules/progs-and-pkgs.nix
-
+    ../../modules/progs-and-pkgs.nix
+    ./undervolt.nix
   ];
   nix.settings.experimental-features = [
     "nix-command"
