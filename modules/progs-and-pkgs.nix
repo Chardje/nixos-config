@@ -209,17 +209,17 @@ in
     '')
 
     # Ігри
-#    (pkgs25.modrinth-app.overrideAttrs (old: {
-#  makeWrapperArgs = (old.makeWrapperArgs or []) ++ [
-#    "--set" "GDK_BACKEND" "x11"
-#    "--set" "WEBKIT_DISABLE_DMABUF_RENDERER" "1"
-#    "--set" "WEBKIT_DISABLE_COMPOSITING_MODE" "1"
-#  ];
-#}))
+    #    (pkgs25.modrinth-app.overrideAttrs (old: {
+    #  makeWrapperArgs = (old.makeWrapperArgs or []) ++ [
+    #    "--set" "GDK_BACKEND" "x11"
+    #    "--set" "WEBKIT_DISABLE_DMABUF_RENDERER" "1"
+    #    "--set" "WEBKIT_DISABLE_COMPOSITING_MODE" "1"
+    #  ];
+    #}))
 
     wakeonlan
     #rpi-imager
-#    samba
+    #    samba
     cifs-utils
   ];
   environment.sessionVariables = {
@@ -234,8 +234,8 @@ in
   environment.variables = {
     GTK_THEME = "Catppuccin-Mocha-Dark";
     XDG_CURRENT_DESKTOP = "Hyprland";
-      XDG_SESSION_TYPE = "wayland";
-      XDG_SESSION_DESKTOP = "Hyprland";
+    XDG_SESSION_TYPE = "wayland";
+    XDG_SESSION_DESKTOP = "Hyprland";
   };
 
   networking.networkmanager.enable = true;
