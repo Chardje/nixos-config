@@ -25,7 +25,6 @@ in
     "nix-command"
     "flakes"
   ];
- 
 
   fileSystems."/home/vlad/smb/Shared" = {
     device = "//pi.lan/Shared";
@@ -42,7 +41,6 @@ in
       "x-systemd.device-timeout=5s"
     ];
   };
-
 
   nix.settings = {
     auto-optimise-store = true;
@@ -83,7 +81,7 @@ in
   services.xserver.xkb.layout = "us,ua";
 
   hardware.graphics.enable = true;
-  
+
   services.xserver.videoDrivers = [ "nvidia" ];
 
   hardware.nvidia = {
@@ -91,13 +89,15 @@ in
     open = false;
   };
 
-
   xdg.portal = {
     enable = true;
     xdgOpenUsePortal = true;
     config = {
-      common.default = ["gtk"];
-      hyprland.default = ["gtk" "hyprland"];
+      common.default = [ "gtk" ];
+      hyprland.default = [
+        "gtk"
+        "hyprland"
+      ];
     };
     extraPortals = [
       pkgs.xdg-desktop-portal-gtk
@@ -138,12 +138,10 @@ in
 
   # Enable the OpenSSH daemon.
   services.openssh.enable = true;
-  services.undervolt ={
+  services.undervolt = {
     enable = false;
   };
   services.xserver.enable = true;
-
-  
 
   # Дає користувачу vlad доступ до пристроїв яскравості
   services.udev.extraRules = ''

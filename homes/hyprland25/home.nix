@@ -74,7 +74,7 @@ in
   };
 
   services.gammastep = {
-    enable = true;
+    enable = false;
     settings = {
       general = {
         adjustment-method = "randr";
@@ -135,7 +135,6 @@ in
   };
   programs = {
     home-manager.enable = true;
-    floorp.enable = true;
 
     wofi = {
       enable = false;
@@ -231,23 +230,6 @@ in
   };
 
   systemd.user.services = {
-    # "hyprland1" = {
-    #   unitConfig = {
-    #     # Unit-атрибути
-    #     Description = "Hyprland Session (after Caelestia)";
-    #     After = "caelestia-shell.service";
-    #     Wants = "caelestia-shell.service";
-    #   };
-    #   serviceConfig = {
-    #     # Service-атрибути
-    #     ExecStart = "${pkgs.hyprland}/bin/Hyprland";
-    #     Restart = "on-failure";
-    #   };
-    #   install = {
-    #     # Install-атрибути
-    #     WantedBy = [ "graphical-session.target" ];
-    #   };
-    # };
     "plantuml" = {
       # Атрибути для секції [Unit]
       Unit = {

@@ -1,6 +1,10 @@
 {
   description = "NixOS configuration";
 
+  nixConfig = {
+    download-buffer-size = "134217728";  
+  };
+
   inputs = {
     nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
     nix25.url = "github:NixOS/nixpkgs/nixos-25.05";

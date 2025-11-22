@@ -34,20 +34,21 @@ in
     obsidian
     plantuml
     
-    #speechd
-    #nur.repos.AusCyber.zen-browser
-
+    
     #pgadmin4-desktopmode
     pkg-config
     wireplumber
     # Веб-браузери та месенджери
     firefox
     #discord
-    vesktop
-    ayugram-desktop
+    #vesktop
+    #ayugram-desktop
+    _64gram
     #beeper-bridge-manager
     #teams
     teams-for-linux
+    gpu-screen-recorder-gtk
+    
 
     # Файлові менеджери
     nemo
@@ -58,11 +59,6 @@ in
     #canon-capt
     canon-cups-ufr2
     simple-scan
-    xsane
-    sane-airscan
-    #python313Packages.python
-    #python313Packages.pip
-    #python313Packages.psutil
     talloc
     wget
     tree
@@ -96,7 +92,7 @@ in
     wlogout
     satty
     git
-    wf-recorder
+    #wf-recorder
     solaar
     logitech-udev-rules
     evtest
@@ -213,17 +209,17 @@ in
     '')
 
     # Ігри
-    (pkgs25.modrinth-app.overrideAttrs (old: {
-  makeWrapperArgs = (old.makeWrapperArgs or []) ++ [
-    "--set" "GDK_BACKEND" "x11"
-    "--set" "WEBKIT_DISABLE_DMABUF_RENDERER" "1"
-    "--set" "WEBKIT_DISABLE_COMPOSITING_MODE" "1"
-  ];
-}))
+#    (pkgs25.modrinth-app.overrideAttrs (old: {
+#  makeWrapperArgs = (old.makeWrapperArgs or []) ++ [
+#    "--set" "GDK_BACKEND" "x11"
+#    "--set" "WEBKIT_DISABLE_DMABUF_RENDERER" "1"
+#    "--set" "WEBKIT_DISABLE_COMPOSITING_MODE" "1"
+#  ];
+#}))
 
     wakeonlan
     #rpi-imager
-    samba
+#    samba
     cifs-utils
   ];
   environment.sessionVariables = {

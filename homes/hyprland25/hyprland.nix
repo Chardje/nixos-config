@@ -98,29 +98,6 @@
     };
   };
 
-  services.hypridle = {
-    enable = true;
-    settings = {
-      general = {
-        lock_cmd = "caelestia shell lock";
-        before_sleep_cmd = "hyprctl dispatch dpms off";
-        after_sleep_cmd = "hyprctl dispatch dpms on";
-      };
-
-      listener = [
-        {
-          timeout = 2700;
-          on-timeout = "caelestia shell lock lock";
-        }
-        {
-          timeout = 3600;
-          on-timeout = "hyprctl dispatch dpms off";
-          on-resume = "hyprctl dispatch dpms on";
-        }
-      ];
-    };
-  };
-
   wayland.windowManager.hyprland.plugins = [
 
   ];
