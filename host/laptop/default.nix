@@ -11,8 +11,9 @@
     ];
 
   # Bootloader.
-  boot.loader.systemd-boot.enable = true;
-  boot.loader.efi.canTouchEfiVariables = true;
+   boot.loader.grub.enable = true;
+  boot.loader.grub.device = "/dev/sda";
+  boot.loader.grub.useOSProber = true;
 
   # Networking
   networking.hostName = "laptop"; # Змініть на свій
@@ -51,7 +52,11 @@
 
   # Enable touchpad support (для ноутбуків)
   services.libinput.enable = true;
-
+  services.xserver.enable = true;
+  
+  # Enable the KDE Plasma Desktop Environment.
+  services.displayManager.sddm.enable = true;
+  services.desktopManager.plasma6.enable = true;
   # Allow unfree packages
   nixpkgs.config.allowUnfree = true;
 
@@ -60,13 +65,19 @@
     vim 
     wget
     git
+    vscode
   ];
 
-  # Some programs need SUID wrappers
-  programs.gnupg.agent = {
-    enable = true;
-    enableSSHSupport = true;
+  users.users.laptop = {
+    isNormalUser = true;
+    description = "laptop";
+    extraGroups = [ "networkmanager" "wheel" ];
+    packages = with pkgs; [
+      kdePackages.kate
+    #  thunderbird
+    ];
   };
+
 
   # Enable the OpenSSH daemon.
   services.openssh.enable = true;
