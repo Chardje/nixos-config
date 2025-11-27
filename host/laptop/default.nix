@@ -8,6 +8,7 @@
   imports =
     [ # Include the results of the hardware scan.
       ./hardware-configuration.nix
+      ./minecraft-servers.nix
     ];
 
   # Bootloader.
@@ -66,8 +67,15 @@
     wget
     git
     vscode
+    neovim
+    vimPlugins.LazyVim
   ];
   programs.firefox.enable=true;
+
+  services.logind = {
+  lidSwitch = "suspend";                    # коли від батареї — засипати
+  lidSwitchExternalPower = "ignore";              
+};
 
   users.users.laptop = {
     isNormalUser = true;
@@ -81,8 +89,12 @@
 
 
   # Enable the OpenSSH daemon.
-  services.openssh.enable = true;
-
+  services.openssh={
+enable = true;
+settings={
+PasswordAuthentication = true;
+};
+};
   # Open ports in the firewall.
   # networking.firewall.allowedTCPPorts = [ ... ];
   # networking.firewall.allowedUDPPorts = [ ... ];

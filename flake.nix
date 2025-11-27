@@ -36,6 +36,7 @@
       url = "github:soymou/illogical-flake";
       inputs.nixpkgs.follows = "nixpkgs";
     };
+    nix-minecraft.url = "github:Infinidoge/nix-minecraft";
     chaotic.url = "github:chaotic-cx/nyx/nyxpkgs-unstable";
     nix-alien.url = "github:thiagokokada/nix-alien";
     catppuccin.url = "github:catppuccin/nix/release-25.05";
@@ -113,7 +114,7 @@
           specialArgs = { inherit inputs pkgs25; };
           modules = [
             ./host/laptop
-            ./modules/users.nix
+           # ./modules/users.nix
           ];
         };
         # --- Основна система ---
