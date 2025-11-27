@@ -40,16 +40,11 @@ in
     wireplumber
     # Веб-браузери та месенджери
     firefox
-    #discord
-    #vesktop
-    #ayugram-desktop
     _64gram
-    #beeper-bridge-manager
-    #teams
     teams-for-linux
     gpu-screen-recorder-gtk
     
-
+    prismlauncher
     # Файлові менеджери
     nemo
     #kdePackages.dolphin
