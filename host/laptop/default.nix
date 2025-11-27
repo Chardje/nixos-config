@@ -12,7 +12,11 @@
     ];
 
   # Bootloader.
+<<<<<<< HEAD
   boot.loader.grub.enable = true;
+=======
+   boot.loader.grub.enable = true;
+>>>>>>> b07c8025b77013023c1b24d024128fbd4f266129
   boot.loader.grub.device = "/dev/sda";
   boot.loader.grub.useOSProber = true;
 
@@ -67,16 +71,22 @@
     wget
     git
     vscode
+<<<<<<< HEAD
     neovim
     vimPlugins.LazyVim
+=======
+>>>>>>> b07c8025b77013023c1b24d024128fbd4f266129
   ];
   programs.firefox.enable=true;
 
+<<<<<<< HEAD
   services.logind = {
   lidSwitch = "suspend";                    # коли від батареї — засипати
   lidSwitchExternalPower = "ignore";              
 };
 
+=======
+>>>>>>> b07c8025b77013023c1b24d024128fbd4f266129
   users.users.laptop = {
     isNormalUser = true;
     description = "laptop";
@@ -87,6 +97,12 @@
     ];
   };
 
+<<<<<<< HEAD
+=======
+
+  # Enable the OpenSSH daemon.
+  services.openssh.enable = true;
+>>>>>>> b07c8025b77013023c1b24d024128fbd4f266129
 
   # Enable the OpenSSH daemon.
   services.openssh={
