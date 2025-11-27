@@ -114,7 +114,7 @@
           inherit system;
           specialArgs = { inherit inputs pkgs25; };
           modules = [
-            ./host/laptop
+            ./host/laptop/default.nix
            # ./modules/users.nix
 	  {
 	  nix.settings.experimental-features = "nix-command flakes";
