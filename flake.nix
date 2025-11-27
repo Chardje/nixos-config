@@ -104,6 +104,7 @@
       };
     in
     {
+    
       packages.${system} = {
         pixus = self.nixosConfigurations.pixus.config.system.build.isoImage;
       };
@@ -115,6 +116,10 @@
           modules = [
             ./host/laptop
            # ./modules/users.nix
+	  {
+	  nix.settings.experimental-features = "nix-command flakes";
+          nix.settings.read-only-store = false;
+	  }
           ];
         };
         # --- Основна система ---
