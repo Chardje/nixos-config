@@ -116,10 +116,9 @@
           modules = [
             ./host/laptop/default.nix
            # ./modules/users.nix
-	  {
-	  nix.settings.experimental-features = "nix-command flakes";
-          nix.settings.read-only-store = false;
-	  }
+	        {
+	          nix.settings.experimental-features = "nix-command flakes";
+        	}
           ];
         };
         # --- Основна система ---

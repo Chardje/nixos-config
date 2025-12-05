@@ -19,7 +19,18 @@
   # Networking
   networking.hostName = "laptop"; # Змініть на свій
   networking.networkmanager.enable = true;  # або wicked, або просто DHCP
+ networking.nameservers = [ "192.168.88.1" ]; 
+  networking.interfaces.enp8s0.ipv4={
+  addresses = [
+    { address = "192.168.88.15"; prefixLength = 24; }
+    { address = "192.168.50.2";  prefixLength = 24; }
+  ];
+  routes = [
+    { address = "192.168.50.0"; prefixLength = 24; }
+  ];
+  };
 
+  networking.defaultGateway = "192.168.88.1";
   # Set your time zone.
   time.timeZone = "Europe/Kiev";  # або ваша зона
 
@@ -68,7 +79,8 @@
     git
     vscode
     neovim
-    vimPlugins.LazyVim
+    tmux
+  #vimPlugins.LazyVim
   ];
   programs.firefox.enable=true;
 
