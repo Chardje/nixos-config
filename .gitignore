@@ -2,6 +2,4 @@ configuration.nix.save
 wifi.env
 Text File.txt
 passwords
-flake.lock
-*.lock
 result
