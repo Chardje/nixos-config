@@ -86,7 +86,7 @@ in
 
   home.packages = with pkgs; [
     nix-alien
-    #papirus-icon-theme
+    papirus-icon-theme
     adwaita-icon-theme
     hicolor-icon-theme
     gnome-icon-theme

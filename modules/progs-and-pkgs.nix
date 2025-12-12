@@ -33,8 +33,7 @@ in
     vscode
     obsidian
     plantuml
-    
-    
+
     #pgadmin4-desktopmode
     pkg-config
     wireplumber
@@ -43,7 +42,7 @@ in
     _64gram
     teams-for-linux
     gpu-screen-recorder-gtk
-    
+
     prismlauncher
     # Файлові менеджери
     nemo
@@ -252,7 +251,9 @@ in
   programs = {
     hyprland = {
       enable = true;
-      package = inputs.hyprland.packages.${pkgs.system}.hyprland;
+      package = inputs.hyprland.packages.${pkgs.stdenv.hostPlatform.system}.hyprland;
+      portalPackage =
+        inputs.hyprland.packages.${pkgs.stdenv.hostPlatform.system}.xdg-desktop-portal-hyprland;
       xwayland.enable = true;
     };
     xwayland.enable = true;
