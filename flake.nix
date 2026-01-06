@@ -16,6 +16,7 @@
       url = "github:nix-community/home-manager/release-25.05";
       inputs.nixpkgs.follows = "nix25";
     };
+    arion.url = "github:hercules-ci/arion";
     nix-index-database = {
       url = "github:nix-community/nix-index-database";
       inputs.nixpkgs.follows = "nixpkgs";
@@ -68,25 +69,27 @@
       zen-browser,
       hyprland,
       illogical-flake,
+      arion,
       ...
     }@inputs:
     let
-      system = "x86_64-linux";
+      systemX64 = "x86_64-linux";
+      systemARM = "aarch64-linux";
       lib = nixpkgs.lib;
 
       pkgs = import nixpkgs {
-        inherit system;
+        system = systemX64;
         overlays = [
           nur.overlays.default
         ];
         config.allowUnfree = true;
       };
       hyprlandpkgs41 = import inputs.hyprland41 {
-        inherit system;
+        system = systemX64;
         overlays = [
           (self: super: {
             hyprland = super.hyprland.overrideAttrs (old: {
-              buildInputs = (old.buildInputs or [ ]) ++ [ inputs.epoll-shim.packages.${system}.default ];
+              buildInputs = (old.buildInputs or [ ]) ++ [ inputs.epoll-shim.packages.${systemX64}.default ];
             });
           })
         ];
@@ -95,7 +98,14 @@
 
       # Стабільні пакети для ISO
       pkgs25 = import nix25 {
-        inherit system;
+        system = systemX64;
+        overlays = [
+          nur.overlays.default
+        ];
+        config.allowUnfree = true;
+      };
+      pkgs25arm = import nix25 {
+        system = systemARM;
         overlays = [
           nur.overlays.default
         ];
@@ -103,22 +113,31 @@
       };
     in
     {
-      packages.${system} = {
+      packages.${systemX64} = {
         pixus = self.nixosConfigurations.pixus.config.system.build.isoImage;
       };
       # ---------------------- NixOS Configurations ----------------------
       nixosConfigurations = {
+        # --- Ноут серв ---
         laptop = lib.nixosSystem {
-          inherit system;
+          system = systemX64;
           specialArgs = { inherit inputs pkgs25; };
           modules = [
             ./host/laptop
             ./modules/users.nix
           ];
         };
+        # --- Пай серв ---
+        nixpi = lib.nixosSystem {
+          system = systemARM;
+          specialArgs = { inherit inputs pkgs25arm; };
+          modules = [
+            ./host/nixpi
+          ];
+        };
         # --- Основна система ---
         vladLinux = lib.nixosSystem {
-          inherit system;
+          system = systemX64;
           specialArgs = { inherit inputs pkgs pkgs25; };
           modules = [
             ./host/vladLinux/configuration.nix
@@ -141,7 +160,7 @@
 
         # --- Планшет Pixus taskTab 10.1 3G ---
         pixus = lib.nixosSystem {
-          inherit system;
+          system = systemX64;
           specialArgs = { inherit inputs pkgs25; };
           modules = [
             "${pkgs25.path}/nixos/modules/installer/cd-dvd/installation-cd-graphical-base.nix"

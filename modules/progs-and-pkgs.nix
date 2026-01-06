@@ -31,6 +31,7 @@ in
     vim
     kitty
     vscode
+    jetbrains.idea-community
     obsidian
     plantuml
 
@@ -40,13 +41,12 @@ in
     # Веб-браузери та месенджери
     firefox
     _64gram
-    teams-for-linux
     gpu-screen-recorder-gtk
+    vesktop
 
     prismlauncher
     # Файлові менеджери
     nemo
-    #kdePackages.dolphin
 
     # Системні утиліти
     ddcutil
