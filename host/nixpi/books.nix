@@ -2,41 +2,41 @@
 let 
   cwa-port = "8083";
 in {
-  # virtualisation.arion = {
-  #  backend = "docker";
-  #  projects = {
-  #    "calibre-wa" = {
-  #      settings.services."calibre-wa".service = {
-  #        image = "crocodilestick/calibre-web-automated:latest";
-  #        container_name = "calibre-web-automated";
-  #        restart = "unless-stopped";
-  #
-  #        environment = {
-  #          PUID = "1000";
-  #          PGID = "1000";
-  #          TZ = "UTC";
-  #          #HARDCOVER_TOKEN = "your_hardcover_api_key_here";
-  #          NETWORK_SHARE_MODE = "false";
-  #          CWA_PORT_OVERRIDE = cwa-port;
-  #        };
-  #
-  #        volumes = [
-  #          "/srv/MyFhdd2T/calibre/config:/config"
-  #          "/srv/MyFhdd2T/Shared/books-ingest:/cwa-book-ingest"
-  #          "/srv/MyFhdd2T/calibre/library:/calibre-library"
-  #          "/srv/MyFhdd2T/calibre/plugins:/config/.config/calibre/plugins"
-  #        ];
-  #
-  #        ports = [
-  #          "{cwa-port}:{cwa-port}"
-  #        ];
-  #
-  #        # Якщо порт <1024 — розкоментуй
-  #        # cap_add = [ "NET_BIND_SERVICE" ];
-  #      };
-  #    };
-  #  };
-  #};
+  virtualisation.arion = {
+   backend = "docker";
+   projects = {
+     "calibre-wa" = {
+       settings.services."calibre-wa".service = {
+         image = "crocodilestick/calibre-web-automated:latest";
+         container_name = "calibre-web-automated";
+         restart = "unless-stopped";
+  
+         environment = {
+           PUID = "1000";
+           PGID = "1000";
+           TZ = "UTC";
+           #HARDCOVER_TOKEN = "your_hardcover_api_key_here";
+           NETWORK_SHARE_MODE = "false";
+           CWA_PORT_OVERRIDE = cwa-port;
+         };
+  
+         volumes = [
+           "/srv/MyFhdd2T/calibre/config:/config"
+           "/srv/MyFhdd2T/Shared/books-ingest:/cwa-book-ingest"
+           "/srv/MyFhdd2T/calibre/library:/calibre-library"
+           "/srv/MyFhdd2T/calibre/plugins:/config/.config/calibre/plugins"
+         ];
+  
+         ports = [
+           "${toString cwa-port}:${toString cwa-port}"
+         ];
+  
+         # Якщо порт <1024 — розкоментуй
+         # cap_add = [ "NET_BIND_SERVICE" ];
+       };
+     };
+   };
+  };
   services.nginx.virtualHosts."books.pi.lan" = {
     forceSSL = true;
     sslCertificate = "/var/lib/nginx-ssl/pi.lan.crt";

@@ -25,6 +25,7 @@
       url = "github:nix-community/NUR";
       inputs.nixpkgs.follows = "nixpkgs";
     };
+    sops-nix.url = "github:Mic92/sops-nix";
     caelestia-shell = {
       url = "github:caelestia-dots/shell";
       inputs.nixpkgs.follows = "nixpkgs";
@@ -70,6 +71,7 @@
       hyprland,
       illogical-flake,
       arion,
+      sops-nix ,
       ...
     }@inputs:
     let
@@ -125,6 +127,7 @@
           modules = [
             ./host/laptop
             ./modules/users.nix
+            #sops-nix.nixosModules.sops
           ];
         };
         # --- Пай серв ---
@@ -133,6 +136,20 @@
           specialArgs = { inherit inputs pkgs25arm; };
           modules = [
             ./host/nixpi
+            ./host/nixpi/bootPi4.nix
+            #sops-nix.nixosModules.sops
+            arion.nixosModules.arion
+          ];
+        };
+        # --- Пай серв тест VM---
+        nixpiVM = lib.nixosSystem {
+          system = systemX64;
+          specialArgs = { inherit inputs pkgs25; };
+          modules = [
+            ./host/nixpi
+            ./host/nixpi/bootVM.nix
+            #sops-nix.nixosModules.sops
+            arion.nixosModules.arion
           ];
         };
         # --- Основна система ---
@@ -147,6 +164,7 @@
             chaotic.nixosModules.nyx-cache
             chaotic.nixosModules.nyx-overlay
             chaotic.nixosModules.nyx-registry
+            #sops-nix.nixosModules.sops
             home-manager.nixosModules.home-manager
             {
               home-manager.extraSpecialArgs = { inherit inputs catppuccin; };
@@ -166,6 +184,7 @@
             "${pkgs25.path}/nixos/modules/installer/cd-dvd/installation-cd-graphical-base.nix"
             # Твій кастомний конфіг
             ./host/pixus/configuration.nix
+            #sops-nix.nixosModules.sops
           ];
         };
 

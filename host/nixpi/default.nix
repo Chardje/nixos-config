@@ -11,7 +11,6 @@ let
   interface = "end0";
   hostname = "nixpi";  
   mail = "sheiko.vlad@proton.me";
-  #  arion = import <arion> {};
   
 in
 {
@@ -20,7 +19,7 @@ in
     "flakes"
   ];
   imports = [
-    ../../modules/pppwn-service.nix
+    #../../modules/pppwn-service.nix
     #./blocky.nix
     ./books.nix
     ./cockpit.nix
@@ -30,7 +29,6 @@ in
     ./samba.nix
     ./ssh.nix
     ./syncthing.nix
-    #   <arion/modules/nixos>
   ];
 
   security.acme.acceptTerms = true;
@@ -47,22 +45,9 @@ in
     ];
   };
 
-  boot = {
-    kernelPackages = pkgs.linuxKernel.packages.linux_rpi4;
-    initrd.availableKernelModules = [
-      "xhci_pci"
-      "usbhid"
-      "usb_storage"
-      "uas"
-      "usbhid"
-      "usbcore"
-    ];
-    loader = {
-      grub.enable = false;
-      generic-extlinux-compatible.enable = true;
-    };
-    loader.timeout = 1;
-  };
+  networking.interfaces.end0.useDHCP = true;
+
+  
 
   services.udev.extraRules = ''
     ACTION=="add|change", SUBSYSTEM=="block", ENV{ID_FS_UUID}=="4af551fc-6a55-4451-bdd1-b11090064a2e", RUN+="${pkgs.hdparm}/bin/hdparm -B 180 -S 0 /dev/%k"
@@ -123,6 +108,7 @@ in
  
   environment.systemPackages = with pkgs; [
     vim
+    neovim
     htop
     git
     docker
@@ -130,17 +116,13 @@ in
     #filebrowser
     lvm2 # якщо хочеш LVM
     networkmanager
-    util-linux
-    #cockpit
-    #qbittorrent-nox    
-    (pkgs.callPackage ../../modules/mypkgs/dockermanager.nix {})
+    util-linux 
+    #(pkgs.callPackage ../../modules/mypkgs/dockermanager.nix {})
     wget
     libcap
     #pppwn
     iproute2
-    #syncthingtray
-    #syncthing
-    #nginx
+    
   ];
 
   services.nginx = {
