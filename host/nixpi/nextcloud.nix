@@ -3,6 +3,18 @@ let
 
 in
 {
+  sops={
+    defaultSopsFile = ./secrets/nixpi.yaml;
+    defaultSopsFormat = "yaml";
+    age.keyFile = "/home/pi/.config/sops/age/keys.txt";
+    secrets."samba-credentials" = {
+      mode = "0400";
+      owner = "root";
+      group = "root";
+    };
+    secrets."tsl-key" = {};
+    secrets."tsl-crt" = {};
+  };
   systemd.services.nextcloud-setup = {
     wants = [ "srv-MyFhdd2T.mount" ];
     after = [ "srv-MyFhdd2T.mount" ];
@@ -53,8 +65,9 @@ in
   services.nginx.virtualHosts."nextcloud.pi.lan" = {
     # SSL налаштування
     forceSSL = true;
-    sslCertificate = "/var/lib/nginx-ssl/pi.lan.crt";
-    sslCertificateKey = "/var/lib/nginx-ssl/pi.lan.key";
+    sslCertificate = config.sops.secrets."tsl-crt".path;
+    sslCertificateKey = config.sops.secrets."tsl-key".path;
+    
   };
   users.users.nextcloud = {
     extraGroups = [ "shared" ];

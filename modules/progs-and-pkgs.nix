@@ -29,11 +29,13 @@ in
   environment.systemPackages = with pkgs; [
     # Редактори та IDE
     vim
+    neovim
     kitty
     vscode
-    jetbrains.idea-community
+    #jetbrains.idea-community
     obsidian
     plantuml
+    sops
 
     #pgadmin4-desktopmode
     pkg-config

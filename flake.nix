@@ -127,7 +127,7 @@
           modules = [
             ./host/laptop
             ./modules/users.nix
-            #sops-nix.nixosModules.sops
+            sops-nix.nixosModules.sops
           ];
         };
         # --- Пай серв ---
@@ -137,7 +137,7 @@
           modules = [
             ./host/nixpi
             ./host/nixpi/bootPi4.nix
-            #sops-nix.nixosModules.sops
+            sops-nix.nixosModules.sops
             arion.nixosModules.arion
           ];
         };
@@ -148,7 +148,7 @@
           modules = [
             ./host/nixpi
             ./host/nixpi/bootVM.nix
-            #sops-nix.nixosModules.sops
+            sops-nix.nixosModules.sops
             arion.nixosModules.arion
           ];
         };
@@ -163,8 +163,7 @@
             nix-index-database.nixosModules.nix-index
             chaotic.nixosModules.nyx-cache
             chaotic.nixosModules.nyx-overlay
-            chaotic.nixosModules.nyx-registry
-            #sops-nix.nixosModules.sops
+            chaotic.nixosModules.nyx-registry            
             home-manager.nixosModules.home-manager
             {
               home-manager.extraSpecialArgs = { inherit inputs catppuccin; };
@@ -184,7 +183,7 @@
             "${pkgs25.path}/nixos/modules/installer/cd-dvd/installation-cd-graphical-base.nix"
             # Твій кастомний конфіг
             ./host/pixus/configuration.nix
-            #sops-nix.nixosModules.sops
+            sops-nix.nixosModules.sops
           ];
         };
 

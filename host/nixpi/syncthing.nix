@@ -9,6 +9,7 @@
       dataDir = "/srv/MyFhdd2T/Obsidian";
       configDir = "/home/pi/.config/syncthing";
       guiAddress = "0.0.0.0:8384";
+      openDefaultPorts = true;     # TCP/UDP 22000, UDP 21027
       settings = {
         devices = {
           "vladpc" = {id = "JICPUUU-D7RIJTB-7HCASYM-7C2AXPO-5LRIMVM-QPYK7OR-UVY6PWZ-7WBNPAV";};

@@ -1,0 +1,23 @@
+keys:
+  - &vlad_linux age1yr4z8x29dfah2jegjp753qvd0qdmxx7t3cc3de7s57hrrf8nk5ts6ha0lw
+  - &laptop_server age1v4gwz6duaeq7ctrnjnzgd6rrrq8nhvwxjuqffprqernm94c5zgcqj0qnef
+  - &nixpi_server age1fttcyc5jvgcwkuw5qmycz24h9krtu8flyzxdcpg0y4v472x70gcq4370sl
+creation_rules:
+  - path_regex: secrets/for-all.yaml
+    key_groups:
+    - age:
+      - *vlad_linux
+      - *laptop_server
+      - *nixpi_server
+  - path_regex: secrets/nixpi.yaml
+    key_groups:
+    - age:
+      - *nixpi_server
+  - path_regex: secrets/vladLinux.yaml
+    key_groups:
+    - age:
+      - *vlad_linux
+  - path_regex: secrets/laptop.yaml
+    key_groups:
+    - age:
+      - *laptop_server

@@ -6,14 +6,22 @@
 }:
 let
   user = "pi";
-  password = "5O3y5cLANb";
-  rootpass ="J07eG04xix";
   interface = "end0";
-  hostname = "nixpi";  
-  mail = "sheiko.vlad@proton.me";
-  
+  hostname = "nixpi";
+
 in
 {
+  sops = {
+    defaultSopsFile = ./secrets/for-all.yaml;
+    defaultSopsFormat = "yaml";
+    age.keyFile = "/home/pi/.config/sops/age/keys.txt";
+    secrets."samba-credentials" = {
+      mode = "0400";
+      owner = "root";
+      group = "root";
+    };
+    secrets."pi-user-password" = { };
+  };
   nix.settings.experimental-features = [
     "nix-command"
     "flakes"
@@ -29,10 +37,10 @@ in
     ./samba.nix
     ./ssh.nix
     ./syncthing.nix
+    inputs.sops-nix.nixosModules.sops
   ];
 
   security.acme.acceptTerms = true;
-  security.acme.defaults.email = mail;
   security.polkit.enable = true;
   security.pam.services.cockpit.enable = true;
 
@@ -46,8 +54,6 @@ in
   };
 
   networking.interfaces.end0.useDHCP = true;
-
-  
 
   services.udev.extraRules = ''
     ACTION=="add|change", SUBSYSTEM=="block", ENV{ID_FS_UUID}=="4af551fc-6a55-4451-bdd1-b11090064a2e", RUN+="${pkgs.hdparm}/bin/hdparm -B 180 -S 0 /dev/%k"
@@ -78,7 +84,7 @@ in
       ];
     };
   };
-  
+
   networking = {
     hostName = hostname;
     firewall = {
@@ -90,22 +96,22 @@ in
         22
         9090
         8384
-        22000
-        6881
+        # 22000
+        # 6881
       ];
       allowedUDPPorts = [
         22
         9090
-        22000
-        21027
-        6881
+        # 22000
+        # 21027
+        # 6881
       ];
     };
   };
 
   networking.networkmanager.enable = true;
   networking.enableIPv6 = false;
- 
+
   environment.systemPackages = with pkgs; [
     vim
     neovim
@@ -116,13 +122,13 @@ in
     #filebrowser
     lvm2 # якщо хочеш LVM
     networkmanager
-    util-linux 
+    util-linux
     #(pkgs.callPackage ../../modules/mypkgs/dockermanager.nix {})
     wget
     libcap
     #pppwn
     iproute2
-    
+
   ];
 
   services.nginx = {
@@ -142,7 +148,7 @@ in
     mutableUsers = false;
     users."${user}" = {
       isNormalUser = true;
-      password = password;
+      password = config.sops.secrets."pi-user-password".value;
       extraGroups = [
         "wheel"
         "docker"
@@ -150,11 +156,7 @@ in
         "shared"
       ];
     };
-    users.root = {
-      # можна не вказувати isNormalUser — root вже існує
-      password = rootpass;
-    };
-    
+
   };
 
   virtualisation.docker = {

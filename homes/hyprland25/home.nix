@@ -95,7 +95,7 @@ in
     source-han-sans
     source-han-serif
     font-awesome
-    inputs.zen-browser.packages."${system}".default
+    #inputs.zen-browser.packages."${system}".default
   ];
 
   fonts.fontconfig.enable = true;
