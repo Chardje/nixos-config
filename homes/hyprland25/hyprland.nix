@@ -21,11 +21,13 @@
   ];
   wayland.windowManager.hyprland = {
     enable = true;
+    package = inputs.hyprland.packages.${pkgs.stdenv.hostPlatform.system}.hyprland;
+    portalPackage =
+      inputs.hyprland.packages.${pkgs.stdenv.hostPlatform.system}.xdg-desktop-portal-hyprland;
 
     settings = {
       "exec-once" = [
         "code"
-        "zen"
         "wl-clip-persist --clipboard regular"
       ];
       # Monitor configuration
@@ -74,12 +76,7 @@
         preserve_split = true;
       };
 
-      # Window rules
-      windowrule = [
-        "suppressevent maximize, class:.*"
-        "nofocus,class:^$,title:^$,xwayland:1,floating:1,fullscreen:0,pinned:0"
-      ];
-
+      
       misc = {
         vfr = false;
         disable_hyprland_logo = true;

@@ -14,11 +14,14 @@ let
 in
 {
   system.stateVersion = "25.05";
+
   imports = [
     # Include the results of the hardware scan.
     ./hardware-configuration.nix
     #./modules/style.nix
+    ../../modules/flatpak.nix
     ../../modules/progs-and-pkgs.nix
+    inputs.sops-nix.nixosModules.sops
     ./undervolt.nix
   ];
   nix.settings.experimental-features = [
@@ -26,12 +29,21 @@ in
     "flakes"
   ];
 
+  sops={
+    defaultSopsFile = ./secrets/for-all.yaml;
+    defaultSopsFormat = "yaml";
+    age.keyFile = "/home/vlad/.config/sops/age/keys.txt";
+    secrets."samba-credentials" = {
+      mode = "0400";
+      owner = "root";
+      group = "root";
+    };
+  };
   fileSystems."/home/vlad/smb/Shared" = {
     device = "//pi.lan/Shared";
     fsType = "cifs";
     options = [
-      "username=pi"
-      "password=n97ziP6qLr"
+      "credentials=${config.sops.secrets."samba-credentials".path}"
       "rw"
       "uid=vlad"
       "gid=users"
@@ -134,10 +146,15 @@ in
     user = "vlad";
     dataDir = "/home/vlad/Sync/obsidian"; # куди зберігати дані
     configDir = "/home/vlad/.config/syncthing"; # де конфіг
+    openDefaultPorts = true;  
+    settings.devices = {
+      "pi" = {id = "SJFMVHK-NTZSB6A-DAPW4I2-C5MY3V6-QZNVAIL-YMTXKHU-DG57SNE-PAERBQ4";};
+    };
   };
 
   # Enable the OpenSSH daemon.
   services.openssh.enable = true;
+
   services.undervolt = {
     enable = false;
   };

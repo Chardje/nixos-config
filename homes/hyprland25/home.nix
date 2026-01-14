@@ -29,7 +29,6 @@ in
 
   nixpkgs.overlays = [
     inputs.nur.overlays.default
-    inputs.nix-alien.overlays.default
   ];
 
   
@@ -85,8 +84,8 @@ in
   };
 
   home.packages = with pkgs; [
-    nix-alien
-    #papirus-icon-theme
+    inputs.nix-alien.packages.${system}.nix-alien
+    papirus-icon-theme
     adwaita-icon-theme
     hicolor-icon-theme
     gnome-icon-theme
@@ -96,7 +95,7 @@ in
     source-han-sans
     source-han-serif
     font-awesome
-    inputs.zen-browser.packages."${system}".default
+    #inputs.zen-browser.packages."${system}".default
   ];
 
   fonts.fontconfig.enable = true;

@@ -120,9 +120,9 @@
         "Ctrl Super Shift, left, movetoworkspace, -1"
 
         # Move window to/from special workspace
-        "Ctrl+Super+Shift, up, movetoworkspace, special:special"
-        "Ctrl+Super+Shift, down, movetoworkspace, e+0"
-        "Super+Alt, S, workspace, special:special"
+        "Super+Shift, up, movetoworkspace, special"
+        "Super+Shift, down, movetoworkspace, e+0"
+        "Super, S, togglespecialworkspace, special"
 
         # Window groups
         # ...залишити тільки якщо dispatcher існує...

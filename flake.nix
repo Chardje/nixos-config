@@ -16,6 +16,7 @@
       url = "github:nix-community/home-manager/release-25.05";
       inputs.nixpkgs.follows = "nix25";
     };
+    arion.url = "github:hercules-ci/arion";
     nix-index-database = {
       url = "github:nix-community/nix-index-database";
       inputs.nixpkgs.follows = "nixpkgs";
@@ -24,6 +25,7 @@
       url = "github:nix-community/NUR";
       inputs.nixpkgs.follows = "nixpkgs";
     };
+    sops-nix.url = "github:Mic92/sops-nix";
     caelestia-shell = {
       url = "github:caelestia-dots/shell";
       inputs.nixpkgs.follows = "nixpkgs";
@@ -68,25 +70,28 @@
       zen-browser,
       hyprland,
       illogical-flake,
+      arion,
+      sops-nix ,
       ...
     }@inputs:
     let
-      system = "x86_64-linux";
+      systemX64 = "x86_64-linux";
+      systemARM = "aarch64-linux";
       lib = nixpkgs.lib;
 
       pkgs = import nixpkgs {
-        inherit system;
+        system = systemX64;
         overlays = [
           nur.overlays.default
         ];
         config.allowUnfree = true;
       };
       hyprlandpkgs41 = import inputs.hyprland41 {
-        inherit system;
+        system = systemX64;
         overlays = [
           (self: super: {
             hyprland = super.hyprland.overrideAttrs (old: {
-              buildInputs = (old.buildInputs or [ ]) ++ [ inputs.epoll-shim.packages.${system}.default ];
+              buildInputs = (old.buildInputs or [ ]) ++ [ inputs.epoll-shim.packages.${systemX64}.default ];
             });
           })
         ];
@@ -95,7 +100,14 @@
 
       # Стабільні пакети для ISO
       pkgs25 = import nix25 {
-        inherit system;
+        system = systemX64;
+        overlays = [
+          nur.overlays.default
+        ];
+        config.allowUnfree = true;
+      };
+      pkgs25arm = import nix25 {
+        system = systemARM;
         overlays = [
           nur.overlays.default
         ];
@@ -103,22 +115,46 @@
       };
     in
     {
-      packages.${system} = {
+      packages.${systemX64} = {
         pixus = self.nixosConfigurations.pixus.config.system.build.isoImage;
       };
       # ---------------------- NixOS Configurations ----------------------
       nixosConfigurations = {
+        # --- Ноут серв ---
         laptop = lib.nixosSystem {
-          inherit system;
+          system = systemX64;
           specialArgs = { inherit inputs pkgs25; };
           modules = [
             ./host/laptop
             ./modules/users.nix
+            sops-nix.nixosModules.sops
+          ];
+        };
+        # --- Пай серв ---
+        nixpi = lib.nixosSystem {
+          system = systemARM;
+          specialArgs = { inherit inputs pkgs25arm; };
+          modules = [
+            ./host/nixpi
+            ./host/nixpi/bootPi4.nix
+            sops-nix.nixosModules.sops
+            arion.nixosModules.arion
+          ];
+        };
+        # --- Пай серв тест VM---
+        nixpiVM = lib.nixosSystem {
+          system = systemX64;
+          specialArgs = { inherit inputs pkgs25; };
+          modules = [
+            ./host/nixpi
+            ./host/nixpi/bootVM.nix
+            sops-nix.nixosModules.sops
+            arion.nixosModules.arion
           ];
         };
         # --- Основна система ---
         vladLinux = lib.nixosSystem {
-          inherit system;
+          system = systemX64;
           specialArgs = { inherit inputs pkgs pkgs25; };
           modules = [
             ./host/vladLinux/configuration.nix
@@ -127,7 +163,7 @@
             nix-index-database.nixosModules.nix-index
             chaotic.nixosModules.nyx-cache
             chaotic.nixosModules.nyx-overlay
-            chaotic.nixosModules.nyx-registry
+            chaotic.nixosModules.nyx-registry            
             home-manager.nixosModules.home-manager
             {
               home-manager.extraSpecialArgs = { inherit inputs catppuccin; };
@@ -141,12 +177,13 @@
 
         # --- Планшет Pixus taskTab 10.1 3G ---
         pixus = lib.nixosSystem {
-          inherit system;
+          system = systemX64;
           specialArgs = { inherit inputs pkgs25; };
           modules = [
             "${pkgs25.path}/nixos/modules/installer/cd-dvd/installation-cd-graphical-base.nix"
             # Твій кастомний конфіг
             ./host/pixus/configuration.nix
+            sops-nix.nixosModules.sops
           ];
         };
 

@@ -29,30 +29,26 @@ in
   environment.systemPackages = with pkgs; [
     # Редактори та IDE
     vim
+    neovim
     kitty
     vscode
+    #jetbrains.idea-community
     obsidian
     plantuml
-    
-    
+    sops
+
     #pgadmin4-desktopmode
     pkg-config
     wireplumber
     # Веб-браузери та месенджери
     firefox
-    #discord
-    #vesktop
-    #ayugram-desktop
     _64gram
-    #beeper-bridge-manager
-    #teams
-    teams-for-linux
     gpu-screen-recorder-gtk
-    
+    vesktop
 
+    prismlauncher
     # Файлові менеджери
     nemo
-    #kdePackages.dolphin
 
     # Системні утиліти
     ddcutil
@@ -257,7 +253,9 @@ in
   programs = {
     hyprland = {
       enable = true;
-      package = inputs.hyprland.packages.${pkgs.system}.hyprland;
+      package = inputs.hyprland.packages.${pkgs.stdenv.hostPlatform.system}.hyprland;
+      portalPackage =
+        inputs.hyprland.packages.${pkgs.stdenv.hostPlatform.system}.xdg-desktop-portal-hyprland;
       xwayland.enable = true;
     };
     xwayland.enable = true;
