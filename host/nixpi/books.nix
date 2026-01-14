@@ -3,7 +3,7 @@ let
   cwa-port = "8083";
 in {
   sops={
-    defaultSopsFile = ./secrets/nixpi.yaml;
+    defaultSopsFile = ../../secrets/nixpi.yaml;
     defaultSopsFormat = "yaml";
     age.keyFile = "/home/pi/.config/sops/age/keys.txt";
     secrets."samba-credentials" = {
