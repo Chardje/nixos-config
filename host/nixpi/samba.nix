@@ -1,7 +1,8 @@
-{...}:
+{ ... }:
 let
 
-in{
+in
+{
   systemd.services.samba-smbd = {
     wants = [ "srv-MyFhdd2T.mount" ];
     after = [ "srv-MyFhdd2T.mount" ];

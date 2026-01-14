@@ -1,19 +1,23 @@
-{ ... }:
+{ config, ... }:
 let
 
 in
 {
-  sops={
-    defaultSopsFile = ../../secrets/nixpi.yaml;
-    defaultSopsFormat = "yaml";
+  sops = {
+
     age.keyFile = "/home/pi/.config/sops/age/keys.txt";
-    secrets."samba-credentials" = {
-      mode = "0400";
+    secrets."tsl-key" = {
+      sopsFile = ../../secrets/nixpi.yaml;
       owner = "root";
-      group = "root";
+      group = "nginx";
+      mode = "0440";
     };
-    secrets."tsl-key" = {};
-    secrets."tsl-crt" = {};
+    secrets."tsl-crt" = {
+      sopsFile = ../../secrets/nixpi.yaml;
+      owner = "root";
+      group = "nginx";
+      mode = "0440";
+    };
   };
   systemd.services.nextcloud-setup = {
     wants = [ "srv-MyFhdd2T.mount" ];
@@ -67,7 +71,7 @@ in
     forceSSL = true;
     sslCertificate = config.sops.secrets."tsl-crt".path;
     sslCertificateKey = config.sops.secrets."tsl-key".path;
-    
+
   };
   users.users.nextcloud = {
     extraGroups = [ "shared" ];

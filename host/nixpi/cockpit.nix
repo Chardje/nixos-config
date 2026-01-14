@@ -1,19 +1,24 @@
-{...}:
+{ config, ... }:
 let
-  
-in{
+
+in
+{
   environment.pathsToLink = [ "/share/cockpit" ];
-  sops={
-    defaultSopsFile = ../../secrets/nixpi.yaml;
-    defaultSopsFormat = "yaml";
+  sops = {
+
     age.keyFile = "/home/pi/.config/sops/age/keys.txt";
-    secrets."samba-credentials" = {
-      mode = "0400";
+    secrets."tsl-key" = {
+      sopsFile = ../../secrets/nixpi.yaml;
       owner = "root";
-      group = "root";
+      group = "nginx";
+      mode = "0440";
     };
-    secrets."tsl-key" = {};
-    secrets."tsl-crt" = {};
+    secrets."tsl-crt" = {
+      sopsFile = ../../secrets/nixpi.yaml;
+      owner = "root";
+      group = "nginx";
+      mode = "0440";
+    };
   };
   services.cockpit = {
     enable = true;
@@ -32,10 +37,10 @@ in{
   };
   services.nginx.virtualHosts."cockpit.pi.lan" = {
     forceSSL = true;
-    
+
     sslCertificate = config.sops.secrets."tsl-crt".path;
     sslCertificateKey = config.sops.secrets."tsl-key".path;
-    
+
     locations."/" = {
       proxyPass = "http://127.0.0.1:9090";
       proxyWebsockets = true;

@@ -2,6 +2,7 @@
   config,
   pkgs,
   lib,
+  #inputs,
   ...
 }:
 let
@@ -20,7 +21,13 @@ in
       owner = "root";
       group = "root";
     };
-    secrets."pi-user-password" = { };
+    secrets."pi-user-password-hash" = {
+      sopsFile = ../../secrets/nixpi.yaml;
+      owner = "root";
+      group = "root";
+      mode = "0400";
+      neededForUsers = true;
+    };
   };
   nix.settings.experimental-features = [
     "nix-command"
@@ -37,7 +44,7 @@ in
     ./samba.nix
     ./ssh.nix
     ./syncthing.nix
-    inputs.sops-nix.nixosModules.sops
+    #inputs.sops-nix.nixosModules.sops
   ];
 
   security.acme.acceptTerms = true;
@@ -56,7 +63,7 @@ in
   networking.interfaces.end0.useDHCP = true;
 
   services.udev.extraRules = ''
-    ACTION=="add|change", SUBSYSTEM=="block", ENV{ID_FS_UUID}=="4af551fc-6a55-4451-bdd1-b11090064a2e", RUN+="${pkgs.hdparm}/bin/hdparm -B 180 -S 0 /dev/%k"
+    ACTION=="add|change", SUBSYSTEM=="block", ENV{ID_FS_UUID}=="4af551fc-6a55-4451-bdd1-b11090064a2e", RUN+="${pkgs.hdparm}/bin/hdparm -B 140 -S 0 /dev/%k"
   '';
 
   fileSystems = {
@@ -148,7 +155,7 @@ in
     mutableUsers = false;
     users."${user}" = {
       isNormalUser = true;
-      password = config.sops.secrets."pi-user-password".value;
+      hashedPasswordFile = config.sops.secrets."pi-user-password-hash".path;
       extraGroups = [
         "wheel"
         "docker"
@@ -156,7 +163,9 @@ in
         "shared"
       ];
     };
-
+    users.root = {
+      #assword = "test";
+    };
   };
 
   virtualisation.docker = {

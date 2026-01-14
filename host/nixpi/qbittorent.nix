@@ -1,18 +1,28 @@
-{...}:
-let 
-  
-in{
-  sops={
-    defaultSopsFile = ../../secrets/nixpi.yaml;
-    defaultSopsFormat = "yaml";
+{ config, ... }:
+let
+
+in
+{
+  sops = {
     age.keyFile = "/home/pi/.config/sops/age/keys.txt";
-    secrets."samba-credentials" = {
-      mode = "0400";
+    secrets."tsl-key" = {
+      sopsFile = ../../secrets/nixpi.yaml;
       owner = "root";
-      group = "root";
+      group = "nginx";
+      mode = "0440";
     };
-    secrets."tsl-key" = {};
-    secrets."tsl-crt" = {};
+    secrets."tsl-crt" = {
+      sopsFile = ../../secrets/nixpi.yaml;
+      owner = "root";
+      group = "nginx";
+      mode = "0440";
+    };
+  };
+  systemd.services.arion-calibre-wa = {
+    wants = [ "srv-MyFhdd2T.mount" ];
+    after = [ "srv-MyFhdd2T.mount" ];
+
+    serviceConfig.RequiresMountsFor = [ "/srv/MyFhdd2T" ];
   };
   services.qbittorrent = {
     enable = true;
