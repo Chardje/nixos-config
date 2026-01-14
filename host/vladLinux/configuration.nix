@@ -30,7 +30,7 @@ in
   ];
 
   sops={
-    defaultSopsFile = ./secrets/for-all.yaml;
+    defaultSopsFile = ../../secrets/for-all.yaml;
     defaultSopsFormat = "yaml";
     age.keyFile = "/home/vlad/.config/sops/age/keys.txt";
     secrets."samba-credentials" = {

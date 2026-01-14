@@ -4,7 +4,7 @@ let
 in{
   environment.pathsToLink = [ "/share/cockpit" ];
   sops={
-    defaultSopsFile = ./secrets/nixpi.yaml;
+    defaultSopsFile = ../../secrets/nixpi.yaml;
     defaultSopsFormat = "yaml";
     age.keyFile = "/home/pi/.config/sops/age/keys.txt";
     secrets."samba-credentials" = {

@@ -12,7 +12,7 @@ let
 in
 {
   sops = {
-    defaultSopsFile = ./secrets/for-all.yaml;
+    defaultSopsFile = ../../secrets/for-all.yaml;
     defaultSopsFormat = "yaml";
     age.keyFile = "/home/pi/.config/sops/age/keys.txt";
     secrets."samba-credentials" = {
