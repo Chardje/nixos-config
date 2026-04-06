@@ -37,6 +37,8 @@ in
     torrentingPort = 6881;
     openFirewall = true;
   };
+  networking.firewall.allowedTCPPorts = [ 6881 ];
+  networking.firewall.allowedUDPPorts = [ 6881 ];
   services.nginx.virtualHosts."torrent.pi.lan" = {
     # SSL налаштування
     forceSSL = true;

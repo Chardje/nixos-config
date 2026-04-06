@@ -11,11 +11,10 @@
   ];
   home.packages = [
     pkgs.ranger
-    pkgs.pcmanfm
-    pkgs.wayshot
     pkgs.sway-contrib.grimshot
     pkgs.pavucontrol
     pkgs.pulsemixer
+    pkgs.mpvpaper
 
     inputs.hyprland-contrib.packages.${pkgs.system}.grimblast
   ];
@@ -29,6 +28,7 @@
       "exec-once" = [
         "code"
         "wl-clip-persist --clipboard regular"
+        "mpvpaper -o \"loop --no-audio --panscan=1\" -f  '*' ~/Images/pixel-lofi-city-moewalls-com.mp4"
       ];
       # Monitor configuration
       "monitor" = ",preferred,auto,auto";

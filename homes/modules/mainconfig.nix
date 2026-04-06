@@ -7,7 +7,7 @@ in
   home.homeDirectory = "/home/vlad";
   home.stateVersion = "25.05";
   services.mpris-proxy.enable = true;
-  services.swww.enable = true;
+  services.awww.enable = false;
   services.copyq.enable = true;
   services.copyq.forceXWayland = true;
   services.dunst.enable = true;

@@ -31,8 +31,6 @@ in
     inputs.nur.overlays.default
   ];
 
-  
-
   programs.vscode = {
     profiles.default.extensions = with pkgs.vscode-extensions; [
       bbenoist.nix
@@ -85,16 +83,14 @@ in
 
   home.packages = with pkgs; [
     inputs.nix-alien.packages.${system}.nix-alien
-    papirus-icon-theme
-    adwaita-icon-theme
-    hicolor-icon-theme
-    gnome-icon-theme
+    #papirus-icon-theme
     noto-fonts
     noto-fonts-color-emoji
     liberation_ttf
     source-han-sans
     source-han-serif
     font-awesome
+
     #inputs.zen-browser.packages."${system}".default
   ];
 
@@ -112,6 +108,12 @@ in
     size = 24;
     gtk.enable = true;
 
+  };
+  gtk = {
+    enable = true;
+    iconTheme = {
+      name = "Papirus-Dark";
+    };
   };
   programs = {
     home-manager.enable = true;
@@ -151,6 +153,7 @@ in
       settings = {
         bar.status = {
           showBattery = false;
+          showNumlock = false;
         };
         general = {
           idle = {
@@ -161,9 +164,12 @@ in
           };
         };
         paths.wallpaperDir = "~/Images";
-
+        background = {
+          wallpaperEnabled = false;
+          useHyprpaper = false;
+        };
         services = {
-          weatherLocation = "Kyiv,UA";
+          weatherLocation = "Dnipro,UA";
           useFahrenheit = false;
           useTwelveHourClock = false;
           audioIncrement = 0.05;
@@ -209,5 +215,4 @@ in
     };
   };
 
-  
 }

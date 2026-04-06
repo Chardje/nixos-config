@@ -6,11 +6,29 @@
   config,
   lib,
   pkgs,
+  pkgs25,
   inputs,
   ...
 }:
 let
+  my-sddm-theme = pkgs.stdenv.mkDerivation rec {
+    name = "astronaut-theme";
+    src = pkgs.fetchFromGitHub {
+      owner = "keyitdev";
+      repo = "sddm-astronaut-theme";
+      rev = "d73842c761f7d7859f3bdd80e4360f09180fad41";
+      sha256 = "1lvbvs58w1jx2y490vb4vpwqs685rl4mnk952945hzcn2dbidppv";
+    };
+    installPhase = ''
+      mkdir -p $out/share/sddm/themes
+      cp -r $src $out/share/sddm/themes/sddm-astronaut-theme
 
+      substituteInPlace \
+      $out/share/sddm/themes/sddm-astronaut-theme/metadata.desktop \
+      --replace "ConfigFile=Themes/astronaut.conf" \
+                "ConfigFile=Themes/pixel_sakura.conf"
+    '';
+  };
 in
 {
   system.stateVersion = "25.05";
@@ -29,7 +47,7 @@ in
     "flakes"
   ];
 
-  sops={
+  sops = {
     defaultSopsFile = ../../secrets/for-all.yaml;
     defaultSopsFormat = "yaml";
     age.keyFile = "/home/vlad/.config/sops/age/keys.txt";
@@ -54,6 +72,10 @@ in
     ];
   };
 
+  environment.systemPackages = [
+    my-sddm-theme
+  ];
+
   nix.settings = {
     auto-optimise-store = true;
     substituters = [
@@ -67,13 +89,24 @@ in
 
   };
 
-  # Use the systemd-boot EFI boot loader.
   boot.loader.systemd-boot.enable = true;
+  boot.loader.grub = {
+    enable = false;
+    efiSupport = true;
+    useOSProber = true;
+    device = "nodev";
+    efiInstallAsRemovable = true;
+    theme = "/boot/grub/themes/CyberRe";
+  };
   boot.loader.efi.canTouchEfiVariables = true;
   boot.kernelModules = [
     "i2c-dev"
     "i2c-core"
     "i2c-i801"
+    "nvidia"
+    "nvidia_modeset"
+    "nvidia_uvm"
+    "nvidia_drm"
   ];
   boot.extraModprobeConfig = ''
     options bluetooth disable_ertm=1
@@ -90,15 +123,25 @@ in
 
   # Set your time zone.
   time.timeZone = "Europe/Kyiv";
-  services.xserver.xkb.layout = "us,ua";
-
-  hardware.graphics.enable = true;
-
-  services.xserver.videoDrivers = [ "nvidia" ];
-
+  
   hardware.nvidia = {
     modesetting.enable = true;
     open = false;
+    nvidiaSettings = true;
+    package = config.boot.kernelPackages.nvidiaPackages.legacy_580;
+  };
+  hardware.graphics = {
+    enable = true;
+  };
+  console = {
+    useXkbConfig = true;
+  };
+
+  services.xserver = {
+    enable = true;
+    videoDrivers = [ "nvidia" ];
+    xkb.layout = "us,ua";
+    xkb.options = "grp:alt_shift_toggle";
   };
 
   xdg.portal = {
@@ -123,6 +166,11 @@ in
   services.displayManager.sddm = {
     enable = true;
     package = pkgs.kdePackages.sddm;
+    theme = "sddm-astronaut-theme";
+    extraPackages = with pkgs.qt6; [
+      qtmultimedia
+      qtimageformats
+    ];
   };
 
   # Enable CUPS to print documents.
@@ -146,9 +194,20 @@ in
     user = "vlad";
     dataDir = "/home/vlad/Sync/obsidian"; # куди зберігати дані
     configDir = "/home/vlad/.config/syncthing"; # де конфіг
-    openDefaultPorts = true;  
+    openDefaultPorts = true;
     settings.devices = {
-      "pi" = {id = "SJFMVHK-NTZSB6A-DAPW4I2-C5MY3V6-QZNVAIL-YMTXKHU-DG57SNE-PAERBQ4";};
+      "pi" = {
+        id = "SJFMVHK-NTZSB6A-DAPW4I2-C5MY3V6-QZNVAIL-YMTXKHU-DG57SNE-PAERBQ4";
+      };
+    };
+    settings.folders = {
+      "vlad-obsidian" = {
+        # Name of folder in Syncthing, also the folder ID
+        path = "/home/vlad/Sync/obsidian"; # Which folder to add to Syncthing
+        devices = [
+          "pi"
+        ]; # Which devices to share the folder with
+      };
     };
   };
 
@@ -158,7 +217,6 @@ in
   services.undervolt = {
     enable = false;
   };
-  services.xserver.enable = true;
 
   # Дає користувачу vlad доступ до пристроїв яскравості
   services.udev.extraRules = ''
@@ -186,6 +244,11 @@ in
   xdg.mime = {
     enable = true;
     defaultApplications = {
+      "text/html" = "librewolf.desktop";
+      "x-scheme-handler/http" = "librewolf.desktop";
+      "x-scheme-handler/https" = "librewolf.desktop";
+      "x-scheme-handler/about" = "librewolf.desktop";
+      "x-scheme-handler/unknown" = "librewolf.desktop";
       # Текстові та програмні файли
       "text/plain" = "code.desktop";
       "application/json" = "code.desktop";

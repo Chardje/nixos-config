@@ -11,7 +11,7 @@
       "$mod" = "SUPER";
       "$terminal" = "foot";
       "$fileManager" = "nemo";
-      "$browser" = "firefox";
+      "$browser" = "librewolf";
       "$menu" = "wofi";
       "$screenshot" = "satty";
       "$emojiPicker" = "wofi-emoji";
@@ -136,8 +136,8 @@
         "Super Shift, right, movewindow, r"
         "Super Shift, up, movewindow, u"
         "Super Shift, down, movewindow, d"
-        "Super, Minus, splitratio, -0.1"
-        "Super, Equal, splitratio, 0.1"
+        "Super, Minus, resizeactive, -50 0"
+        "Super, Equal, resizeactive, 50 0"
         "Super, mouse:272, movewindow"
         "Super, mouse:273, resizeactive"
         "Ctrl Super, Backslash, centerwindow, 1"
@@ -149,7 +149,7 @@
         "Super, X, togglefloating"
         "Super, P, pin"
         "Super, T, pseudo"
-        "Super, J, togglesplit, orientation"
+        "Super, J, layoutmsg, togglesplit"
 
         # Special workspace toggles
 

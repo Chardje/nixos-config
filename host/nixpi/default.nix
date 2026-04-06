@@ -164,7 +164,7 @@ in
       ];
     };
     users.root = {
-      #assword = "test";
+      #password = "test";
     };
   };
 

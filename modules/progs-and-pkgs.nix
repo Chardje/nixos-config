@@ -28,7 +28,7 @@ in
 
   environment.systemPackages = with pkgs; [
     # Редактори та IDE
-    vim
+    #vim
     neovim
     kitty
     vscode
@@ -42,9 +42,11 @@ in
     wireplumber
     # Веб-браузери та месенджери
     firefox
+    librewolf
     _64gram
     gpu-screen-recorder-gtk
     vesktop
+    signal-desktop
 
     prismlauncher
     # Файлові менеджери
@@ -67,11 +69,12 @@ in
     parted
     tparted
     gparted
+    SDL2
 
     xdg-desktop-portal
     #xdg-desktop-portal-wlr
     pipewire
-    helvum
+    pkgs25.helvum
     wireplumber
     (pkgs.writeShellApplication {
       name = "ns";
@@ -84,8 +87,8 @@ in
     })
 
     wlroots
-    swww
-    wlogout
+    #swww
+    #wlogout
     satty
     git
     #wf-recorder
@@ -114,10 +117,9 @@ in
     dotnetCorePackages.sdk_9_0-bin
     unityhub
     dotnet-sdk
-    pkgs.omnisharp-roslyn
+    omnisharp-roslyn
     mono
     msbuild
-    omnisharp-roslyn
     netcoredbg
     unity-test
 
@@ -163,14 +165,13 @@ in
     #waybar
     pkgs.libappindicator-gtk3
     #waypaper
-    pkgs.hyprlandPlugins.hyprbars
+    #pkgs.hyprlandPlugins.hyprbars
     hypridle
     xdg-utils
     grim
     slurp
-    wofi
+    #wofi
     foot
-    sddm-chili-theme
     libsForQt5.qt5.qtgraphicaleffects
 
     #syncthing
@@ -179,15 +180,19 @@ in
 
     # Офісні пакети та словники
     wpsoffice
+    libreoffice-fresh
+    hunspell
+    hunspellDicts.uk_UA
+    #onlyoffice-desktopeditors
     hunspell
     hunspellDicts.uk_UA
 
     # Мультимедіа та графіка
     krita
 
-    spotify
+    #spotify
     # Wine та суміжне
-    wineWowPackages.waylandFull
+    wineWow64Packages.waylandFull
     winetricks
 
     (writeScriptBin "wine32" ''
@@ -204,18 +209,7 @@ in
       winetricks "$@"
     '')
 
-    # Ігри
-    #    (pkgs25.modrinth-app.overrideAttrs (old: {
-    #  makeWrapperArgs = (old.makeWrapperArgs or []) ++ [
-    #    "--set" "GDK_BACKEND" "x11"
-    #    "--set" "WEBKIT_DISABLE_DMABUF_RENDERER" "1"
-    #    "--set" "WEBKIT_DISABLE_COMPOSITING_MODE" "1"
-    #  ];
-    #}))
-
     wakeonlan
-    #rpi-imager
-    #    samba
     cifs-utils
   ];
   environment.sessionVariables = {
@@ -236,20 +230,6 @@ in
 
   networking.networkmanager.enable = true;
 
-  services.matrix-synapse = {
-
-    enable = false;
-    settings = {
-      server_name = "localhost";
-      registration_shared_secret = "mysecret111";
-
-      app_service_config_files = [
-        "/home/vlad/.config/bbctl/telegram-registration.yaml"
-        "/home/vlad/.config/bbctl/whatsapp-registration.yaml"
-        "/home/vlad/.config/bbctl/discord-registration.yaml"
-      ];
-    };
-  };
   programs = {
     hyprland = {
       enable = true;
@@ -276,5 +256,11 @@ in
 
   };
 
-  virtualisation.docker.enable = true;
+  virtualisation.docker = {
+  enable = true;
+  rootless = {
+    enable = true;
+    setSocketVariable = true;   # додає DOCKER_HOST в оточення
+  };
+};
 }
