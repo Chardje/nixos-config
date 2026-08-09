@@ -2,11 +2,15 @@
   pkgs,
   inputs,
   lib,
-  pkgs25,
+  pkgsStable,
   ...
 }:
 let
   nur = inputs.nur;
+  #mypython = pkgs.python3;
+  #.withPackages 
+  #(ps: with ps; [ platformio ]);
+
 in
 {
 
@@ -25,24 +29,51 @@ in
     unifont
     #material-symbols-font
   ];
-
+  virtualisation.waydroid.enable = true;
   environment.systemPackages = with pkgs; [
     # Редактори та IDE
     #vim
+    qemu
     neovim
+    black
+    #python312Packages.isort
+    rustfmt
+    ripgrep
+    fd
+    tree-sitter
+    lua-language-server
+    pyright
+    nil
+    docker-compose
+    waydroid
+    #blender
+    stm32cubemx
+    #stm32cubeide
+    stlink
+    stlink-gui
+    stlink-tool
+    gcc-arm-embedded
+    gnumake
+    fastfetch
+
+    # runtimes
+    nodejs
+    #mypython
     kitty
-    vscode
+    #vscode
+    vscode-fhs
     #jetbrains.idea-community
     obsidian
-    plantuml
+    #plantuml
     sops
+    pkgs.uwsm
 
     #pgadmin4-desktopmode
     pkg-config
     wireplumber
     # Веб-браузери та месенджери
-    firefox
-    librewolf
+
+    #librewolf
     _64gram
     gpu-screen-recorder-gtk
     vesktop
@@ -54,6 +85,7 @@ in
 
     # Системні утиліти
     ddcutil
+    ddccontrol
     #canon-capt
     canon-cups-ufr2
     simple-scan
@@ -63,18 +95,21 @@ in
     nixfmt
     home-manager
     brightnessctl
-    networkmanagerapplet
     wl-clip-persist
     wayland-utils
     parted
     tparted
     gparted
     SDL2
+    gdk-pixbuf # бібліотека іконок
+    librsvg # підтримка SVG іконок
+
+    #winboat
 
     xdg-desktop-portal
     #xdg-desktop-portal-wlr
     pipewire
-    pkgs25.helvum
+    crosspipe
     wireplumber
     (pkgs.writeShellApplication {
       name = "ns";
@@ -85,7 +120,8 @@ in
       ];
       text = builtins.readFile "${pkgs.nix-search-tv.src}/nixpkgs.sh";
     })
-
+    peaclock
+    kdePackages.kclock
     wlroots
     #swww
     #wlogout
@@ -113,7 +149,20 @@ in
     feh
     imv
     vlc
+    audacity
+    kicad-small
+    javaPackages.compiler.openjdk25
+    openocd
+    (pkgs.writeShellScriptBin "expresslrs-configurator" ''
+    export LD_LIBRARY_PATH="${pkgs.lib.makeLibraryPath [ pkgs.stdenv.cc.cc.lib ]}:$LD_LIBRARY_PATH"
+    exec ${pkgs.expresslrs-configurator}/bin/expresslrs-configurator "$@"
+  '')
+    platformio
+    platformio-core
 
+      # optional: needed as a programmer i.e. for esp32
+    avrdude
+    usbutils
     dotnetCorePackages.sdk_9_0-bin
     unityhub
     dotnet-sdk
@@ -122,6 +171,10 @@ in
     msbuild
     netcoredbg
     unity-test
+    gnumake
+    gcc
+    clang
+    clang-tools
 
     # Icon themes
     hicolor-icon-theme
@@ -135,24 +188,16 @@ in
     wl-clipboard
     pavucontrol
 
-    # Network tools
-    ethtool
-    iproute2
-    dnsutils
-    inetutils
-    speedtest-cli
-    curl
-    bmon
-    tcpdump
     winbox4
-    wireguard-ui
 
+    #shadps4 # ps4 emu
     # Game controller utilities
     SDL2
     SDL2_gfx
     SDL2_mixer
     SDL2_image
     jstest-gtk
+    heroic
 
     # Bluetooth support
     bluez
@@ -172,14 +217,14 @@ in
     slurp
     #wofi
     foot
-    libsForQt5.qt5.qtgraphicaleffects
+    qt5.qtgraphicaleffects
 
     #syncthing
     syncthingtray
     syncthing
 
     # Офісні пакети та словники
-    wpsoffice
+    #wpsoffice
     libreoffice-fresh
     hunspell
     hunspellDicts.uk_UA
@@ -227,10 +272,20 @@ in
     XDG_SESSION_TYPE = "wayland";
     XDG_SESSION_DESKTOP = "Hyprland";
   };
-
-  networking.networkmanager.enable = true;
-
+  services.udev.packages = with pkgs; [ 
+    platformio-core.udev
+    openocd
+  ];
+  services.ddccontrol.enable = true;
   programs = {
+    firefox = {
+      enable = true;
+      package = pkgs.firefox.override {
+        extraPolicies = {
+          DisableTelemetry = true;
+        };
+      };
+    };
     hyprland = {
       enable = true;
       package = inputs.hyprland.packages.${pkgs.stdenv.hostPlatform.system}.hyprland;
@@ -241,6 +296,8 @@ in
     xwayland.enable = true;
     yazi.enable = true;
     gpu-screen-recorder.enable = true;
+    dconf.enable = true;
+    obs-studio.enable = true;
 
     java = {
       enable = true;
@@ -255,12 +312,12 @@ in
     git.enable = true;
 
   };
-
+  hardware.nvidia-container-toolkit.enable = false;
   virtualisation.docker = {
-  enable = true;
-  rootless = {
     enable = true;
-    setSocketVariable = true;   # додає DOCKER_HOST в оточення
+    rootless = {
+      enable = false;
+      setSocketVariable = true; # додає DOCKER_HOST в оточення
+    };
   };
-};
 }

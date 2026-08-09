@@ -5,7 +5,7 @@ in
 {
   home.username = "vlad";
   home.homeDirectory = "/home/vlad";
-  home.stateVersion = "25.05";
+  home.stateVersion = "26.05";
   services.mpris-proxy.enable = true;
   services.awww.enable = false;
   services.copyq.enable = true;

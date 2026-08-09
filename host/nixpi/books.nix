@@ -5,7 +5,7 @@ in
 {
   sops = {
 
-    age.keyFile = "/home/pi/.config/sops/age/keys.txt";
+    #age.keyFile = "/home/pi/.config/sops/age/keys.txt";
     secrets."tsl-key" = {
       sopsFile = ../../secrets/nixpi.yaml;
       owner = "root";
@@ -19,41 +19,45 @@ in
       mode = "0440";
     };
   };
-  virtualisation.arion = {
-    backend = "docker";
-    projects = {
-      "calibre-wa" = {
-        settings.services."calibre-wa".service = {
-          image = "crocodilestick/calibre-web-automated:latest";
-          container_name = "calibre-web-automated";
-          restart = "unless-stopped";
+  virtualisation.podman.enable = true;
+  virtualisation.oci-containers.backend = "podman";
 
-          environment = {
-            PUID = "1000";
-            PGID = "1000";
-            TZ = "UTC";
-            #HARDCOVER_TOKEN = "your_hardcover_api_key_here";
-            NETWORK_SHARE_MODE = "false";
-            CWA_PORT_OVERRIDE = cwa-port;
-          };
+  virtualisation.oci-containers.containers = {
+    calibre-wa = {
+      image = "crocodilestick/calibre-web-automated:latest";
 
-          volumes = [
-            "/srv/MyFhdd2T/calibre/config:/config"
-            "/srv/MyFhdd2T/Shared/books-ingest:/cwa-book-ingest"
-            "/srv/MyFhdd2T/calibre/library:/calibre-library"
-            "/srv/MyFhdd2T/calibre/plugins:/config/.config/calibre/plugins"
-          ];
-
-          ports = [
-            "${toString cwa-port}:${toString cwa-port}"
-          ];
-
-          # Якщо порт <1024 — розкоментуй
-          # cap_add = [ "NET_BIND_SERVICE" ];
-        };
+      environment = {
+        PUID = "1000";
+        PGID = "1000";
+        TZ = "UTC";
+        NETWORK_SHARE_MODE = "false";
+        CWA_PORT_OVERRIDE = toString cwa-port;
       };
+
+      volumes = [
+        "/srv/MyFhdd2T/calibre/config:/config"
+        "/srv/MyFhdd2T/Shared/books-ingest:/cwa-book-ingest"
+        "/srv/MyFhdd2T/calibre/library:/calibre-library"
+        "/srv/MyFhdd2T/calibre/plugins:/config/.config/calibre/plugins"
+      ];
+
+      ports = [
+        "${toString cwa-port}:${toString cwa-port}"
+      ];
+      extraOptions = [
+        "--name=calibre-web-automated"
+        "--no-healthcheck"
+      ];
     };
   };
+  # залежність від монтування
+  systemd.services."podman-calibre-wa" = {
+    wants = [ "srv-MyFhdd2T.mount" ];
+    after = [ "srv-MyFhdd2T.mount" ];
+
+    serviceConfig.RequiresMountsFor = [ "/srv/MyFhdd2T" ];
+  };
+
   services.nginx.virtualHosts."books.pi.lan" = {
     forceSSL = true;
     sslCertificate = config.sops.secrets."tsl-crt".path;

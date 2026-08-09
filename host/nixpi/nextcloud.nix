@@ -1,11 +1,11 @@
-{ config, ... }:
+{ config, pkgs, ... }:
 let
 
 in
 {
   sops = {
 
-    age.keyFile = "/home/pi/.config/sops/age/keys.txt";
+    #age.keyFile = "/home/pi/.config/sops/age/keys.txt";
     secrets."tsl-key" = {
       sopsFile = ../../secrets/nixpi.yaml;
       owner = "root";
@@ -30,7 +30,6 @@ in
     wants = [ "srv-MyFhdd2T.mount" ];
     after = [ "srv-MyFhdd2T.mount" ];
   };
-
   services.nextcloud = {
     enable = true;
     home = "/var/lib/nextcloud";
@@ -60,9 +59,7 @@ in
       "opcache.revalidate_freq" = "1";
       "opcache.fast_shutdown" = "1";
     };
-
-    enableImagemagick = true;
-
+    package = pkgs.nextcloud33;
   };
 
   # Додаткові налаштування для nginx virtualHost Nextcloud

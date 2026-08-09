@@ -4,7 +4,6 @@
   config,
   pkgs,
   catppuccinLib,
-  catppuccin,
   ...
 }:
 let
@@ -12,9 +11,8 @@ let
 in
 {
   imports = [
-    ./hyprland.nix
-    #inputs.catppuccin.homeModules.catppuccin
-    catppuccin.homeManagerModules.catppuccin 
+    #./hyprland.nix
+    inputs.catppuccin.homeModules.catppuccin
     inputs.caelestia-shell.homeManagerModules.default
     ../modules/mainconfig.nix
   ];
@@ -22,18 +20,6 @@ in
   catppuccin.enable = true;
   catppuccin.flavor = "frappe";
   catppuccin.accent = "sapphire";
-
-  catppuccin.waybar = {
-    enable = false;
-    flavor = "frappe";
-    mode = "prependImport"; # or "createLink" if you prefer symlink mode
-  };
-
-  nixpkgs.overlays = [
-    inputs.nur.overlays.default
-  ];
-  home.pointerCursor.enable = true;
-
 
   programs.vscode = {
     profiles.default.extensions = with pkgs.vscode-extensions; [
@@ -94,6 +80,11 @@ in
     source-han-sans
     source-han-serif
     font-awesome
+    pkgs.ranger
+      pkgs.sway-contrib.grimshot
+      pkgs.pavucontrol
+      pkgs.pulsemixer
+      pkgs.mpvpaper
 
     #inputs.zen-browser.packages."${stdenv.hostPlatform.system}".default
   ];
@@ -119,6 +110,8 @@ in
       name = "Papirus-Dark";
     };
   };
+ 
+  
   programs = {
     home-manager.enable = true;
 
@@ -139,9 +132,9 @@ in
     neovim = {
       enable = true;
       defaultEditor = true;
+
       # 1. Список плагінів (аналог lazy.setup у твоєму init.lua)
       plugins = with pkgs.vimPlugins; [
-
         # LSP & Completion
         nvim-lspconfig
         mason-nvim
@@ -166,21 +159,13 @@ in
         # UI & Navigation
         telescope-nvim
         telescope-fzf-native-nvim
-        {
-          plugin = catppuccin-nvim;
-          type = "lua"; # явно вказуємо мову конфігурації
-        }
+        catppuccin-nvim
         lualine-nvim
 
         # DAP
         nvim-dap
         nvim-dap-ui
         plenary-nvim
-        neo-tree-nvim
-  nvim-web-devicons  # іконки
-  nui-nvim
-   alpha-nvim 
-   bufferline-nvim
       ];
 
       # 2. Додаткові системні пакети (форматери та лінтери)
@@ -195,8 +180,6 @@ in
         # Rust
         rust-analyzer
         rustfmt
-        rustc
-        cargo
         clippy
       ];
 
@@ -225,10 +208,6 @@ in
         -- Вміст lsp.lua
         -----------------------------------------------------------
         ${builtins.readFile ./nvim/lsp.lua}
-        ${builtins.readFile ./nvim/neotree.lua} 
-        ${builtins.readFile ./nvim/bufferline.lua}
-        ${builtins.readFile ./nvim/alpha.lua}
-
       '';
     };
 
@@ -244,73 +223,80 @@ in
         };
       };
     };
-    caelestia = {
-      enable = true;
-      systemd.enable = true;
-      systemd.target = "graphical-session.target";
+    
+    plasma = {
+    enable = true;
 
-      settings = {
-        bar.status = {
-          showBattery = false;
-          showNumlock = false;
-        };
-        general = {
-          idle = {
-            # I manage idle and lock without caelestia
-            lockBeforeSleep = false;
-            inhibitWhenAudio = false;
-            timeouts = [ ];
-          };
-        };
-        paths.wallpaperDir = "~/Images";
-        background = {
-          wallpaperEnabled = false;
-          useHyprpaper = false;
-        };
-        services = {
-          weatherLocation = "Dnipro,UA";
-          useFahrenheit = false;
-          useTwelveHourClock = false;
-          audioIncrement = 0.05;
-          smartScheme = true;
-          visualiserBars = 60;
-        };
-        lock = {
-          enabled = false;
-        };
+    #
+    # Some high-level settings:
+    #
+    workspace = {
+      clickItemTo = "select";
+      lookAndFeel = "org.kde.breezedark.desktop";
+      cursor.theme = "Bibata-Modern-Ice";
+      iconTheme = "Papirus-Dark";
+      wallpaper = "${pkgs.kdePackages.plasma-workspace-wallpapers}/share/wallpapers/Patak/contents/images/1080x1920.png";
+    };
 
-        session = {
-          dragThreshold = 30;
-          vimKeybinds = true;
-          commands = {
-            logout = [
-              "loginctl"
-              "terminate-user"
-              config.home.username
-            ];
-            shutdown = [
-              "systemctl"
-              "poweroff"
-            ];
-            reboot = [
-              "systemctl"
-              "reboot"
-            ];
-            hibernate = [
-              "systemctl"
-              "hibernate"
-            ];
-          };
-        };
+    hotkeys.commands."launch-konsole" = {
+      name = "Launch Konsole";
+      key = "Meta+Alt+K";
+      command = "konsole";
+    };
 
+    panels = [
+      # Windows-like panel at the bottom
+      {
+        location = "bottom";
+        widgets = [
+          "org.kde.plasma.kickoff"
+          "org.kde.plasma.icontasks"
+          "org.kde.plasma.marginsseparator"
+          "org.kde.plasma.systemtray"
+          "org.kde.plasma.digitalclock"
+        ];
+      }
+      # Global menu at the top
+      {
+        location = "top";
+        height = 26;
+        widgets = [ "org.kde.plasma.appmenu" ];
+      }
+    ];
+
+    #
+    # Some mid-level settings:
+    #
+    shortcuts = {
+      ksmserver = {
+        "Lock Session" = [
+          "Screensaver"
+          "Meta+Ctrl+Alt+L"
+        ];
       };
 
-      cli = {
-        enable = true;
-        settings = {
-          theme.enableGtk = false;
-        };
+      kwin = {
+        "Expose" = "Meta+,";
+        "Switch Window Down" = "Meta+J";
+        "Switch Window Left" = "Meta+H";
+        "Switch Window Right" = "Meta+L";
+        "Switch Window Up" = "Meta+K";
+      };
+    };
+
+    #
+    # Some low-level settings:
+    #
+    configFile = {
+      "baloofilerc"."Basic Settings"."Indexing-Enabled" = false;
+      "kwinrc"."org.kde.kdecoration2"."ButtonsOnLeft" = "SF";
+      "kwinrc"."Desktops"."Number" = {
+        value = 8;
+        # Forces kde to not change this value (even through the settings app).
+        immutable = true;
       };
     };
   };
+  };
+
 }

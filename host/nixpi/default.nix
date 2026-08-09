@@ -12,10 +12,15 @@ let
 
 in
 {
+nixpkgs.config.permittedInsecurePackages = [
+  "docker-28.5.2"
+];
   sops = {
     defaultSopsFile = ../../secrets/for-all.yaml;
     defaultSopsFormat = "yaml";
-    age.keyFile = "/home/pi/.config/sops/age/keys.txt";
+    age.sshKeyPaths = [ "/etc/ssh/ssh_host_ed25519_key" ];
+    age.keyFile = "/root/.config/sops/age/keys.txt";
+
     secrets."samba-credentials" = {
       mode = "0400";
       owner = "root";
@@ -38,12 +43,15 @@ in
     #./blocky.nix
     ./books.nix
     ./cockpit.nix
+    ./firefly.nix
     ./nextcloud.nix
     #./ppwn.nix
     ./qbittorent.nix
     ./samba.nix
     ./ssh.nix
     ./syncthing.nix
+    #./home-assistant.nix
+    #./matrix.nix
     #inputs.sops-nix.nixosModules.sops
   ];
 
@@ -55,12 +63,17 @@ in
     "192.168.88.3" = [
       "pi.lan"
       "cockpit.pi.lan"
+      "firefly.pi.lan"
+      "firefly-importer.pi.lan"
+      "firefly-sync.pi.lan" 
       "nextcloud.pi.lan"
       "book.pi.lan"
+      "ha.pi.lan"
+      "torrent.pi.lan"
     ];
   };
 
-  networking.interfaces.end0.useDHCP = true;
+  #networking.interfaces.end0.useDHCP = true;
 
   services.udev.extraRules = ''
     ACTION=="add|change", SUBSYSTEM=="block", ENV{ID_FS_UUID}=="4af551fc-6a55-4451-bdd1-b11090064a2e", RUN+="${pkgs.hdparm}/bin/hdparm -B 140 -S 0 /dev/%k"
@@ -72,14 +85,9 @@ in
       fsType = "ext4";
       options = [ "noatime" ];
     };
-    "/mnt/bootdir" = {
+    "/boot" = {
       device = "/dev/mmcblk0p1";
       fsType = "vfat";
-    };
-    "/boot" = {
-      fsType = "none";
-      device = "/mnt/bootdir/boot";
-      options = [ "bind" ];
     };
     "/srv/MyFhdd2T" = {
       device = "/dev/disk/by-uuid/4af551fc-6a55-4451-bdd1-b11090064a2e";
@@ -103,21 +111,27 @@ in
         22
         9090
         8384
-        # 22000
-        # 6881
       ];
       allowedUDPPorts = [
         22
         9090
-        # 22000
-        # 21027
-        # 6881
       ];
     };
   };
 
-  networking.networkmanager.enable = true;
-  networking.enableIPv6 = false;
+  networking.networkmanager.enable = false;
+  networking.interfaces.end0.useDHCP = false; # ← вимкни DHCP
+  networking.interfaces.end0.ipv4.addresses = [
+    {
+      address = "192.168.88.3";
+      prefixLength = 24;
+    }
+  ];
+  networking.defaultGateway = "192.168.88.1"; # ← додай gateway
+  networking.nameservers = [
+    "1.1.1.1"
+    "8.8.8.8"
+  ];
 
   environment.systemPackages = with pkgs; [
     vim
@@ -127,15 +141,15 @@ in
     docker
     docker-compose
     #filebrowser
-    lvm2 # якщо хочеш LVM
-    networkmanager
+    #networkmanager
     util-linux
     #(pkgs.callPackage ../../modules/mypkgs/dockermanager.nix {})
     wget
     libcap
     #pppwn
     iproute2
-
+    sops
+    lvm2
   ];
 
   services.nginx = {
@@ -156,6 +170,7 @@ in
     users."${user}" = {
       isNormalUser = true;
       hashedPasswordFile = config.sops.secrets."pi-user-password-hash".path;
+
       extraGroups = [
         "wheel"
         "docker"
@@ -166,10 +181,6 @@ in
     users.root = {
       #password = "test";
     };
-  };
-
-  virtualisation.docker = {
-    enable = true;
   };
 
   hardware.enableRedistributableFirmware = true;

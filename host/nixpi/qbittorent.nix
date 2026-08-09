@@ -4,7 +4,7 @@ let
 in
 {
   sops = {
-    age.keyFile = "/home/pi/.config/sops/age/keys.txt";
+    #age.keyFile = "/home/pi/.config/sops/age/keys.txt";
     secrets."tsl-key" = {
       sopsFile = ../../secrets/nixpi.yaml;
       owner = "root";
@@ -18,12 +18,7 @@ in
       mode = "0440";
     };
   };
-  systemd.services.arion-calibre-wa = {
-    wants = [ "srv-MyFhdd2T.mount" ];
-    after = [ "srv-MyFhdd2T.mount" ];
-
-    serviceConfig.RequiresMountsFor = [ "/srv/MyFhdd2T" ];
-  };
+  
   services.qbittorrent = {
     enable = true;
     user = "pi";

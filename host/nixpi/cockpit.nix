@@ -6,7 +6,7 @@ in
   environment.pathsToLink = [ "/share/cockpit" ];
   sops = {
 
-    age.keyFile = "/home/pi/.config/sops/age/keys.txt";
+    #age.keyFile = "/home/pi/.config/sops/age/keys.txt";
     secrets."tsl-key" = {
       sopsFile = ../../secrets/nixpi.yaml;
       owner = "root";

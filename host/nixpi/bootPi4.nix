@@ -1,7 +1,15 @@
-{pkgs25arm,...}:
+{ pkgsStableArm, ... }:
 {
   boot = {
-    kernelPackages = pkgs25arm.linuxKernel.packages.linux_rpi4;
+    loader = {
+      timeout = 2; 
+      generic-extlinux-compatible.enable = true;
+      
+      # Якщо використовується специфічний модуль RPi (залежно від версії NixOS):
+      # raspberryPi.enable = true;
+      # raspberryPi.version = "4";
+    };
+    #kernelPackages = pkgsStableArm.linuxKernel.packages.linux_rpi4;
     initrd.availableKernelModules = [
       "xhci_pci"
       "usbhid"
@@ -9,11 +17,12 @@
       "uas"
       "usbhid"
       "usbcore"
+      "dm_mod"
     ];
-    loader = {
-      grub.enable = false;
-      generic-extlinux-compatible.enable = true;
-    };
-    loader.timeout = 1;
+    kernelModules =[ "dm_mod" ];
+    initrd.systemd.tpm2.enable = false;
+    initrd.includeDefaultModules = true;
+    initrd.services.lvm.enable = true;
   };
+  #hardware.deviceTree.enable = true;
 }

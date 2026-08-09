@@ -1,7 +1,7 @@
-{ config, pkgs25, lib, ... }:
+{ config, pkgsStable, lib, ... }:
 
 let
-  nixpkgs = pkgs25;
+  nixpkgs = pkgsStable;
 in
 {
   nixpkgs.config.allowUnfree = true;

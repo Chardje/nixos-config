@@ -6,7 +6,7 @@
   config,
   lib,
   pkgs,
-  pkgs25,
+  pkgsStable,
   inputs,
   ...
 }:
@@ -31,7 +31,7 @@ let
   };
 in
 {
-  system.stateVersion = "25.05";
+  system.stateVersion = "26.05";
 
   imports = [
     # Include the results of the hardware scan.
@@ -39,6 +39,7 @@ in
     #./modules/style.nix
     ../../modules/flatpak.nix
     ../../modules/progs-and-pkgs.nix
+    ../../modules/vladNetwork.nix
     inputs.sops-nix.nixosModules.sops
     ./undervolt.nix
   ];
@@ -71,7 +72,8 @@ in
       "x-systemd.device-timeout=5s"
     ];
   };
-
+  boot.binfmt.emulatedSystems = [ "aarch64-linux" ];
+  boot.binfmt.preferStaticEmulators = true;
   environment.systemPackages = [
     my-sddm-theme
   ];
@@ -81,10 +83,12 @@ in
     substituters = [
       "https://cache.nixos.org/"
       "https://chaotic-nyx.cachix.org"
+      "https://nixos-raspberrypi.cachix.org"
     ];
     trusted-public-keys = [
       "cache.nixos.org-1:6NCHdD59X431o0gWypbMrAURkbJ16ZPMQFGspcDShjY="
       "chaotic-nyx.cachix.org-1:HfnXSw4pj95iI/n17rIDy40agHj12WfF+Gqk6SonIT8="
+      "nixos-raspberrypi.cachix.org-1:4iMO9LXa8BqhU+Rpg6LQKiGa2lsNh/j2oiYLNOQ5sPI="
     ];
 
   };
@@ -99,6 +103,7 @@ in
     theme = "/boot/grub/themes/CyberRe";
   };
   boot.loader.efi.canTouchEfiVariables = true;
+  boot.kernelPackages = pkgs.linuxPackages_latest;
   boot.kernelModules = [
     "i2c-dev"
     "i2c-core"
@@ -107,6 +112,7 @@ in
     "nvidia_modeset"
     "nvidia_uvm"
     "nvidia_drm"
+    "ip_tables"
   ];
   boot.extraModprobeConfig = ''
     options bluetooth disable_ertm=1
@@ -123,7 +129,7 @@ in
 
   # Set your time zone.
   time.timeZone = "Europe/Kyiv";
-  
+
   hardware.nvidia = {
     modesetting.enable = true;
     open = false;
@@ -143,7 +149,7 @@ in
     xkb.layout = "us,ua";
     xkb.options = "grp:alt_shift_toggle";
   };
-
+services.displayManager.defaultSession = "hyprland-uwsm";
   xdg.portal = {
     enable = true;
     xdgOpenUsePortal = true;
@@ -160,10 +166,9 @@ in
       #pkgs.xdg-desktop-portal-hyprland
     ];
   };
-
+  services.desktopManager.plasma6.enable = true;
   # Використовуємо Hyprland як сесію для входу (Caelestia shell стартує через Home Manager/systemd user)
-  services.displayManager.defaultSession = "hyprland";
-  services.displayManager.sddm = {
+  services.displayManager.sddm = lib.mkForce {
     enable = true;
     package = pkgs.kdePackages.sddm;
     theme = "sddm-astronaut-theme";
@@ -222,6 +227,11 @@ in
   services.udev.extraRules = ''
     SUBSYSTEM=="backlight", ACTION=="add", RUN+="${pkgs.coreutils}/bin/chgrp video /sys/class/backlight/%k/brightness"
     SUBSYSTEM=="backlight", ACTION=="add", RUN+="${pkgs.coreutils}/bin/chmod g+w /sys/class/backlight/%k/brightness"
+    
+    # DDC-CI / I2C permissions for monitor brightness control
+    SUBSYSTEM=="i2c-dev", MODE="0666"
+    KERNEL=="i2c-[0-9]*", GROUP="i2c", MODE="0660"
+    SUBSYSTEM=="i2c-dev", GROUP="i2c", MODE="0660"
   '';
 
   users.users.vlad = {
@@ -244,11 +254,11 @@ in
   xdg.mime = {
     enable = true;
     defaultApplications = {
-      "text/html" = "librewolf.desktop";
-      "x-scheme-handler/http" = "librewolf.desktop";
-      "x-scheme-handler/https" = "librewolf.desktop";
-      "x-scheme-handler/about" = "librewolf.desktop";
-      "x-scheme-handler/unknown" = "librewolf.desktop";
+      "text/html" = "firefox.desktop";
+      "x-scheme-handler/http" = "firefox.desktop";
+      "x-scheme-handler/https" = "firefox.desktop";
+      "x-scheme-handler/about" = "firefox.desktop";
+      "x-scheme-handler/unknown" = "firefox.desktop";
       # Текстові та програмні файли
       "text/plain" = "code.desktop";
       "application/json" = "code.desktop";
@@ -264,14 +274,16 @@ in
       "text/x-csharp" = "code.desktop";
       "text/x-csharp-source" = "code.desktop";
       # PDF
-      "application/pdf" = "wpspdf.desktop";
+      "application/pdf" = "okular.desktop";
       # Офісні документи
-      "application/msword" = "wps-office.desktop";
-      "application/vnd.openxmlformats-officedocument.wordprocessingml.document" = "wps-office.desktop";
-      "application/vnd.ms-excel" = "wps-office.desktop";
-      "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" = "wps-office.desktop";
-      "application/vnd.ms-powerpoint" = "wps-office.desktop";
-      "application/vnd.openxmlformats-officedocument.presentationml.presentation" = "wps-office.desktop";
+      "application/msword" = "libreoffice-writer.desktop";
+      "application/vnd.openxmlformats-officedocument.wordprocessingml.document" =
+        "libreoffice-writer.desktop";
+      "application/vnd.ms-excel" = "libreoffice-calc.desktop";
+      "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" = "libreoffice-calc.desktop";
+      "application/vnd.ms-powerpoint" = "libreoffice-impress.desktop";
+      "application/vnd.openxmlformats-officedocument.presentationml.presentation" =
+        "libreoffice-impress.desktop";
       # Архіви
       "application/zip" = "xarchiver.desktop";
       "application/x-rar" = "xarchiver.desktop";
@@ -281,10 +293,10 @@ in
       "application/x-bzip2" = "xarchiver.desktop";
       "application/x-xz" = "xarchiver.desktop";
       # Зображення
-      "image/png" = "feh.desktop";
-      "image/jpeg" = "feh.desktop";
+      "image/png" = "gwenview.desktop";
+      "image/jpeg" = "gwenview.desktop";
       # Аудіо
-      "audio/mpeg" = "mpv.desktop";
+      "audio/mpeg" = "vlc.desktop";
     };
   };
 

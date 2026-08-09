@@ -1,7 +1,7 @@
-{ pkgs, ... }:
+{ pkgsStable, ... }:
 {
   boot = {
-    kernelPackages = pkgs.linuxPackages;
+    kernelPackages = pkgsStable.linuxPackages;
 
     initrd.availableKernelModules = [
       "virtio_pci"
@@ -23,8 +23,28 @@
 
     loader.timeout = 1;
   };
+  users.groups.shared = { };
+  users = {
+    mutableUsers = false;
+    users."pi" = {
+      isNormalUser = true;
+      password = "qwerty";
+      extraGroups = [
+        "wheel"
+        "docker"
+        "networkmanager"
+        "shared"
+      ];
+    };
+    users.root = {
+      password = "test";
+    };
+  };
 
   virtualisation.vmVariant = {
     virtualisation.graphics = false;
+    virtualisation.diskSize = 10000;
   };
+  services.dbus.enable = true;
+
 }
