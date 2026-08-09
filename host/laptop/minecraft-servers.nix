@@ -17,6 +17,42 @@ let
   vanillaport = 25566;
   vanilladomainvpn = "vanilla.${dv}";
   vanilladomainlan = "vanilla.${dl}";
+  oldGenport = 25568;
+  oldGendomainvpn = "old.${dv}";
+  oldGendomainlan = "old.${dl}";
+
+  stabMods26_2 = {
+    "fabric-api" = pkgs.fetchurl {
+      url = "https://cdn.modrinth.com/data/P7dR8mSH/versions/3gT0I5vt/fabric-api-0.156.0%2B26.2.jar";
+      sha512 = "0b4hlqxpa9qkckchg9fgmg345a83y33n8svy7m95vlp4xxsqyxyvrblxd8fhanbc95cvcl5c7i6gkgi4zpy51w2p28csdpq0xnl7g2v";
+    };
+    lithium = pkgs.fetchurl {
+      url = "https://cdn.modrinth.com/data/gvQqBUqZ/versions/f7vZ0VWU/lithium-fabric-0.25.3%2Bmc26.2.jar";
+      sha512 = "2yshqjy02yqfc4axwi290qx9kbrsm9xqasckch39lzs3k5l7vv090qdih5dlxcxvgak6rdall8y9x8a98sa483i92pznab27j7n72ql";
+    };
+    ferritecore = pkgs.fetchurl {
+      url = "https://cdn.modrinth.com/data/uXXizFIs/versions/d5ddUdiB/ferritecore-9.0.0-fabric.jar";
+      sha512 = "22fbjz59a2qh4bynn6rmplbawi36wgddycwsqvz1x5f11l5355khay5m6kf8xx1bzjcx4vivl1pc00xhcrz9hl95za1jk3q25zaj7yq";
+    };
+    fastnoisium = pkgs.fetchurl {
+      url = "https://cdn.modrinth.com/data/OnlVIpq5/versions/GJk7sVtP/zfastnoise-1.0.39%2B26.2.jar";
+      sha512 = "3wifmjlq01gxxxjkzx6x24isxxyvmlqj5x6vvywwg061adkrw46r3dn6qg139p28s8kwgzqv9i61l049srkvsl5njv772cfwylwk9ik";
+    };
+    vmp = pkgs.fetchurl {
+      url = "https://cdn.modrinth.com/data/wnEe9KBa/versions/d6FfpWFI/vmp-fabric-mc26.2-0.2.0%2Bbeta.7.236-all.jar";
+      sha512 = "3arp7l3hbgp4yigv63ymsrq73qvf95igm60csr1p1d5psfmaahrywgjwirymlwsf0rpi0ficplyxlf6lrr40v8p6kv00pzkcrzdh3rf";
+    };
+  };
+
+  oldMods26_2 = {
+    Moderner = pkgs.fetchurl {
+      url = "https://cdn.modrinth.com/data/xkrdwmh2/versions/dqmxvmmu/moderner-beta-fabric-5.0.0-alpha.3%2B26.2.jar";
+      sha512 = "18cr3dyx8yx0iw38330vxfchj51c80cc1caris6fin25k2nzrn8b4il1rxzzp86lk3lj7bb42d9frm2q6s72dhmnh729aabszxg5k12";
+    };
+  };
+
+  oldGen26_2 = stabMods26_2 // oldMods26_2;
+  old26_2 = pkgs.linkFarmFromDrvs "mods-26_2" (builtins.attrValues oldGen26_2);
 
   sopMods = pkgs.linkFarmFromDrvs "optimised-mods" (
     builtins.attrValues {
@@ -110,8 +146,41 @@ in
           "-XX:G1HeapRegionSize=32M"
         ];
       };
+      oldGen = {
+        enable = true;
+        autoStart = false;
+        package = pkgs.fabricServers.fabric-26_2.override {
+          jre_headless = pkgs.openjdk25_headless;
+        };
+        symlinks.mods = old26_2;
+
+        serverProperties = {
+          server-port = oldGenport;
+          difficulty = "hard";
+          white-list = false;
+          pvp = true;
+          gamemode = "survival";
+          pause-when-empty-seconds = "60";
+          spawn-protection = "0";
+          view-distance = "24";
+          level-type = "moderner_beta:moderner_beta";
+          generator-settings = builtins.toJSON {
+            preset = "moderner_beta:beta_isle_land";
+          };
+        };
+        jvmOpts = [
+          "-Xmx6G"
+          "-XX:+UnlockExperimentalVMOptions"
+          "-XX:+UseG1GC"
+          "-XX:G1NewSizePercent=20"
+          "-XX:G1ReservePercent=20"
+          "-XX:MaxGCPauseMillis=50"
+          "-XX:G1HeapRegionSize=32M"
+        ];
+      };
     };
   };
+
   services.infrared = {
     enable = true;
     listensIpPort = "0.0.0.0:25565";
@@ -132,6 +201,14 @@ in
           vanilladomainlan
         ];
         addresses = [ "127.0.0.1:${toString vanillaport}" ];
+      };
+      oldGen = {
+        enable = true;
+        domains = [
+          oldGendomainlan
+          oldGendomainvpn
+        ];
+        addresses = [ "127.0.0.1:${toString oldGenport}" ];
       };
     };
   };
