@@ -5,11 +5,11 @@
 { config, pkgs, ... }:
 
 {
-  imports =
-    [ # Include the results of the hardware scan.
-      ./hardware-configuration.nix
-      ./minecraft-servers.nix
-    ];
+  imports = [
+    # Include the results of the hardware scan.
+    ./hardware-configuration.nix
+    ./minecraft-servers.nix
+  ];
 
   # Bootloader.
   boot.loader.grub.enable = true;
@@ -18,39 +18,48 @@
 
   # Networking
   networking.hostName = "laptop"; # Змініть на свій
-  networking.networkmanager.enable = true;  # або wicked, або просто DHCP
- networking.nameservers = [ "192.168.88.1" ]; 
-  networking.interfaces.enp8s0.ipv4={
-  addresses = [
-    { address = "192.168.88.15"; prefixLength = 24; }
-    { address = "192.168.50.2";  prefixLength = 24; }
-  ];
-  routes = [
-    { address = "192.168.50.0"; prefixLength = 24; }
-  ];
+  networking.networkmanager.enable = true; # або wicked, або просто DHCP
+  networking.nameservers = [ "192.168.88.1" ];
+  networking.interfaces.enp7s0.ipv4 = {
+    addresses = [
+      {
+        address = "192.168.88.15";
+        prefixLength = 24;
+      }
+      {
+        address = "192.168.50.2";
+        prefixLength = 24;
+      }
+    ];
+    routes = [
+      {
+        address = "192.168.50.0";
+        prefixLength = 24;
+      }
+    ];
   };
 
   networking.defaultGateway = "192.168.88.1";
   # Set your time zone.
-  time.timeZone = "Europe/Kiev";  # або ваша зона
+  time.timeZone = "Europe/Kiev"; # або ваша зона
 
   # Select internationalisation properties.
-  i18n.defaultLocale = "uk_UA.UTF-8";
+  i18n.defaultLocale = "en_US.UTF-8";
 
   i18n.extraLocaleSettings = {
-    LC_ADDRESS = "uk_UA.UTF-8";
-    LC_IDENTIFICATION = "uk_UA.UTF-8";
-    LC_MEASUREMENT = "uk_UA.UTF-8";
-    LC_MONETARY = "uk_UA.UTF-8";
-    LC_NAME = "uk_UA.UTF-8";
-    LC_NUMERIC = "uk_UA.UTF-8";
-    LC_PAPER = "uk_UA.UTF-8";
-    LC_TELEPHONE = "uk_UA.UTF-8";
-    LC_TIME = "uk_UA.UTF-8";
+    LC_ADDRESS = "en_US.UTF-8";
+    LC_IDENTIFICATION = "en_US.UTF-8";
+    LC_MEASUREMENT = "en_US.UTF-8";
+    LC_MONETARY = "en_US.UTF-8";
+    LC_NAME = "en_US.UTF-8";
+    LC_NUMERIC = "en_US.UTF-8";
+    LC_PAPER = "en_US.UTF-8";
+    LC_TELEPHONE = "en_US.UTF-8";
+    LC_TIME = "en_US.UTF-8";
   };
 
   # Configure console keymap
-  console.keyMap = "us";  
+  console.keyMap = "us";
 
   # Enable sound with pipewire.
   hardware.pulseaudio.enable = false;
@@ -65,7 +74,7 @@
   # Enable touchpad support (для ноутбуків)
   services.libinput.enable = true;
   services.xserver.enable = true;
-  
+
   # Enable the KDE Plasma Desktop Environment.
   services.displayManager.sddm.enable = true;
   services.desktopManager.plasma6.enable = true;
@@ -74,41 +83,47 @@
 
   # List packages installed in system profile.
   environment.systemPackages = with pkgs; [
-    vim 
+    vim
     wget
     git
     vscode
     neovim
     tmux
-  #vimPlugins.LazyVim
+    #vimPlugins.LazyVim
   ];
-  programs.firefox.enable=true;
+  programs.firefox.enable = true;
 
   services.logind = {
-  lidSwitch = "suspend";                    # коли від батареї — засипати
-  lidSwitchExternalPower = "ignore";              
-};
+    lidSwitch = "suspend"; # коли від батареї — засипати
+    lidSwitchExternalPower = "ignore";
+  };
 
   users.users.laptop = {
     isNormalUser = true;
     description = "laptop";
-    extraGroups = [ "networkmanager" "wheel" ];
+    extraGroups = [
+      "networkmanager"
+      "wheel"
+    ];
     packages = with pkgs; [
       kdePackages.kate
-    #  thunderbird
+      #  thunderbird
     ];
   };
 
   # Enable the OpenSSH daemon.
-  services.openssh={
+  services.openssh = {
     enable = true;
-    settings={
+    settings = {
+      PermitRootLogin = "no";
       PasswordAuthentication = true;
+      AllowUsers = [ "laptop" ];
+      PubkeyAuthentication = true;
     };
   };
   # Open ports in the firewall.
   # networking.firewall.allowedTCPPorts = [ ... ];
   # networking.firewall.allowedUDPPorts = [ ... ];
-  
-  system.stateVersion = "25.05"; 
+
+  system.stateVersion = "26.05";
 }

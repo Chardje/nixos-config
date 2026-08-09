@@ -2,11 +2,15 @@
   pkgs,
   inputs,
   lib,
-  pkgs25,
+  pkgsStable,
   ...
 }:
 let
   nur = inputs.nur;
+  #mypython = pkgs.python3;
+  #.withPackages 
+  #(ps: with ps; [ platformio ]);
+
 in
 {
 
@@ -25,37 +29,63 @@ in
     unifont
     #material-symbols-font
   ];
-
+  virtualisation.waydroid.enable = true;
   environment.systemPackages = with pkgs; [
     # Редактори та IDE
-    vim
+    #vim
+    qemu
+    neovim
+    black
+    #python312Packages.isort
+    rustfmt
+    ripgrep
+    fd
+    tree-sitter
+    lua-language-server
+    pyright
+    nil
+    docker-compose
+    waydroid
+    #blender
+    stm32cubemx
+    #stm32cubeide
+    stlink
+    stlink-gui
+    stlink-tool
+    gcc-arm-embedded
+    gnumake
+    fastfetch
+
+    # runtimes
+    nodejs
+    #mypython
     kitty
-    vscode
+    #vscode
+    vscode-fhs
+    #jetbrains.idea-community
     obsidian
-    plantuml
-    
-    
+    #plantuml
+    sops
+    pkgs.uwsm
+
     #pgadmin4-desktopmode
     pkg-config
     wireplumber
     # Веб-браузери та месенджери
-    firefox
-    #discord
-    #vesktop
-    #ayugram-desktop
-    _64gram
-    #beeper-bridge-manager
-    #teams
-    teams-for-linux
-    gpu-screen-recorder-gtk
-    
 
+    #librewolf
+    _64gram
+    gpu-screen-recorder-gtk
+    vesktop
+    signal-desktop
+
+    prismlauncher
     # Файлові менеджери
     nemo
-    #kdePackages.dolphin
 
     # Системні утиліти
     ddcutil
+    ddccontrol
     #canon-capt
     canon-cups-ufr2
     simple-scan
@@ -65,17 +95,21 @@ in
     nixfmt
     home-manager
     brightnessctl
-    networkmanagerapplet
     wl-clip-persist
     wayland-utils
     parted
     tparted
     gparted
+    SDL2
+    gdk-pixbuf # бібліотека іконок
+    librsvg # підтримка SVG іконок
+
+    #winboat
 
     xdg-desktop-portal
     #xdg-desktop-portal-wlr
     pipewire
-    helvum
+    crosspipe
     wireplumber
     (pkgs.writeShellApplication {
       name = "ns";
@@ -86,10 +120,11 @@ in
       ];
       text = builtins.readFile "${pkgs.nix-search-tv.src}/nixpkgs.sh";
     })
-
+    peaclock
+    kdePackages.kclock
     wlroots
-    swww
-    wlogout
+    #swww
+    #wlogout
     satty
     git
     #wf-recorder
@@ -114,16 +149,32 @@ in
     feh
     imv
     vlc
+    audacity
+    kicad-small
+    javaPackages.compiler.openjdk25
+    openocd
+    (pkgs.writeShellScriptBin "expresslrs-configurator" ''
+    export LD_LIBRARY_PATH="${pkgs.lib.makeLibraryPath [ pkgs.stdenv.cc.cc.lib ]}:$LD_LIBRARY_PATH"
+    exec ${pkgs.expresslrs-configurator}/bin/expresslrs-configurator "$@"
+  '')
+    platformio
+    platformio-core
 
+      # optional: needed as a programmer i.e. for esp32
+    avrdude
+    usbutils
     dotnetCorePackages.sdk_9_0-bin
     unityhub
     dotnet-sdk
-    pkgs.omnisharp-roslyn
+    omnisharp-roslyn
     mono
     msbuild
-    omnisharp-roslyn
     netcoredbg
     unity-test
+    gnumake
+    gcc
+    clang
+    clang-tools
 
     # Icon themes
     hicolor-icon-theme
@@ -137,24 +188,16 @@ in
     wl-clipboard
     pavucontrol
 
-    # Network tools
-    ethtool
-    iproute2
-    dnsutils
-    inetutils
-    speedtest-cli
-    curl
-    bmon
-    tcpdump
     winbox4
-    wireguard-ui
 
+    #shadps4 # ps4 emu
     # Game controller utilities
     SDL2
     SDL2_gfx
     SDL2_mixer
     SDL2_image
     jstest-gtk
+    heroic
 
     # Bluetooth support
     bluez
@@ -167,31 +210,34 @@ in
     #waybar
     pkgs.libappindicator-gtk3
     #waypaper
-    pkgs.hyprlandPlugins.hyprbars
+    #pkgs.hyprlandPlugins.hyprbars
     hypridle
     xdg-utils
     grim
     slurp
-    wofi
+    #wofi
     foot
-    sddm-chili-theme
-    libsForQt5.qt5.qtgraphicaleffects
+    qt5.qtgraphicaleffects
 
     #syncthing
     syncthingtray
     syncthing
 
     # Офісні пакети та словники
-    wpsoffice
+    #wpsoffice
+    libreoffice-fresh
+    hunspell
+    hunspellDicts.uk_UA
+    #onlyoffice-desktopeditors
     hunspell
     hunspellDicts.uk_UA
 
     # Мультимедіа та графіка
     krita
 
-    spotify
+    #spotify
     # Wine та суміжне
-    wineWowPackages.waylandFull
+    wineWow64Packages.waylandFull
     winetricks
 
     (writeScriptBin "wine32" ''
@@ -208,18 +254,7 @@ in
       winetricks "$@"
     '')
 
-    # Ігри
-    #    (pkgs25.modrinth-app.overrideAttrs (old: {
-    #  makeWrapperArgs = (old.makeWrapperArgs or []) ++ [
-    #    "--set" "GDK_BACKEND" "x11"
-    #    "--set" "WEBKIT_DISABLE_DMABUF_RENDERER" "1"
-    #    "--set" "WEBKIT_DISABLE_COMPOSITING_MODE" "1"
-    #  ];
-    #}))
-
     wakeonlan
-    #rpi-imager
-    #    samba
     cifs-utils
   ];
   environment.sessionVariables = {
@@ -237,32 +272,32 @@ in
     XDG_SESSION_TYPE = "wayland";
     XDG_SESSION_DESKTOP = "Hyprland";
   };
-
-  networking.networkmanager.enable = true;
-
-  services.matrix-synapse = {
-
-    enable = false;
-    settings = {
-      server_name = "localhost";
-      registration_shared_secret = "mysecret111";
-
-      app_service_config_files = [
-        "/home/vlad/.config/bbctl/telegram-registration.yaml"
-        "/home/vlad/.config/bbctl/whatsapp-registration.yaml"
-        "/home/vlad/.config/bbctl/discord-registration.yaml"
-      ];
-    };
-  };
+  services.udev.packages = with pkgs; [ 
+    platformio-core.udev
+    openocd
+  ];
+  services.ddccontrol.enable = true;
   programs = {
+    firefox = {
+      enable = true;
+      package = pkgs.firefox.override {
+        extraPolicies = {
+          DisableTelemetry = true;
+        };
+      };
+    };
     hyprland = {
       enable = true;
-      package = inputs.hyprland.packages.${pkgs.system}.hyprland;
+      package = inputs.hyprland.packages.${pkgs.stdenv.hostPlatform.system}.hyprland;
+      portalPackage =
+        inputs.hyprland.packages.${pkgs.stdenv.hostPlatform.system}.xdg-desktop-portal-hyprland;
       xwayland.enable = true;
     };
     xwayland.enable = true;
     yazi.enable = true;
     gpu-screen-recorder.enable = true;
+    dconf.enable = true;
+    obs-studio.enable = true;
 
     java = {
       enable = true;
@@ -277,6 +312,12 @@ in
     git.enable = true;
 
   };
-
-  virtualisation.docker.enable = true;
+  hardware.nvidia-container-toolkit.enable = false;
+  virtualisation.docker = {
+    enable = true;
+    rootless = {
+      enable = false;
+      setSocketVariable = true; # додає DOCKER_HOST в оточення
+    };
+  };
 }

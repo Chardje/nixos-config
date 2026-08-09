@@ -1,7 +1,7 @@
-{ config, pkgs25, lib, ... }:
+{ config, pkgsStable, lib, ... }:
 
 let
-  nixpkgs = pkgs25;
+  nixpkgs = pkgsStable;
 in
 {
   nixpkgs.config.allowUnfree = true;
@@ -148,7 +148,7 @@ in
   users.users.vlad = {
     isNormalUser = true;
     password = "1234";
-    extraGroups = [ "wheel" "networkmanager" "video" "audio" ];
+    extraGroups = [ "wheel" "networkmanager" "video" "audio" "doker"];
   };
 
   # === Оптимізація для 32 ГБ ===

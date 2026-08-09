@@ -4,6 +4,7 @@
   config,
   pkgs,
   catppuccinLib,
+  catppuccin,
   ...
 }:
 let
@@ -12,7 +13,8 @@ in
 {
   imports = [
     ./hyprland.nix
-    inputs.catppuccin.homeModules.catppuccin
+    #inputs.catppuccin.homeModules.catppuccin
+    catppuccin.homeManagerModules.catppuccin 
     inputs.caelestia-shell.homeManagerModules.default
     ../modules/mainconfig.nix
   ];
@@ -29,10 +31,9 @@ in
 
   nixpkgs.overlays = [
     inputs.nur.overlays.default
-    inputs.nix-alien.overlays.default
   ];
+  home.pointerCursor.enable = true;
 
-  
 
   programs.vscode = {
     profiles.default.extensions = with pkgs.vscode-extensions; [
@@ -53,7 +54,7 @@ in
       ms-vsliveshare.vsliveshare
     ];
   };
-
+  services.easyeffects.enable = true;
   services.gammastep = {
     enable = false;
     settings = {
@@ -85,18 +86,16 @@ in
   };
 
   home.packages = with pkgs; [
-    nix-alien
+    inputs.nix-alien.packages.${stdenv.hostPlatform.system}.nix-alien
     #papirus-icon-theme
-    adwaita-icon-theme
-    hicolor-icon-theme
-    gnome-icon-theme
     noto-fonts
     noto-fonts-color-emoji
     liberation_ttf
     source-han-sans
     source-han-serif
     font-awesome
-    inputs.zen-browser.packages."${system}".default
+
+    #inputs.zen-browser.packages."${stdenv.hostPlatform.system}".default
   ];
 
   fonts.fontconfig.enable = true;
@@ -114,6 +113,12 @@ in
     gtk.enable = true;
 
   };
+  gtk = {
+    enable = true;
+    iconTheme = {
+      name = "Papirus-Dark";
+    };
+  };
   programs = {
     home-manager.enable = true;
 
@@ -130,6 +135,101 @@ in
         insensitive = true;
         sort_order = "alphabrtical";
       };
+    };
+    neovim = {
+      enable = true;
+      defaultEditor = true;
+      # 1. Список плагінів (аналог lazy.setup у твоєму init.lua)
+      plugins = with pkgs.vimPlugins; [
+
+        # LSP & Completion
+        nvim-lspconfig
+        mason-nvim
+        mason-lspconfig-nvim
+        nvim-cmp
+        cmp-nvim-lsp
+        cmp-buffer
+        cmp-path
+        luasnip
+        cmp_luasnip
+
+        # Treesitter & Formatting/Linting
+        (nvim-treesitter.withPlugins (p: [
+          p.python
+          p.rust
+          p.lua
+          p.markdown
+        ]))
+        conform-nvim
+        nvim-lint
+
+        # UI & Navigation
+        telescope-nvim
+        telescope-fzf-native-nvim
+        {
+          plugin = catppuccin-nvim;
+          type = "lua"; # явно вказуємо мову конфігурації
+        }
+        lualine-nvim
+
+        # DAP
+        nvim-dap
+        nvim-dap-ui
+        plenary-nvim
+        neo-tree-nvim
+  nvim-web-devicons  # іконки
+  nui-nvim
+   alpha-nvim 
+   bufferline-nvim
+      ];
+
+      # 2. Додаткові системні пакети (форматери та лінтери)
+      # Nix дозволяє встановити їх прямо в оточення Neovim
+      extraPackages = with pkgs; [
+        # Python
+        pyright
+        black
+        isort
+        pylint
+        python311Packages.flake8
+        # Rust
+        rust-analyzer
+        rustfmt
+        rustc
+        cargo
+        clippy
+      ];
+
+      # 3. Твоя Lua конфігурація
+      # Ми використовуємо extraLuaConfig, щоб "склеїти" всі твої файли
+      initLua = ''
+        -- Колірна схема
+        vim.cmd.colorscheme("catppuccin-mocha")
+
+        -----------------------------------------------------------
+        -- Вміст cmp.lua
+        -----------------------------------------------------------
+        ${builtins.readFile ./nvim/cmp.lua}
+
+        -----------------------------------------------------------
+        -- Вміст conform.lua
+        -----------------------------------------------------------
+        ${builtins.readFile ./nvim/conform.lua}
+
+        -----------------------------------------------------------
+        -- Вміст lint.lua
+        -----------------------------------------------------------
+        ${builtins.readFile ./nvim/lint.lua}
+
+        -----------------------------------------------------------
+        -- Вміст lsp.lua
+        -----------------------------------------------------------
+        ${builtins.readFile ./nvim/lsp.lua}
+        ${builtins.readFile ./nvim/neotree.lua} 
+        ${builtins.readFile ./nvim/bufferline.lua}
+        ${builtins.readFile ./nvim/alpha.lua}
+
+      '';
     };
 
     # Приклад використання стилю для foot (шлях, а не readFile)
@@ -152,6 +252,7 @@ in
       settings = {
         bar.status = {
           showBattery = false;
+          showNumlock = false;
         };
         general = {
           idle = {
@@ -162,9 +263,12 @@ in
           };
         };
         paths.wallpaperDir = "~/Images";
-
+        background = {
+          wallpaperEnabled = false;
+          useHyprpaper = false;
+        };
         services = {
-          weatherLocation = "Kyiv,UA";
+          weatherLocation = "Dnipro,UA";
           useFahrenheit = false;
           useTwelveHourClock = false;
           audioIncrement = 0.05;
@@ -209,6 +313,4 @@ in
       };
     };
   };
-
-  
 }
