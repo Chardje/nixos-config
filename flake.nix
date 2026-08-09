@@ -36,6 +36,10 @@
       url = "github:soymou/illogical-flake";
       inputs.nixpkgs.follows = "nixpkgs";
     };
+
+    infrared.url = "github:Chardje/Infrared-nix";  
+    infrared.inputs.nixpkgs.follows = "nixpkgs";
+
     nix-minecraft.url = "github:Infinidoge/nix-minecraft";
     chaotic.url = "github:chaotic-cx/nyx/nyxpkgs-unstable";
     nix-alien.url = "github:thiagokokada/nix-alien";
@@ -68,6 +72,7 @@
       caelestia-shell,
       zen-browser,
       hyprland,
+      infrared,
       illogical-flake,
       ...
     }@inputs:
@@ -115,7 +120,8 @@
           specialArgs = { inherit inputs pkgs25; };
           modules = [
             ./host/laptop/default.nix
-           # ./modules/users.nix
+            infrared.nixosModules.infrared
+            # ./modules/users.nix
 	        {
 	          nix.settings.experimental-features = "nix-command flakes";
         	}

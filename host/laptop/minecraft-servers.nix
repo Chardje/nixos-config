@@ -4,7 +4,14 @@ let
 nix-modrinth-prefetch = inputs.nix-minecraft.packages.${pkgs.system}.nix-modrinth-prefetch;
   # Модпак SOP: Використовуй fetchMrpack з nix-prefetch-mrpack (краще), або fetchzip як тимчасово
  
-
+dv = "v.mc"; #domenvpn 
+dl = "l.mc"; #domenlan 
+speedrunerport = 25567; 
+speedrunerdomainvpn = "speedruner.${dv}"; 
+speedrunerdomainlan = "speedruner.${dl}"; 
+vanillaport = 25566; 
+vanilladomainvpn = "vanilla.${dv}"; 
+vanilladomainlan = "vanilla.${dl}";
 
 
 sopMods = pkgs.linkFarmFromDrvs "optimised-mods" (builtins.attrValues {
@@ -41,7 +48,9 @@ in
 
   imports = [ inputs.nix-minecraft.nixosModules.minecraft-servers ];
   nixpkgs.overlays = [ inputs.nix-minecraft.overlay ];
-  
+ networking.firewall.allowedTCPPorts = [ 25565 ];
+ networking.firewall.allowedUDPPorts = [ 25565 ];
+
   services.minecraft-servers={
     enable = true;
     eula = true;
@@ -61,7 +70,7 @@ in
           white-list = false;
           pvp = true;
           max-players = 20;
-          server-port = 25566;
+          server-port = vanillaport;
         };
       };
   
@@ -75,7 +84,7 @@ in
       };
 
       serverProperties = {
-        server-port = 25567;
+        server-port = speedrunerport;
         difficulty = "hard";
         enable-command-block = "false";
         #motd = "Speed";
@@ -97,8 +106,21 @@ in
     };
    };
   };
-
-
-
-
+services.infrared = {
+enable = true; 
+listensIpPort = "0.0.0.0:25565"; 
+keepAliveTimeout = "30s"; 
+proxies = { 
+speedruner = {
+enable = true; 
+domains = [ speedrunerdomainvpn speedrunerdomainlan ]; 
+addresses = ["127.0.0.1:${toString speedrunerport}"]; 
+}; 
+vanila = { 
+enable = true; 
+domains = [vanilladomainvpn vanilladomainlan ]; 
+addresses = ["127.0.0.1:${toString vanillaport}"]; 
+}; 
+}; 
+};
 }
